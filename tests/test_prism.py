@@ -150,6 +150,28 @@ class PrismTests(unittest.TestCase):
                 self.assertEqual(direct[0]['method'], prefix + 'skills/site-reverse-clone/SKILL.md')
                 self.assertEqual(direct[0]['orchestration'], prefix + 'ORCHESTRATION.md')
                 self.assertEqual(direct[0]['capture_engine'], prefix + 'skills/web-clone/SKILL.md')
+                self.assertEqual(direct[0]['project_audit'], prefix + 'skills/site-reverse-clone/references/project-audit.md')
+
+    def test_missing_project_audit_path_is_rejected(self):
+        lock = json.loads((ROOT/'UPSTREAM.lock.json').read_text())
+        for asset in lock['assets']:
+            path = self.base/asset['path']
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((ROOT/asset['path']).read_bytes())
+        for value in (None, ''):
+            with self.subTest(value=value):
+                changed = copy.deepcopy(lock)
+                if value is None: changed['external_methods'][0].pop('project_audit_path')
+                else: changed['external_methods'][0]['project_audit_path'] = value
+                (self.base/'UPSTREAM.lock.json').write_text(json.dumps(changed))
+                with self.assertRaisesRegex(ValueError, 'project_audit_path'): prism.doctor(self.base)
+
+    def test_project_audit_plan_exposes_full_scope_without_execution(self):
+        result = prism.plan('audit', 'api', 'fixture')
+        self.assertEqual(result['external_read'][0]['repository'], 'jaminliu89/site-reverse-clone')
+        self.assertTrue({'project_completeness', 'security', 'personnel_agent_collaboration', 'orchestration'}.issubset(result['audit_scope']))
+        self.assertFalse(result['target_executed'])
+        self.assertFalse(result['release_authorized'])
 
     def test_planning_and_nonsoftware_do_not_load_site_clone(self):
         self.assertEqual(prism.plan('planning', 'web', 'fixture')['external_read'], [])

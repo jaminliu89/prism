@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "policy": "read_only_pinned_contract_snapshots_not_installed_engines",
   "assets": [
     {
@@ -62,11 +62,12 @@
     {
       "id": "site-reverse-clone",
       "repository": "jaminliu89/site-reverse-clone",
-      "commit": "2fa6cb0cb5fadb02ef8f19d05e586f7748b58f37",
+      "commit": "bc3f7d7e2a70bcd1c4e6d04fd6a770c1ea9ad0f4",
       "path": "skills/site-reverse-clone/SKILL.md",
       "availability": "contract_reference_only_verify_engine_per_session",
       "orchestration_path": "ORCHESTRATION.md",
-      "engine_path": "skills/web-clone/SKILL.md"
+      "engine_path": "skills/web-clone/SKILL.md",
+      "project_audit_path": "skills/site-reverse-clone/references/project-audit.md"
     }
   ]
 }

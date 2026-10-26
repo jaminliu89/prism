@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": "tests.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "doctor"
+      ],
+      "exit_code": 0,
+      "output": "doctor.json"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "plan",
+        "--kind",
+        "api",
+        "--target",
+        "local contract verification only"
+      ],
+      "exit_code": 0,
+      "output": "plan.json"
+    }
+  ],
+  "code_sha256": "5bd504ed99a63efda48dbf3a0cc94d9e54d58ab2bf5b1f33fc4e21a0f619b7bb",
+  "independent_review": {
+    "principal": "agent:/root/review_site_audit",
+    "passed": true,
+    "security_concerns": [],
+    "logic_errors": [],
+    "scope": "staged implementation diff; tests updated for missing required path suggestion"
+  },
+  "target_audit": "NOT_PERFORMED"
+}

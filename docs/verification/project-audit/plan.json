@@ -1,0 +1,37 @@
+{
+  "status": "PLAN_ONLY",
+  "target": "local contract verification only",
+  "revision": "UNKNOWN",
+  "mode": "audit",
+  "kind": "api",
+  "primary_in_group": "prism",
+  "read": [
+    "docs/AUDIT_PROMPT.md",
+    "docs/REPORT_CONTRACT.md",
+    "sources/skillhub/checklist/final-checklist.md",
+    "sources/skillhub/site/SKILL.md",
+    "sources/skillhub/site/TOOL_COLLABORATION.md"
+  ],
+  "external_read": [
+    {
+      "repository": "jaminliu89/site-reverse-clone",
+      "commit": "bc3f7d7e2a70bcd1c4e6d04fd6a770c1ea9ad0f4",
+      "method": "https://github.com/jaminliu89/site-reverse-clone/blob/bc3f7d7e2a70bcd1c4e6d04fd6a770c1ea9ad0f4/skills/site-reverse-clone/SKILL.md",
+      "orchestration": "https://github.com/jaminliu89/site-reverse-clone/blob/bc3f7d7e2a70bcd1c4e6d04fd6a770c1ea9ad0f4/ORCHESTRATION.md",
+      "capture_engine": "https://github.com/jaminliu89/site-reverse-clone/blob/bc3f7d7e2a70bcd1c4e6d04fd6a770c1ea9ad0f4/skills/web-clone/SKILL.md",
+      "project_audit": "https://github.com/jaminliu89/site-reverse-clone/blob/bc3f7d7e2a70bcd1c4e6d04fd6a770c1ea9ad0f4/skills/site-reverse-clone/references/project-audit.md",
+      "execution": "Read pinned repository directly; discover actual engine and authorization before use. Not installed by Prism."
+    }
+  ],
+  "audit_scope": [
+    "project_completeness",
+    "security",
+    "personnel_agent_collaboration",
+    "orchestration",
+    "runtime_evidence"
+  ],
+  "tool_discovery": "verify browser/device/CLI/API access per target; snapshot does not install engines",
+  "next": "freeze scope, inspect authorized target, collect actual evidence",
+  "target_executed": false,
+  "release_authorized": false
+}

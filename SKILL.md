@@ -2,7 +2,7 @@
 name: prism
 description: Prism棱镜，独立的产品规划与证据审计编排入口。明确请求Prism、跨阶段产品体检或协作Blueprint/Checklist/Site Clone时使用；按目标恢复需求、核对实际行为、组织专项与问题复验。计划和结构校验不等于实际审计通过，不接管集团发布或逆向主责。
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
   owner: "Product / QA Evidence"
 ---
 
@@ -16,6 +16,7 @@ metadata:
 
 - 规划：读 `sources/skillhub/blueprint/MASTER_PROMPT.md` 和 `DOCUMENT_CONTRACT.md`，严格保留0–6阶段确认；规划期不写业务代码。
 - 产品审计：以总控Prompt恢复承诺、实际入口/版本、需求/状态/设计/架构/数据/AI/安全/成本等适用证据，调用本地checklist。
+- 全面项目审计：必须加载独立site-reverse-clone本体的 `references/project-audit.md`，核完整性、安全、内部人员/Agent协作与编排；原始证据、实际principal和同版本复验决定合格范围。
 - 目标取证/复刻：先读site适配和工具协作快照，再直接读取 [jaminliu89/site-reverse-clone](https://github.com/jaminliu89/site-reverse-clone) 的锁定版本本体与编排，发现其 `skills/web-clone/` 引擎及 `adapters/`；未安装工具时记录受阻，不能声称已抓取或复刻。
 - 交付/上线：生成交接单给既有delivery-walkthrough；Prism不提供发布授权或放行凭证。
 

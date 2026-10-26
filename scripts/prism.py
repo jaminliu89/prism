@@ -51,7 +51,7 @@ def doctor(root=ROOT):
         method_ids.add(method['id'])
         need(re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', method.get('repository', '')) is not None, 'invalid external repository')
         need(re.fullmatch(r'[0-9a-f]{40}', method.get('commit', '')) is not None, 'external method must be pinned')
-        for key in ('path', 'orchestration_path', 'engine_path'):
+        for key in ('path', 'orchestration_path', 'engine_path', 'project_audit_path'):
             value = method.get(key)
             need(nonempty(value) and not Path(value).is_absolute() and '..' not in Path(value).parts, 'invalid external method path: ' + key)
     return {'status': 'SNAPSHOTS_VERIFIED', 'assets': len(assets), 'external_methods': len(methods), 'engines_installed': 'NOT_CHECKED'}
@@ -88,10 +88,12 @@ def plan(mode, kind, target, revision='', root=ROOT):
                     'method': f"https://github.com/{method['repository']}/blob/{method['commit']}/{method['path']}",
                     'orchestration': f"https://github.com/{method['repository']}/blob/{method['commit']}/{method['orchestration_path']}",
                     'capture_engine': f"https://github.com/{method['repository']}/blob/{method['commit']}/{method['engine_path']}",
+                    'project_audit': f"https://github.com/{method['repository']}/blob/{method['commit']}/{method['project_audit_path']}",
                     'execution': 'Read pinned repository directly; discover actual engine and authorization before use. Not installed by Prism.'})
         need(len(external_read) == 1, 'missing site-reverse-clone direct source')
     return {'status': 'PLAN_ONLY', 'target': target, 'revision': revision or 'UNKNOWN', 'mode': mode, 'kind': kind,
             'primary_in_group': primary, 'read': modules, 'external_read': external_read,
+            'audit_scope': ['project_completeness', 'security', 'personnel_agent_collaboration', 'orchestration', 'runtime_evidence'] if mode in ('audit', 'release') else [],
             'tool_discovery': 'verify browser/device/CLI/API access per target; snapshot does not install engines',
             'next': 'stage 0 clarification then wait for confirmation' if mode == 'planning' else 'freeze scope, inspect authorized target, collect actual evidence',
             'target_executed': False, 'release_authorized': False}
