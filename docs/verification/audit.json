@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "delivery_claim": "AUDIT_ONLY",
+  "target": "Prism frozen toolkit self-check",
+  "revision": "554a213d664e9a71e56fccb1505a9aa935edbc8e",
+  "scope": "CLI behavior and pinned source consistency only; unit tests use isolated synthetic fixtures, not external product acceptance",
+  "executor": "codex:/root",
+  "cases": [
+    {
+      "id": "C1",
+      "requirement": "CLI input/evidence guard regressions",
+      "status": "pass",
+      "evidence": [
+        "E1"
+      ]
+    },
+    {
+      "id": "C2",
+      "requirement": "All six source snapshots match lock",
+      "status": "pass",
+      "evidence": [
+        "E2"
+      ]
+    },
+    {
+      "id": "C3",
+      "requirement": "Audit plan does not execute target or authorize release",
+      "status": "pass",
+      "evidence": [
+        "E3"
+      ]
+    },
+    {
+      "id": "C4",
+      "requirement": "Independent semantic product review",
+      "status": "unknown",
+      "reason": "No independent reviewer performed this check",
+      "evidence": []
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "path": "tests.log",
+      "sha256": "e3102c39348de6a16b0d031c845e103d9e1d5a1008a3ee4d5c4142cc23dea4a6",
+      "revision": "554a213d664e9a71e56fccb1505a9aa935edbc8e",
+      "source": "observed"
+    },
+    {
+      "id": "E2",
+      "path": "doctor.json",
+      "sha256": "585de4380527a35c36265e5b6097f65de5f3a943c1d0bf687ef56cb773e313c8",
+      "revision": "554a213d664e9a71e56fccb1505a9aa935edbc8e",
+      "source": "observed"
+    },
+    {
+      "id": "E3",
+      "path": "audit-plan.json",
+      "sha256": "b82544336d64a60a1edec0c9c258d6c73e5a143bb328e3dcb800e55b95819e64",
+      "revision": "554a213d664e9a71e56fccb1505a9aa935edbc8e",
+      "source": "observed"
+    }
+  ],
+  "findings": [],
+  "review": {
+    "status": "self_check"
+  },
+  "limitations": [
+    "No external product audit",
+    "No installed capture engines or native devices validated",
+    "No independent QA or deployment"
+  ]
+}

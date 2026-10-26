@@ -1,0 +1,19 @@
+{
+  "status": "PLAN_ONLY",
+  "target": "Prism local toolkit self-check",
+  "revision": "554a213d664e9a71e56fccb1505a9aa935edbc8e",
+  "mode": "audit",
+  "kind": "web",
+  "primary_in_group": "prism",
+  "read": [
+    "docs/AUDIT_PROMPT.md",
+    "docs/REPORT_CONTRACT.md",
+    "sources/skillhub/checklist/final-checklist.md",
+    "sources/skillhub/site/SKILL.md",
+    "sources/skillhub/site/TOOL_COLLABORATION.md"
+  ],
+  "tool_discovery": "verify browser/device/CLI/API access per target; snapshot does not install engines",
+  "next": "freeze scope, inspect authorized target, collect actual evidence",
+  "target_executed": false,
+  "release_authorized": false
+}

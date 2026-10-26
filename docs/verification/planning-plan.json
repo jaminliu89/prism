@@ -1,0 +1,16 @@
+{
+  "status": "PLAN_ONLY",
+  "target": "synthetic idea only",
+  "revision": "UNKNOWN",
+  "mode": "planning",
+  "kind": "web",
+  "primary_in_group": "idea-to-blueprint",
+  "read": [
+    "sources/skillhub/blueprint/MASTER_PROMPT.md",
+    "sources/skillhub/blueprint/DOCUMENT_CONTRACT.md"
+  ],
+  "tool_discovery": "verify browser/device/CLI/API access per target; snapshot does not install engines",
+  "next": "stage 0 clarification then wait for confirmation",
+  "target_executed": false,
+  "release_authorized": false
+}

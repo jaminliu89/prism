@@ -1,0 +1,19 @@
+{
+  "status": "PLAN_ONLY",
+  "target": "synthetic release plan only",
+  "revision": "UNKNOWN",
+  "mode": "release",
+  "kind": "desktop",
+  "primary_in_group": "delivery-walkthrough",
+  "read": [
+    "docs/AUDIT_PROMPT.md",
+    "docs/REPORT_CONTRACT.md",
+    "sources/skillhub/checklist/final-checklist.md",
+    "sources/skillhub/site/SKILL.md",
+    "sources/skillhub/site/TOOL_COLLABORATION.md"
+  ],
+  "tool_discovery": "verify browser/device/CLI/API access per target; snapshot does not install engines",
+  "next": "freeze scope, inspect authorized target, collect actual evidence",
+  "target_executed": false,
+  "release_authorized": false
+}

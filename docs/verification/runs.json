@@ -1,0 +1,75 @@
+{
+  "frozen_revision": "554a213d664e9a71e56fccb1505a9aa935edbc8e",
+  "execution": "clean git archive in isolated directory",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": "tests.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "doctor"
+      ],
+      "exit_code": 0,
+      "output": "doctor.json"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "plan",
+        "--mode",
+        "audit",
+        "--kind",
+        "web",
+        "--target",
+        "Prism local toolkit self-check",
+        "--revision",
+        "554a213d664e9a71e56fccb1505a9aa935edbc8e"
+      ],
+      "exit_code": 0,
+      "output": "audit-plan.json"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "plan",
+        "--mode",
+        "planning",
+        "--kind",
+        "web",
+        "--target",
+        "synthetic idea only"
+      ],
+      "exit_code": 0,
+      "output": "planning-plan.json"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "plan",
+        "--mode",
+        "release",
+        "--kind",
+        "desktop",
+        "--target",
+        "synthetic release plan only"
+      ],
+      "exit_code": 0,
+      "output": "release-plan.json"
+    }
+  ]
+}
