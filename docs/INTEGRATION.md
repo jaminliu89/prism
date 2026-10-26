@@ -1,0 +1,27 @@
+# 独立使用与集团协作
+
+Prism自己的唯一源：`jaminliu89/prism`。集团路由唯一源：SkillHub根 `SKILL_REGISTRY.yaml`。原能力唯一源不迁移：idea-to-blueprint、delivery-walkthrough/checklist在SkillHub；site-reverse-clone方法在同名独立仓库。
+
+| 意图 | 集团PRIMARY | Prism/其他能力 |
+|---|---|---|
+| 明确“Prism/棱镜/用棱镜审计产品” | Prism规划/审计编排SPECIALIST | CPO/PM保留价值与范围决定；按需加载checklist/site取证 |
+| 普通“我有个点子/写PRD” | idea-to-blueprint | Prism可被调用组织资料；不接管阶段确认 |
+| “走查/交付/checklist/上线” | delivery-walkthrough | Prism组织跨维度发现；site专项取证；现有发布合同不变 |
+| “逆向/复刻这个目标” | agent-reverse-engineering或显式site-reverse-clone | Prism汇总需求/问题，不能用普通审计授权启动复刻 |
+| 独立技术选型/设计 | CTAB / group-design-department | Prism向原owner提交发现，不决定更换基线/视觉 |
+
+不抢占裸“审计”“QA”“产品”等宽泛别名。需要独立产品体检且用户明确选Prism时才走Prism主入口。跨专项只保留一条用户主线与一份问题ID映射。
+
+## 三种部署/使用方式
+
+1. 独立离线：克隆私有仓库，读SKILL.md，用随仓规划/清单/审计Prompt与标准库CLI；不需要安装SkillHub。网络、浏览器、原生设备及site引擎仍按实际需要另行发现。
+2. 集团：根Registry加载薄适配，按锁定Prism提交读本体；支持Agent在会话中使用当前可用工具。适配声明不等于自动安装、后台监听或所有旧会话已加载。
+3. 专项：Prism把工作单交现有checklist/site/设计/技术能力，收回同版本证据与发现。收到其他Agent消息不自动授权反向发信，外发仍依当前用户授权。
+
+## 固定版本快照
+
+UPSTREAM.lock.json记录精确source repository/commit/path与本地SHA。`sources/`用于独立可读的固定版本资料，不是上游可执行引擎，不自动递归读取其所有引用。Prism只加载本任务明确需要的本地叶子文档；遇到外部依赖先按锁引用主库并确认实际可用性，缺失写受阻。
+
+更新流程：在原能力主库修改→来源测试/审查→显式选择新提交→仅更新白名单源文件与lock→doctor与本仓回归→集团更新Prism固定版本。不得把快照改成另一套方法真相源。
+
+用户项目报告、HAR、私有网页、凭证不作为集团共享规则自动回写；仅经确认的可复用知识按集团原有资产规则晋级。

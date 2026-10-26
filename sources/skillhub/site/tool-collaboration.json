@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "kind": "resource_collaboration_contract",
+  "routing_source": "SKILL_REGISTRY.yaml",
+  "not_a_runtime": true,
+  "selection": "minimum_sufficient_verified_tools",
+  "all_tools_required": false,
+  "discovery": {
+    "scope": "current_host_current_session",
+    "record": [
+      "tool",
+      "interface",
+      "version",
+      "availability",
+      "smoke_evidence"
+    ],
+    "unverified_status": "REQUIRES_DISCOVERY",
+    "missing_policy": "use_verified_equivalent_or_report_blocker",
+    "install_policy": "reuse_existing_no_automatic_install"
+  },
+  "resources": [
+    {
+      "id": "crawl4ai",
+      "role": "batch_content_collection",
+      "source": "https://docs.crawl4ai.com/core/quickstart/",
+      "outputs": [
+        "url_manifest",
+        "raw_html",
+        "markdown_or_json",
+        "crawl_failures"
+      ],
+      "cannot_prove": [
+        "user_journey_pass",
+        "server_implementation"
+      ]
+    },
+    {
+      "id": "browser-use",
+      "role": "adaptive_interaction_exploration",
+      "source": "https://docs.browser-use.com/open-source/quickstart",
+      "outputs": [
+        "action_log",
+        "page_states",
+        "discovered_user_paths"
+      ],
+      "cannot_prove": [
+        "deterministic_regression_pass",
+        "independent_review"
+      ]
+    },
+    {
+      "id": "playwright",
+      "role": "deterministic_replay_and_verification",
+      "source": "https://playwright.dev/docs/trace-viewer",
+      "outputs": [
+        "assertions",
+        "trace",
+        "screenshots",
+        "network_and_console"
+      ],
+      "cannot_prove": [
+        "server_source_without_access",
+        "aesthetic_approval"
+      ]
+    },
+    {
+      "id": "frontend-design",
+      "role": "visual_implementation_method",
+      "owner": "group-design-department",
+      "source": "https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md",
+      "source_blob": "a5333457c414d20d625f307df945842c0952ecc3",
+      "discovery_reference": "https://collectivebrain.de/en/skills/anthropic-frontend-design/",
+      "reference_kind": "third_party_compact_adaptation_not_official_snapshot",
+      "outputs": [
+        "design_rationale",
+        "design_tokens",
+        "implemented_ui"
+      ],
+      "cannot_prove": [
+        "functional_e2e_pass",
+        "source_fidelity",
+        "independent_review"
+      ]
+    },
+    {
+      "id": "group-toolbox",
+      "role": "existing_specialist_and_adapter_reuse",
+      "owners": [
+        "engineering-professional-toolbox",
+        "group-design-department",
+        "connector-os"
+      ],
+      "outputs": [
+        "tool_selection_reason",
+        "source_evidence",
+        "archive_readback"
+      ],
+      "cannot_prove": [
+        "installed_from_registry_entry"
+      ]
+    }
+  ],
+  "work_packets": [
+    {
+      "id": "collect",
+      "when": "multi_page_or_content_evidence_gap",
+      "candidates": [
+        "crawl4ai",
+        "group-toolbox"
+      ],
+      "handoff": [
+        "url_manifest",
+        "raw_html",
+        "markdown_or_json",
+        "crawl_failures"
+      ]
+    },
+    {
+      "id": "explore",
+      "when": "unknown_interaction_or_state_gap",
+      "candidates": [
+        "browser-use",
+        "playwright",
+        "group-toolbox"
+      ],
+      "handoff": [
+        "action_log",
+        "page_states",
+        "discovered_user_paths"
+      ]
+    },
+    {
+      "id": "implement_or_fix",
+      "when": "implementation_change_authorized",
+      "candidates": [
+        "frontend-design",
+        "group-toolbox"
+      ],
+      "handoff": [
+        "source_revision",
+        "implemented_ui",
+        "design_rationale"
+      ]
+    },
+    {
+      "id": "verify",
+      "when": "behavior_or_fidelity_claim",
+      "candidates": [
+        "playwright",
+        "group-toolbox"
+      ],
+      "handoff": [
+        "assertions",
+        "trace",
+        "screenshots",
+        "network_and_console",
+        "regression_result"
+      ]
+    },
+    {
+      "id": "archive",
+      "when": "task_wrap_up",
+      "candidates": [
+        "group-toolbox"
+      ],
+      "handoff": [
+        "findings",
+        "architecture_evidence",
+        "archive_manifest",
+        "sha256",
+        "readback"
+      ]
+    }
+  ],
+  "modes": {
+    "faithful_clone": {
+      "visual_authority": "observed_target_and_approved_scope",
+      "design_method": "implementation_craft_only_no_unsolicited_redesign"
+    },
+    "redesign": {
+      "visual_authority": "user_approved_design_and_group_design_department",
+      "design_method": "one_primary_design_method"
+    },
+    "audit": {
+      "visual_authority": "existing_requirement_and_approved_design",
+      "design_method": "review_only_unless_fix_authorized"
+    }
+  },
+  "handoff_required": [
+    "task_id",
+    "target",
+    "revision",
+    "case_id",
+    "tool",
+    "observed_at",
+    "evidence_path",
+    "sha256",
+    "claim_level",
+    "redactions",
+    "next_condition"
+  ],
+  "release_authority": "existing_delivery_walkthrough_and_engineering_quality_gates",
+  "session_policy": "one_writer_per_browser_session_no_automatic_cookie_or_token_export",
+  "switch_policy": "two_failed_attempts_change_method_or_observation_surface_with_reason",
+  "completion": "findings_fixed_or_explicitly_blocked_same_revision_replay_then_archive_readback"
+}
