@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "policy": "read_only_pinned_contract_snapshots_not_installed_engines",
   "assets": [
     {
@@ -64,7 +64,9 @@
       "repository": "jaminliu89/site-reverse-clone",
       "commit": "2fa6cb0cb5fadb02ef8f19d05e586f7748b58f37",
       "path": "skills/site-reverse-clone/SKILL.md",
-      "availability": "contract_reference_only_verify_engine_per_session"
+      "availability": "contract_reference_only_verify_engine_per_session",
+      "orchestration_path": "ORCHESTRATION.md",
+      "engine_path": "skills/web-clone/SKILL.md"
     }
   ]
 }

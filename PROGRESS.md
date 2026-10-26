@@ -19,3 +19,10 @@
 ## 恢复与验收
 
 先读README、docs/SCOPE.md、docs/INTEGRATION.md与UPSTREAM.lock.json；运行doctor与unittest。源资产只在主库改，升级锁需差异审查。下一用户价值验收是对明确授权的真实产品运行审计，核对发现是否可复现与可交接。
+
+
+## 2026年10月27日：明确Site Clone本体入口（0.1.1）
+
+用户明确指定jaminliu89/site-reverse-clone。此前external_methods锁已是该仓库，但CLI只输出集团适配，未暴露本体直接路径；本轮修正为external_read输出固定2fa6cb0c版本的方法、ORCHESTRATION.md与web-clone实现三个入口，并校验外部来源锁。通过GitHub连接器读取该仓库README与固定编排/抓取入口确认身份，未修改该仓库或安装引擎。
+
+31项回归及doctor通过，新增实跑计划明确返回用户指定仓库；规划/非软件审计不加载Site。相关输出及当前实现SHA-256见docs/verification/site-clone-direct/。仍未实际抓取或复刻任何目标。集团固定Prism版本需同步到本次修正，采用与合main继续分开报告。

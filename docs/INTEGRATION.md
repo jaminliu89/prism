@@ -1,6 +1,8 @@
 # 独立使用与集团协作
 
-Prism自己的唯一源：`jaminliu89/prism`。集团路由唯一源：SkillHub根 `SKILL_REGISTRY.yaml`。原能力唯一源不迁移：idea-to-blueprint、delivery-walkthrough/checklist在SkillHub；site-reverse-clone方法在同名独立仓库。
+Prism自己的唯一源：`jaminliu89/prism`。集团路由唯一源：SkillHub根 `SKILL_REGISTRY.yaml`。原能力唯一源不迁移：idea-to-blueprint、delivery-walkthrough/checklist在SkillHub；site-reverse-clone方法在用户指定的 [jaminliu89/site-reverse-clone](https://github.com/jaminliu89/site-reverse-clone) 独立仓库。
+
+其本体为 `skills/site-reverse-clone/SKILL.md`，编排规则为 `ORCHESTRATION.md`，抓取实现为 `skills/web-clone/`，专项在 `adapters/`。集团 `sources/skillhub/site/` 只是接入合同，不替代此仓库。Prism的审计/复刻/交付计划通过 `external_read` 列出该固定版本的直接阅读链接；方法与编排先读，抓取实现只在适用且已获授权时执行。
 
 | 意图 | 集团PRIMARY | Prism/其他能力 |
 |---|---|---|

@@ -29,7 +29,7 @@ python3 -m unittest discover -s tests -v
 - [通用审计Prompt](docs/AUDIT_PROMPT.md)：恢复目标、阶段和历史资产，审需求、流程、设计、架构、数据、AI、安全与交付证据，按适用性裁剪。
 - [规划Prompt](sources/skillhub/blueprint/MASTER_PROMPT.md)：既有idea-to-blueprint固定快照，逐阶段确认、规划期不写业务代码。
 - [Checklist](sources/skillhub/checklist/final-checklist.md)：复用集团现有检查标准，不增加发布凭证。
-- [Site取证合同](sources/skillhub/site/SKILL.md)：将目标类型、契约/架构取证和实际工具发现交给原能力；本仓未内置抓取器或浏览器。
+- [Site Clone本体](https://github.com/jaminliu89/site-reverse-clone)：直接协作这个独立仓库的方法、编排与web-clone抓取实现；[集团取证合同](sources/skillhub/site/SKILL.md)仅负责接入，CLI的external_read给出固定版本直达路径。本仓未内置抓取器或浏览器。
 - [集团协作合同](docs/INTEGRATION.md)：保留CPO/PM、设计、CTAB、工程、QA及发布主责；Prism维护编排，不复制能力主库。
 
 Python 3.10+，仅标准库。随仓6份源文件按 [UPSTREAM.lock.json](UPSTREAM.lock.json) 锁定；独立使用不需要本机SkillHub目录。源能力更新须先在主库完成再显式升级快照，不自动跟随main。

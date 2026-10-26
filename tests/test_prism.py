@@ -140,6 +140,21 @@ class PrismTests(unittest.TestCase):
         self.assertIn('stage 0', result['next'])
         self.assertIn('wait for confirmation', result['next'])
 
+    def test_audit_and_clone_point_to_actual_site_clone_repository(self):
+        for mode in ('audit', 'clone', 'release'):
+            with self.subTest(mode=mode):
+                direct = prism.plan(mode, 'web', 'fixture')['external_read']
+                self.assertEqual(len(direct), 1)
+                self.assertEqual(direct[0]['repository'], 'jaminliu89/site-reverse-clone')
+                prefix = 'https://github.com/jaminliu89/site-reverse-clone/blob/' + direct[0]['commit'] + '/'
+                self.assertEqual(direct[0]['method'], prefix + 'skills/site-reverse-clone/SKILL.md')
+                self.assertEqual(direct[0]['orchestration'], prefix + 'ORCHESTRATION.md')
+                self.assertEqual(direct[0]['capture_engine'], prefix + 'skills/web-clone/SKILL.md')
+
+    def test_planning_and_nonsoftware_do_not_load_site_clone(self):
+        self.assertEqual(prism.plan('planning', 'web', 'fixture')['external_read'], [])
+        self.assertEqual(prism.plan('audit', 'other', 'fixture')['external_read'], [])
+
     def test_release_keeps_original_owner(self):
         result = prism.plan('release', 'web', 'fixture')
         self.assertEqual(result['primary_in_group'], 'delivery-walkthrough')

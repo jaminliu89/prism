@@ -1,0 +1,47 @@
+{
+  "scope": "direct source wiring and CLI regression only, no capture/clone execution",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": "tests.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "doctor"
+      ],
+      "exit_code": 0,
+      "output": "doctor.json"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prism.py",
+        "plan",
+        "--mode",
+        "audit",
+        "--kind",
+        "web",
+        "--target",
+        "source identity verification only"
+      ],
+      "exit_code": 0,
+      "output": "plan.json"
+    }
+  ],
+  "sha256": {
+    "scripts/prism.py": "05dbb61d27969ddf53e4499eaf9b88dcb2b01535d7139797ddaa91324b6ffb39",
+    "tests/test_prism.py": "352dad383899052cd3507c861adf3bb28afc91905e458fe769cb6d6e314125fb",
+    "UPSTREAM.lock.json": "d956841cb6e190a7591ff7b2b971fbb32385fb6a04a3b755775f4b3550963fbe"
+  }
+}

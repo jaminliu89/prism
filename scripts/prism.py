@@ -43,7 +43,18 @@ def doctor(root=ROOT):
         need(re.fullmatch(r'[0-9a-f]{40}', item['commit']) is not None, 'source commit must be pinned')
         path = local_file(root, item['path'])
         need(hashlib.sha256(path.read_bytes()).hexdigest() == item['sha256'], 'source hash changed: ' + item['id'])
-    return {'status': 'SNAPSHOTS_VERIFIED', 'assets': len(assets), 'engines_installed': 'NOT_CHECKED'}
+    methods = lock.get('external_methods')
+    need(isinstance(methods, list) and len(methods) > 0, 'missing external method source')
+    method_ids = set()
+    for method in methods:
+        need(nonempty(method.get('id')) and method['id'] not in method_ids, 'invalid/duplicate external method')
+        method_ids.add(method['id'])
+        need(re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', method.get('repository', '')) is not None, 'invalid external repository')
+        need(re.fullmatch(r'[0-9a-f]{40}', method.get('commit', '')) is not None, 'external method must be pinned')
+        for key in ('path', 'orchestration_path', 'engine_path'):
+            value = method.get(key)
+            need(nonempty(value) and not Path(value).is_absolute() and '..' not in Path(value).parts, 'invalid external method path: ' + key)
+    return {'status': 'SNAPSHOTS_VERIFIED', 'assets': len(assets), 'external_methods': len(methods), 'engines_installed': 'NOT_CHECKED'}
 
 
 def plan(mode, kind, target, revision='', root=ROOT):
@@ -67,8 +78,20 @@ def plan(mode, kind, target, revision='', root=ROOT):
     modules = list(dict.fromkeys(modules))
     for module in modules:
         local_file(root, module)
+    external_read = []
+    if mode != 'planning' and kind != 'other':
+        methods = json.loads((root / 'UPSTREAM.lock.json').read_text())['external_methods']
+        for method in methods:
+            if method['id'] == 'site-reverse-clone':
+                external_read.append({
+                    'repository': method['repository'], 'commit': method['commit'],
+                    'method': f"https://github.com/{method['repository']}/blob/{method['commit']}/{method['path']}",
+                    'orchestration': f"https://github.com/{method['repository']}/blob/{method['commit']}/{method['orchestration_path']}",
+                    'capture_engine': f"https://github.com/{method['repository']}/blob/{method['commit']}/{method['engine_path']}",
+                    'execution': 'Read pinned repository directly; discover actual engine and authorization before use. Not installed by Prism.'})
+        need(len(external_read) == 1, 'missing site-reverse-clone direct source')
     return {'status': 'PLAN_ONLY', 'target': target, 'revision': revision or 'UNKNOWN', 'mode': mode, 'kind': kind,
-            'primary_in_group': primary, 'read': modules,
+            'primary_in_group': primary, 'read': modules, 'external_read': external_read,
             'tool_discovery': 'verify browser/device/CLI/API access per target; snapshot does not install engines',
             'next': 'stage 0 clarification then wait for confirmation' if mode == 'planning' else 'freeze scope, inspect authorized target, collect actual evidence',
             'target_executed': False, 'release_authorized': False}
