@@ -6,6 +6,9 @@ on:
       - 'web/**'
       - 'scripts/foundry_web.py'
       - 'tests/test_foundry_web.py'
+      - 'tests/test_skill_distribution.py'
+      - 'SKILL.md'
+      - 'README.md'
       - '.github/workflows/foundry-workbench-v03.yml'
   push:
     branches:
@@ -15,6 +18,9 @@ on:
       - 'web/**'
       - 'scripts/foundry_web.py'
       - 'tests/test_foundry_web.py'
+      - 'tests/test_skill_distribution.py'
+      - 'SKILL.md'
+      - 'README.md'
       - '.github/workflows/foundry-workbench-v03.yml'
 
 permissions:
