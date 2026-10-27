@@ -185,7 +185,7 @@ class FoundryTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         lines = [json.loads(x) for x in result.stdout.splitlines()]
         self.assertEqual(len(lines), 4)
-        self.assertEqual(len(lines[1]["result"]["tools"]), 4)
+        self.assertEqual(len(lines[1]["result"]["tools"]), 5)
         self.assertEqual(lines[2]["result"]["content"][0]["type"], "text")
         self.assertIn("error", lines[3])
 
