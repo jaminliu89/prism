@@ -7,6 +7,8 @@ import re
 import sys
 from pathlib import Path
 
+import codegraph_provider
+
 ROOT = Path(__file__).resolve().parents[1]
 KINDS = ('web', 'app', 'desktop', 'api', 'cli', 'service', 'other')
 MODES = ('planning', 'audit', 'clone', 'release')
@@ -179,10 +181,19 @@ def main():
     command.add_argument('--revision', default='')
     command = sub.add_parser('verify-report')
     command.add_argument('report', type=Path)
+    command = sub.add_parser('codegraph-impact')
+    command.add_argument('--repo', required=True)
+    command.add_argument('--changed', nargs='+', required=True)
+    command.add_argument('--codegraph-bin', required=True)
+    command.add_argument('--allow-local-codegraph', action='store_true')
     args = parser.parse_args()
     try:
         if args.command == 'doctor': result = doctor()
         elif args.command == 'plan': result = plan(args.mode, args.kind, args.target, args.revision)
+        elif args.command == 'codegraph-impact':
+            result = codegraph_provider.impact(
+                args.repo, args.changed, args.codegraph_bin,
+                opt_in=args.allow_local_codegraph)
         else: result = verify_report(args.report)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
