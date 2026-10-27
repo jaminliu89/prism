@@ -95,3 +95,19 @@ python3 scripts/foundry.py --project /tmp/my-product tasks
 5. 模型驱动追问/自动研究仍未接入，需经源与权限审查后接现有 Agent Runtime，不另造一套隐藏路由。
 
 现阶段的远端CI测试仅覆盖状态和拒绝路径的合成数据，不代表产品安全或真实 Agent E2E。
+
+## 多角色观点合流（新增可运行协议）
+
+阶段内可以主动创建决策议题，而不是让多个角色各自生成不相干的 PRD：
+
+~~~sh
+python3 scripts/foundry.py --project /tmp/my-product panel-open --question "第一版是否需要开放插件接口？" --actor owner
+python3 scripts/foundry.py --project /tmp/my-product panel-opinion --id PNL-0001 --role architect --actor architecture-agent --verdict support --severity medium --reasoning "插件接口有扩展性" --evidence "目前仅为架构假设" --counterexample "若第一版无插件用户则可推迟"
+python3 scripts/foundry.py --project /tmp/my-product panel-opinion --id PNL-0001 --role challenger --actor review-agent --verdict oppose --severity high --reasoning "扩大外部代码信任边界" --evidence "尚未建立隔离与认证" --counterexample "只读插件且隔离测试通过则风险降低"
+python3 scripts/foundry.py --project /tmp/my-product panel-status
+python3 scripts/foundry.py --project /tmp/my-product panel-resolve --id PNL-0001 --outcome defer --actor owner --rationale "MVP暂不开放，记录后续受控扩展条件"
+~~~
+
+每份意见需要角色、执行者声明、立场、严重度、推理依据、证据和反例。不能在没有反方意见的情况下直接结案。未决议题阻止阶段确认；裁决后需重新进行本阶段审查，保护已经批准的项目目标。变更重开上游阶段时，旧议题记为失效，不携带旧裁决冒充新版本审查。
+
+MCP 新增只读 foundry_panel，只返回未决议题摘要。CLI 的角色名和 actor 都没有身份认证；互异标签也不能证明由独立模型、独立人员或独立供应商执行。当前不主动运行模型、不支付模型调用、不自动暴露专有编排 Prompt。真正自动分配给外部 Agent 的执行器属于后续经过单独验证的适配层。
