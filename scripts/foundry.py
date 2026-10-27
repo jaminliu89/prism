@@ -510,6 +510,43 @@ def deliver_task(root, id_, source, actor, expected=None):
             "sha256": digest(content), "next": next_step(root, data)}
 
 
+
+def panel_open(root, question, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    stage = current(data)
+    if stage >= 7:
+        fail("confirmed planning: propose a change before new review")
+    value = panel.create_topic(data, stage, question, actor)
+    touch(root, data, "panel_open", actor, {"topic": value["id"], "stage": stage})
+    return panel.brief(data, value["id"])
+
+
+def panel_opinion(root, topic_id, role, actor, verdict, severity,
+                  reasoning, evidence, counterexample, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    item = panel.topic(data, topic_id)
+    if item["stage"] != current(data):
+        fail("review belongs to a different stage")
+    result = panel.add_opinion(data, topic_id, role, actor, verdict, severity,
+                               reasoning, evidence, counterexample)
+    touch(root, data, "panel_opinion", actor, {"topic": topic_id, "role": role,
+                                             "verdict": verdict, "severity": severity})
+    return result
+
+
+def panel_resolve(root, topic_id, outcome, actor, rationale, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    if panel.topic(data, topic_id)["stage"] != current(data):
+        fail("review belongs to a different stage")
+    result = panel.resolve(data, topic_id, outcome, actor, rationale)
+    data["stages"][current(data)]["reviews"] = []
+    touch(root, data, "panel_resolve", actor, {"topic": topic_id, "outcome": outcome})
+    return result
+
+
 def handoff(root, actor):
     data = load(root)
     if current(data) != 7:
@@ -623,6 +660,11 @@ def cli(argv=None):
     sub.add_parser("security-status")
     sub.add_parser("security-draft")
     sub.add_parser("tasks")
+    sub.add_parser("panel-status")
+    command("panel-open", "question", "actor")
+    command("panel-opinion", "id", "role", "actor", "verdict", "severity",
+            "reasoning", "evidence", "counterexample")
+    command("panel-resolve", "id", "outcome", "actor", "rationale")
     command("security-profile", "key", "value", "actor")
     sc = command("security-assess", "code", "disposition", "reason", "actor")
     for key in ("asset", "boundary", "attack_path", "control", "verification"):
@@ -640,7 +682,8 @@ def cli(argv=None):
     sub.add_parser("mcp")
     # Optimistic-lock token for all change-producing operations, when supplied.
     for name in ("answer", "submit", "review", "confirm", "propose", "decide",
-                 "security-profile", "security-assess", "task-assign", "task-claim", "task-deliver"):
+                 "security-profile", "security-assess", "task-assign", "task-claim", "task-deliver",
+                 "panel-open", "panel-opinion", "panel-resolve"):
         sub.choices[name].add_argument("--expected-revision", type=int)
     a = parser.parse_args(argv)
     root = Path(a.project).expanduser().resolve()
@@ -658,6 +701,18 @@ def cli(argv=None):
             return 0
         elif a.command == "tasks":
             output = {"tasks": load(root).get("tasks", [])}
+        elif a.command == "panel-status":
+            output = {"open": panel.unresolved(load(root)),
+                      "topics": load(root).get("panel_topics", [])}
+        elif a.command == "panel-open":
+            output = panel_open(root, a.question, a.actor, a.expected_revision)
+        elif a.command == "panel-opinion":
+            output = panel_opinion(root, a.id, a.role, a.actor, a.verdict,
+                                   a.severity, a.reasoning, a.evidence,
+                                   a.counterexample, a.expected_revision)
+        elif a.command == "panel-resolve":
+            output = panel_resolve(root, a.id, a.outcome, a.actor, a.rationale,
+                                   a.expected_revision)
         elif a.command == "security-profile":
             output = security_profile(root, a.key, a.value, a.actor, a.expected_revision)
         elif a.command == "security-assess":
