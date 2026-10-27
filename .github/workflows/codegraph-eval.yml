@@ -4,11 +4,16 @@ on:
   pull_request:
     paths:
       - 'experiments/codegraph/**'
+      - 'scripts/codegraph_provider.py'
+      - 'scripts/prism.py'
+      - 'tests/test_codegraph_provider.py'
       - 'docs/verification/codegraph-isolated-evaluation-20261027.md'
       - '.github/workflows/codegraph-eval.yml'
   push:
     branches:
       - 'experiment/codegraph-impact-20261027'
+      - 'feat/codegraph-opt-in-provider-20261027'
+      - 'main'
 
 permissions:
   contents: read
@@ -56,6 +61,24 @@ jobs:
             echo 'Baseline unexpectedly discovered transitive test'
             exit 1
           fi
+      - name: Prism real provider smoke test against synthetic indexed files
+        working-directory: experiments/codegraph/fixture
+        run: |
+          set -euo pipefail
+          python3 ../../../scripts/prism.py codegraph-impact \
+            --repo . --changed src/core.mjs \
+            --codegraph-bin "$(command -v codegraph)" \
+            --allow-local-codegraph > "$RUNNER_TEMP/codegraph-prism-report.json"
+          python3 - "$RUNNER_TEMP/codegraph-prism-report.json" <<'PY'
+          import json, sys
+          doc = json.load(open(sys.argv[1]))
+          found = set(doc["affected_test_candidates"])
+          assert any(x.endswith("test/core.test.mjs") for x in found), found
+          assert any(x.endswith("test/handler.test.mjs") for x in found), found
+          assert not any(x.endswith("test/unrelated.test.mjs") for x in found), found
+          assert not doc["release_authorized"]
+          print("PRISM_CODEGRAPH_PROVIDER_ACCEPTED")
+          PY
       - name: Python dependency comparison on second fixture
         working-directory: experiments/codegraph/fixture
         run: |
