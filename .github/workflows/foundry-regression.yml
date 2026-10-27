@@ -10,11 +10,14 @@ on:
       - 'tests/test_foundry_guards.py'
       - 'tests/test_foundry_panel.py'
       - 'tests/test_foundry_acceptance.py'
+      - 'docs/verification/foundry-v02-acceptance.md'
       - '.github/workflows/foundry-regression.yml'
   push:
     branches:
       - 'feat/product-foundry-v0-1-20261027'
       - 'feat/foundry-planning-review-v02'
+      - 'review/foundry-integration-20261027'
+      - 'main'
 
 permissions:
   contents: read
