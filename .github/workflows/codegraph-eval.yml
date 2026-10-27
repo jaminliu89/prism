@@ -1,0 +1,81 @@
+name: Isolated CodeGraph impact experiment
+
+on:
+  pull_request:
+    paths:
+      - 'experiments/codegraph/**'
+      - 'docs/verification/codegraph-isolated-evaluation-20261027.md'
+      - '.github/workflows/codegraph-eval.yml'
+  push:
+    branches:
+      - 'experiment/codegraph-impact-20261027'
+
+permissions:
+  contents: read
+
+jobs:
+  local-graph-eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      DO_NOT_TRACK: "1"
+      CODEGRAPH_TELEMETRY: "0"
+      CODEGRAPH_NO_UPDATE_CHECK: "1"
+      CI: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fixed version in runner temp only (no agent configuration)
+        run: |
+          npm install --prefix "$RUNNER_TEMP/codegraph-tools" --ignore-scripts --no-audit --no-fund @colbymchenry/codegraph@1.6.2
+          echo "$RUNNER_TEMP/codegraph-tools/node_modules/.bin" >> "$GITHUB_PATH"
+      - name: Synthetic fixture baseline tests
+        working-directory: experiments/codegraph/fixture
+        run: node --test test/*.test.mjs
+      - name: Query isolated fixture only
+        working-directory: experiments/codegraph/fixture
+        run: |
+          set -euo pipefail
+          codegraph version
+          codegraph init .
+          codegraph status .
+          printf 'DIRECT_IMPORT_BASELINE\n'
+          grep -l "from '../src/core.mjs'" test/*.test.mjs | tee "$RUNNER_TEMP/baseline.txt"
+          printf 'CODEGRAPH_AFFECTED\n'
+          codegraph affected src/core.mjs --quiet | tee "$RUNNER_TEMP/affected.txt"
+          printf 'EXPECTED: core.test.mjs and handler.test.mjs affected, unrelated.test.mjs not affected\n'
+          grep -q 'core.test.mjs' "$RUNNER_TEMP/affected.txt"
+          grep -q 'handler.test.mjs' "$RUNNER_TEMP/affected.txt"
+          if grep -q 'unrelated.test.mjs' "$RUNNER_TEMP/affected.txt"; then
+            echo 'False positive: unrelated test selected'
+            exit 1
+          fi
+          if grep -q 'handler.test.mjs' "$RUNNER_TEMP/baseline.txt"; then
+            echo 'Baseline unexpectedly discovered transitive test'
+            exit 1
+          fi
+      - name: Python dependency comparison on second fixture
+        working-directory: experiments/codegraph/fixture
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests_py -v
+          printf 'PYTHON_DIRECT_IMPORT_BASELINE\n'
+          grep -l 'from src_py.core import' tests_py/test_*.py | tee "$RUNNER_TEMP/python-baseline.txt"
+          printf 'PYTHON_CODEGRAPH_AFFECTED\n'
+          codegraph affected src_py/core.py --quiet | tee "$RUNNER_TEMP/python-affected.txt"
+          grep -q 'test_core.py' "$RUNNER_TEMP/python-affected.txt"
+          grep -q 'test_handler.py' "$RUNNER_TEMP/python-affected.txt"
+          if grep -q 'test_unrelated.py' "$RUNNER_TEMP/python-affected.txt"; then
+            echo 'Python false positive: unrelated test selected'
+            exit 1
+          fi
+          if grep -q 'test_handler.py' "$RUNNER_TEMP/python-baseline.txt"; then
+            echo 'Python baseline unexpectedly included indirect tests'
+            exit 1
+          fi
+      - name: Re-run Prism existing test suite
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 scripts/prism.py doctor
