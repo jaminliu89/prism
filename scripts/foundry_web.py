@@ -55,7 +55,10 @@ class Workbench:
                                       for i, paths in f.DOCS.items() for p in paths},
                 'topics': data.get('panel_topics', []), 'changes': data['changes'],
                 'documents': {str(k): list(v) for k, v in f.DOCS.items()},
-                'next': f.next_step(root, data), 'tasks': data.get('tasks', [])}
+                'next': f.next_step(root, data), 'tasks': data.get('tasks', []),
+                'security_design': f.guard.summary(data),
+                'approval': {'identity_verified': False,
+                             'meaning': 'STRUCTURAL_ONLY; user approval not authenticated'}}
 
     def document(self, project_id, path):
         if path not in {p for paths in f.DOCS.values() for p in paths}:
@@ -91,6 +94,17 @@ class Workbench:
             f.review(root, body['verdict'], 'self_check', actor, body['note'], revision)
         elif action == 'confirm':
             f.confirm(root, actor, body['statement'], revision)
+        elif action == 'security-profile':
+            f.security_profile(root, body['key'], body['value'], actor, revision)
+        elif action == 'security-assess':
+            f.security_assess(root, body['code'], body['disposition'], body['reason'],
+                              actor, body.get('asset', ''), body.get('boundary', ''),
+                              body.get('attack_path', ''), body.get('control', ''),
+                              body.get('verification', ''), revision)
+        elif action == 'handoff':
+            # Export only through the existing Foundry gates; this does not authorize engineering.
+            return {'handoff': f.handoff(root, actor),
+                    'snapshot': self.snapshot(project_id)}
         elif action == 'panel-open':
             f.panel_open(root, body['question'], actor, revision)
         elif action == 'panel-opinion':

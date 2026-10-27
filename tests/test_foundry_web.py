@@ -96,6 +96,38 @@ class WorkbenchTests(unittest.TestCase):
         invalid = {'action':'answer','key':'problem','value':{},'actor':'tester','revision':1}
         self.assertEqual(self.call('/api/projects/'+project_id+'/actions',invalid)[0],400)
 
+    def test_security_profile_threat_review_and_handoff_are_guarded(self):
+        data = self.create()
+        base = '/api/projects/' + data['id'] + '/actions'
+        self.assertFalse(data['approval']['identity_verified'])
+        self.assertEqual(len(data['security_design']['questions']), 5)
+        self.assertEqual(len(data['security_design']['threat_catalog']), 7)
+
+        def action(**values):
+            nonlocal data
+            code, result = self.call(base, {**values, 'actor':'tester',
+                                           'revision':data['status']['revision']})
+            if code == 200 and 'snapshot' not in result:
+                data = result
+            return code, result
+
+        self.assertEqual(action(action='security-profile', key='protected_assets',
+                                value='合成项目测试资产')[0], 200)
+        self.assertEqual(data['security_design']['profile']['protected_assets'], '合成项目测试资产')
+        self.assertEqual(action(action='security-profile', key='unlisted',
+                                value='非法字段')[0], 400)
+        self.assertEqual(action(action='security-assess', code='API_AUTHORIZATION',
+                                disposition='accept_risk', reason='不应放行高风险')[0], 400)
+        self.assertEqual(action(action='security-assess', code='API_AUTHORIZATION',
+                                disposition='mitigate', reason='隔离验证',
+                                asset='合成用户数据', boundary='API',
+                                attack_path='对象越权', control='服务端对象权限',
+                                verification='隔离账户拒绝测试')[0], 200)
+        self.assertEqual(data['security_design']['assessments']['API_AUTHORIZATION']['disposition'], 'mitigate')
+        self.assertFalse(data['security_design']['gate']['design_ready'])
+        self.assertEqual(action(action='handoff')[0], 400)
+        self.assertFalse(data['approval']['identity_verified'])
+
     def test_panel_cannot_resolve_without_dissent(self):
         data = self.create(); base = '/api/projects/' + data['id'] + '/actions'
         def action(**values):

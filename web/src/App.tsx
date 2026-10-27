@@ -42,6 +42,9 @@ export default function App() {
   const [nav,setNav] = useState(false)
   const [topic,setTopic] = useState<Topic|null>(null)
   const [answers,setAnswers] = useState<Record<string,string>>({})
+  const [securityCode,setSecurityCode] = useState('')
+  const [securityDisposition,setSecurityDisposition] = useState('mitigate')
+  const [handoff,setHandoff] = useState('')
   const [sources,setSources] = useState<{id:string;repository:string;commit:string;source_path:string;sha256:string;source_url:string}[]>([])
   const dirty = content !== original
   const unsavedAnswers = !!project && Object.keys(questions).some(key=>(answers[key]||'')!==(project.answers[key]||''))
@@ -108,6 +111,28 @@ export default function App() {
         <TabsContent value="work" className="tab-body">
           <div className="section-heading"><h2>{stages[stage]}</h2><span className="muted">{current?'当前阶段':'阶段档案'}</span></div>
           {stage===0?<section className="questions"><p className="section-intro">三个问题，确定这次推演的边界。</p>{Object.entries(questions).map(([key,label],i)=><div className="question" key={key}><span className="item-number">0{i+1}</span><div><label htmlFor={key}>{label}</label><Textarea id={key} value={answers[key]||''} onChange={e=>setAnswers({...answers,[key]:e.target.value})} readOnly={!current} placeholder="用具体的人、场景和结果描述" rows={2}/><div className="answer-bottom"><span>{project.answers[key]?'已有记录':'待补充'}</span>{current&&<Button variant="ghost" size="sm" disabled={busy||!answers[key]?.trim()||answers[key]===project.answers[key]} onClick={()=>run(async()=>{await action({action:'answer',key,value:answers[key],actor:'本机用户'});setNotice('答案已保存。')})}>保存回答 <ArrowUpRight size={13}/></Button>}</div></div></div>)}</section>:<p className="section-intro">按当前阶段合同提交文档，记录审查意见。完成本阶段后，由项目负责人明确确认。</p>}
+          {stage===4&&current&&<section className="document-index" aria-label="安全设计档案">
+            <div className="section-heading"><h2>安全设计档案</h2><span className="muted">设计审查，不是运行安全认证</span></div>
+            <p className="section-intro">先记录受保护资产与信任边界，再逐项评估威胁。每次修改会使安全文档失效，必须重新提交并审查。</p>
+            {Object.entries(project.security_design.questions).map(([key,question])=><form key={key} className="question" onSubmit={e=>{e.preventDefault();const values=fields(e.currentTarget);run(async()=>{await action({action:'security-profile',key,value:values.value,actor:'本机用户'});setNotice('安全档案已更新；请重交威胁模型并重新审查。')})}}>
+              <div><label className="field"><span>{key}</span><span className="muted">{question}</span><Textarea name="value" required defaultValue={project.security_design.profile[key]||''} rows={2}/></label><Button type="submit" disabled={busy} size="sm">保存档案</Button></div>
+            </form>)}
+            <div className="section-heading"><h3>威胁处置</h3><span>{project.security_design.gate.unassessed_threats.length} 项未评估</span></div>
+            <form onSubmit={e=>{e.preventDefault();const values=fields(e.currentTarget);run(async()=>{await action({action:'security-assess',...values,code:securityCode||Object.keys(project.security_design.threat_catalog)[0],disposition:securityDisposition});setNotice('威胁评估已登记；请重新提交安全文档和自检。')})}}>
+              <label className="field"><span>威胁类别</span><select aria-label="威胁类别" value={securityCode||Object.keys(project.security_design.threat_catalog)[0]} onChange={e=>setSecurityCode(e.target.value)}>{Object.entries(project.security_design.threat_catalog).map(([code,entry])=><option key={code} value={code}>{code} · {entry.severity} · {project.security_design.assessments[code]?.disposition||'unassessed'}</option>)}</select></label>
+              <label className="field"><span>处置结论</span><select aria-label="处置结论" value={securityDisposition} onChange={e=>setSecurityDisposition(e.target.value)}><option value="mitigate">拟定缓解措施</option><option value="not_applicable">不适用（说明原因）</option><option value="accept_risk">接受风险（高风险不允许）</option></select></label>
+              <Field name="reason" label="依据与适用边界" area/>
+              {securityDisposition==='mitigate'&&<><Field name="asset" label="受保护资产"/><Field name="boundary" label="信任边界"/><Field name="attack_path" label="潜在攻击路径" area/><Field name="control" label="拟定防护控制" area/><Field name="verification" label="后续验证计划" area/></>}
+              <Button type="submit" disabled={busy}>登记威胁处置</Button>
+            </form>
+            <p className="section-intro">当前设计门禁：{project.security_design.gate.design_ready?'档案齐全，仍需文档与审查':'未通过'}；运行安全：未验证。</p>
+          </section>}
+          {project.status.status==='BLUEPRINT_READY'&&<section className="document-index" aria-label="工程交接">
+            <div className="section-heading"><h2>工程交接</h2></div>
+            <p className="section-intro">机器结构检查已完成。用户身份未认证；不代表正式批准工程、Agent 执行或发布。</p>
+            <Button disabled={busy} onClick={()=>run(async()=>{const result=await request('/api/projects/'+project.id+'/actions',{action:'handoff',actor:'本机用户',revision:project.status.revision});setHandoff(JSON.stringify(result.handoff,null,2));setNotice('已按原状态机导出交接包；工程与发布仍未授权。')})}>生成交接包</Button>
+            {handoff&&<><Textarea aria-label="交接 JSON" value={handoff} readOnly rows={8}/><Button variant="outline" onClick={()=>{const blob=new Blob([handoff],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='foundry-handoff.json';a.click();URL.revokeObjectURL(url)}}>下载 JSON</Button></>}
+          </section>}
           <section className="document-index"><div className="section-heading"><h2>本阶段文档</h2><span className="muted">{docs.filter(p=>project.artifact_validity[p]).length} / {docs.length} 已提交</span></div>{docs.map(path=><button className="document-row" key={path} onClick={()=>openDoc(path)}><FileText size={17}/><div><strong>{docName(path)}</strong><span>{path}</span></div><span className="doc-state">{project.artifact_validity[path]?'已提交':selectedStage?.artifacts[path]?'待重新提交':'待编写'}</span><ArrowUpRight size={15}/></button>)}</section>
           <div className="stage-note"><BookOpen size={16}/><p>阶段标准来自集团固定版本的 idea-to-blueprint。<button onClick={()=>setTab('sources')}>查看来源</button></p></div>
         </TabsContent>
