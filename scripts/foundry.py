@@ -572,9 +572,12 @@ def mcp(root):
                 elif name == "foundry_next":
                     content = next_step(root)
                 elif name == "foundry_security":
-                    content = guard.summary(load(root))
+                    content = {"gate": guard.gate(load(root)), "threat_ids": list(guard.CATALOG),
+                               "note": "Details remain in the private project and are not exposed over MCP."}
                 elif name == "foundry_tasks":
-                    content = {"tasks": load(root).get("tasks", [])}
+                    content = {"tasks": [
+                        {k: task[k] for k in ("id", "stage", "role", "artifact", "status")}
+                        for task in load(root).get("tasks", [])]}
                 else:
                     raise ValueError("unknown tool")
                 result = {"content": [{"type": "text", "text": json.dumps(content, ensure_ascii=False)}]}
@@ -600,6 +603,16 @@ def cli(argv=None):
     command("init", "idea", "actor")
     sub.add_parser("status")
     sub.add_parser("next")
+    sub.add_parser("security-status")
+    sub.add_parser("security-draft")
+    sub.add_parser("tasks")
+    command("security-profile", "key", "value", "actor")
+    sc = command("security-assess", "code", "disposition", "reason", "actor")
+    for key in ("asset", "boundary", "attack_path", "control", "verification"):
+        sc.add_argument("--" + key.replace("_", "-"), default="")
+    command("task-assign", "role", "artifact", "objective", "actor")
+    command("task-claim", "id", "actor")
+    command("task-deliver", "id", "file", "actor")
     command("answer", "key", "value", "actor")
     command("submit", "artifact", "file", "actor")
     command("review", "verdict", "kind", "actor", "note")
@@ -609,7 +622,8 @@ def cli(argv=None):
     command("handoff", "actor")
     sub.add_parser("mcp")
     # Optimistic-lock token for all change-producing operations, when supplied.
-    for name in ("answer", "submit", "review", "confirm", "propose", "decide"):
+    for name in ("answer", "submit", "review", "confirm", "propose", "decide",
+                 "security-profile", "security-assess", "task-assign", "task-claim", "task-deliver"):
         sub.choices[name].add_argument("--expected-revision", type=int)
     a = parser.parse_args(argv)
     root = Path(a.project).expanduser().resolve()
@@ -620,6 +634,26 @@ def cli(argv=None):
             output = status(root)
         elif a.command == "next":
             output = next_step(root)
+        elif a.command == "security-status":
+            output = guard.summary(load(root))
+        elif a.command == "security-draft":
+            print(guard.render(load(root)))
+            return 0
+        elif a.command == "tasks":
+            output = {"tasks": load(root).get("tasks", [])}
+        elif a.command == "security-profile":
+            output = security_profile(root, a.key, a.value, a.actor, a.expected_revision)
+        elif a.command == "security-assess":
+            output = security_assess(root, a.code, a.disposition, a.reason, a.actor,
+                                     a.asset, a.boundary, a.attack_path, a.control,
+                                     a.verification, a.expected_revision)
+        elif a.command == "task-assign":
+            output = assign_task(root, a.role, a.artifact, a.objective,
+                                 a.actor, a.expected_revision)
+        elif a.command == "task-claim":
+            output = claim_task(root, a.id, a.actor, a.expected_revision)
+        elif a.command == "task-deliver":
+            output = deliver_task(root, a.id, a.file, a.actor, a.expected_revision)
         elif a.command == "answer":
             output = answer(root, a.key, a.value, a.actor, a.expected_revision)
         elif a.command == "submit":
