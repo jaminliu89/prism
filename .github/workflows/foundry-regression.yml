@@ -5,8 +5,10 @@ on:
     paths:
       - 'scripts/foundry.py'
       - 'scripts/foundry_guard.py'
+      - 'scripts/foundry_panel.py'
       - 'tests/test_foundry.py'
       - 'tests/test_foundry_guards.py'
+      - 'tests/test_foundry_panel.py'
       - '.github/workflows/foundry-regression.yml'
   push:
     branches:
