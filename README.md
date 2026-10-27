@@ -4,6 +4,16 @@
 
 Prism把“用户要什么、产品实际上做了什么、证据证明了什么”放到同一条可追踪主线上。它是Skill、Prompt和轻量本地工具，不是无需输入就能自动审计所有产品的服务。
 
+## 作为 Agent Skill 安装
+
+本仓库根目录的 `SKILL.md` 是可发现入口，面向支持 Agent Skills 规范的 Agent 宿主。参考安装命令：
+
+```sh
+npx skills add jaminliu89/prism
+```
+
+**本仓库是私有仓库**：如果安装器不能直接使用已授权的 GitHub 凭据，先用 `gh auth login` 授权，再通过 `gh repo clone jaminliu89/prism` 克隆并执行 `npx skills add ./prism`。是否支持自动安装取决于目标 Agent 的 Skill CLI 与私有仓库访问权限；安装后仍须验证 Agent 是否成功发现 `prism`。不要公开仓库、泄露令牌或把安装成功视为产品审计已完成。
+
 ## 开始
 
 克隆私有仓库后，让你的Agent完整读取 [SKILL.md](SKILL.md)。给出产品URL/仓库/资料和本次目的，可从点子规划、现有产品审计、专项取证到交付交接。工具与目标权限按本次环境核验。
