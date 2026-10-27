@@ -129,7 +129,8 @@ class FoundryGuardTests(unittest.TestCase):
         for stage in data["stages"]:
             stage["confirmed"] = True
         foundry.save(self.root, data)
-        self.assertEqual(foundry.status(self.root)["status"], "SECURITY_DESIGN_INCOMPLETE")
+        self.assertNotEqual(foundry.status(self.root)["status"], "BLUEPRINT_READY")
+        self.assertFalse(foundry.status(self.root)["security"]["gate"]["design_ready"])
         with self.assertRaisesRegex(ValueError, "security design review"):
             foundry.handoff(self.root, "owner")
 
