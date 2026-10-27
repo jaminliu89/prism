@@ -178,6 +178,9 @@ def pending(root, data, index):
 def status(root, data=None):
     data = data or load(root)
     active = current(data)
+    stale_confirmed = [p for i, stage in enumerate(data["stages"])
+                       if stage["confirmed"] for p in DOCS[i]
+                       if not verified_artifact(root, stage, p)]
     stages = []
     for i, s in enumerate(data["stages"]):
         p = pending(root, data, i)
@@ -187,7 +190,9 @@ def status(root, data=None):
                        "missing": p["missing_artifacts"],
                        "reviews": len(s["reviews"])})
     return {
-        "status": "BLUEPRINT_READY" if active == 7 else "PLANNING",
+        "status": ("STALE_CONFIRMED_ARTIFACTS" if stale_confirmed else
+                   "BLUEPRINT_READY" if active == 7 else "PLANNING"),
+        "integrity_issues": stale_confirmed,
         "revision": data["revision"], "original_intent": data["idea_original"],
         "current_stage": active if active < 7 else None,
         "stage_gate": pending(root, data, active) if active < 7 else None,
@@ -204,6 +209,9 @@ def next_step(root, data=None):
     s = status(root, data)
     i = s["current_stage"]
     if i is None:
+        if s["integrity_issues"]:
+            return {"status": s["status"], "integrity_issues": s["integrity_issues"],
+                    "next": "Reopen impacted stages via an accepted change and re-submit artifacts."}
         return {"status": "BLUEPRINT_READY", "next": "export handoff; engineering needs separate approval"}
     gate = s["stage_gate"]
     return {
