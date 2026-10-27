@@ -1,0 +1,17 @@
+{
+  "projectId": "5c77014a89b1eac1",
+  "projectRoot": "/Users/kimliu/Developer/Codex/prism/work/browser-projects/5c77014a89b1eac1",
+  "status": "BLUEPRINT_READY",
+  "confirmedStages": 7,
+  "stageDocuments": 16,
+  "supplementaryDocuments": 6,
+  "uiActions": 39,
+  "cliActions": 26,
+  "browserErrors": [],
+  "executionAuthorized": false,
+  "releaseAuthorized": false,
+  "identityVerified": false,
+  "workflow": "UI_PLUS_CLI",
+  "uiOnly": "BLOCKED_AT_STAGE_4",
+  "realProductApproval": "NOT_GRANTED"
+}

@@ -1,0 +1,68 @@
+{
+  "target_source_revision": "f94c32d69483a82fcbd71a34cd810e2b64b434a8",
+  "date": "2026-10-27",
+  "project_id": "5c77014a89b1eac1",
+  "project_revision": 51,
+  "scope": "synthetic planning project; no application implementation or real user approvals",
+  "run": {
+    "ui_actions": 39,
+    "main_cli_invocations_including_reads": 26,
+    "negative_replay_cli_invocations": 11,
+    "stage_documents": 16,
+    "supplementary_documents": 6,
+    "stage_confirmations": "7 TEST_PROXY declarations; all identity_verified=false",
+    "browser_pageerrors": 0
+  },
+  "verdicts": {
+    "mixed_ui_cli_structure": "PASS",
+    "browser_only_full_flow": "BLOCKED",
+    "full_contract_integrity": "FAIL",
+    "formal_blueprint_approval": "BLOCKED",
+    "demand_and_pmf": "UNKNOWN"
+  },
+  "negative_checks": [
+    {
+      "case": "modified registered PRD",
+      "status": "STALE_CONFIRMED_ARTIFACTS",
+      "handoff_exit": 2,
+      "result": "EXPECTED_REFUSAL"
+    },
+    {
+      "case": "accepted feature change",
+      "reopened_stage": 3,
+      "invalidated_stages": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "handoff_exit": 2,
+      "result": "EXPECTED_REFUSAL"
+    },
+    {
+      "case": "registered task claim and text delivery on copy",
+      "result": "delivered",
+      "external_agent_called": false
+    },
+    {
+      "case": "six auxiliary contracts withheld on copy",
+      "status": "BLUEPRINT_READY",
+      "handoff_exit": 0,
+      "exported_document_count": 16,
+      "result": "UNEXPECTED_ALLOW; CONTRACT_GAP"
+    },
+    {
+      "case": "read traceability document via workbench API",
+      "http": 400,
+      "result": "DENIED_BY_WHITELIST"
+    }
+  ],
+  "permissions": {
+    "execution_authorized": false,
+    "release_authorized": false,
+    "review_identity_verified": false,
+    "runtime_security_verified": false
+  },
+  "local_evidence_directory": "work/full-project-20261027",
+  "original_sample_preserved": true
+}
