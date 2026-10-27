@@ -37,3 +37,15 @@ Python 3.10+，仅标准库。随仓6份源文件按 [UPSTREAM.lock.json](UPSTRE
 审计报告可“不通过”或“未知”，AUDIT_ONLY只表示完成报告。修复、原型、付费、外发、生产修改需要各自授权。敏感报告默认放忽略的audits/，不自动上传到本仓。
 
 版本/实测/缺口见 [PROGRESS.md](PROGRESS.md)，范围与验收见 [docs/SCOPE.md](docs/SCOPE.md)。
+
+
+## Product Foundry V0.1（试验性运行层）
+
+在原有规划与证据审计入口之外，新增 [Product Foundry V0.1](docs/FOUNDRY_V0_1.md)：对集团既有 idea-to-blueprint 阶段0–6增加本地可执行的阶段门禁、决策记录、防偏航变更影响、产物哈希与 Agent 交接 JSON；不更改源方法论和发布权限。
+
+```sh
+python3 scripts/foundry.py --project /tmp/my-product init --idea '你的产品点子' --actor owner
+python3 scripts/foundry.py --project /tmp/my-product next
+```
+
+可通过 JSON CLI 被不同 Agent 宿主调用；只读 MCP stdio 提供项目状态与下一步要求。V0.1 **不含**自动 AI 推演、Agent 远程调度、真实身份认证、可视化工作台或工程执行。确认声明不等于经过认证的人类审批。完整使用示例、运行限制与测试入口见上述文档。
