@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'experiments/codegraph/**'
+      - 'docs/verification/codegraph-isolated-evaluation-20261027.md'
       - '.github/workflows/codegraph-eval.yml'
   push:
     branches:
