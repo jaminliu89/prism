@@ -152,7 +152,7 @@ def current(data):
 
 def verified_artifact(root, stage, path):
     info = stage["artifacts"].get(path)
-    if not info:
+    if not info or path in stage.get("stale_artifacts", []):
         return False
     file = file_under(root, path)
     return file.is_file() and digest(file.read_bytes()) == info["sha256"]
@@ -246,6 +246,9 @@ def submit(root, artifact, source, actor, expected=None):
         "sha256": digest(content), "actor": actor, "at": now(),
         "revision": data["revision"] + 1,
     }
+    data["stages"][index].setdefault("stale_artifacts", [])
+    if artifact in data["stages"][index]["stale_artifacts"]:
+        data["stages"][index]["stale_artifacts"].remove(artifact)
     data["stages"][index]["reviews"] = []
     touch(root, data, "submit", actor, {"stage": index, "artifact": artifact})
     return next_step(root, data)
@@ -337,7 +340,8 @@ def decide(root, id_, outcome, actor, reason, expected=None):
             stage["confirmed"] = False
             stage["confirmation"] = None
             stage["reviews"] = []
-            # Retain artifacts for traceability; their review and approval are stale.
+            stage["stale_artifacts"] = list(DOCS[i])
+            # Retain files but force regeneration/re-submission before another approval.
     touch(root, data, "decide_change", actor,
           {"id": id_, "outcome": outcome, "invalidated": invalidated})
     return {"id": id_, "status": item["status"], "invalidated_stages": invalidated,
@@ -385,6 +389,7 @@ def mcp(root):
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
     ]
     for line in sys.stdin:
+        request = {}
         try:
             request = json.loads(line)
             method = request.get("method")
