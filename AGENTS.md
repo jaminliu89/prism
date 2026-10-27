@@ -10,3 +10,11 @@
 - 只改当前需求相关文件。使用Python标准库，不为新框架或新服务扩大范围。
 - 改CLI后运行 `python3 -m unittest discover -s tests -v`、`python3 scripts/prism.py doctor`，对被影响合同运行正反例。文档只检查结构和diff。
 - 不提交真实产品审计资料、凭证、HAR、私有目标数据；默认报告在忽略的 `audits/` 或指定私有目录。不要自动复制任何用户内部配置。
+
+
+## Foundry V0.1 补充约束
+
+- scripts/foundry.py 是 Prism 中独立的试验执行层，仅复用 sources/skillhub/blueprint 的现有阶段合同；禁止改上游只读快照或另建一份产品方法论。
+- 产品项目目录、研究材料、真实用户答案默认留在项目方私有目录；不要提交到 Prism 仓库。
+- 阶段确认与 independent_review 在 V0.1 是待认证的身份声明，不能当正式人类审批或独立QA的真实性证明。
+- 新改动需运行 tests/test_foundry.py，至少覆盖允许与阻止的正反向路径、变更失效与错误版交接。

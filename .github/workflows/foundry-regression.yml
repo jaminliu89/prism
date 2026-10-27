@@ -1,0 +1,28 @@
+name: Foundry regression
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/foundry.py'
+      - 'tests/test_foundry.py'
+      - '.github/workflows/foundry-regression.yml'
+  push:
+    branches:
+      - 'feat/product-foundry-v0-1-20261027'
+
+permissions:
+  contents: read
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Existing Prism and Product Foundry tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Verify original method snapshots
+        run: python3 scripts/prism.py doctor
