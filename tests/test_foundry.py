@@ -28,6 +28,15 @@ class FoundryTests(unittest.TestCase):
 
     def finish_stage(self, stage, kind="self_check", actor="reviewer"):
         self.assertEqual(foundry.current(foundry.load(self.root)), stage)
+        if stage == 4:
+            # Explicit synthetic fixtures for a planning design; not real risk mitigation.
+            for key in foundry.guard.PROFILE:
+                foundry.security_profile(self.root, key, "Synthetic " + key, "fixture-owner")
+            for code in foundry.guard.CATALOG:
+                foundry.security_assess(
+                    self.root, code, "mitigate", "synthetic threat review", "fixture-security",
+                    "synthetic asset", "synthetic boundary", "synthetic exposure",
+                    "synthetic defense plan", "isolated staging test planned")
         self.send_all(stage)
         foundry.review(self.root, "pass", kind, actor, "Synthetic review only")
         return foundry.confirm(self.root, "product-owner", "Confirm synthetic stage %d" % stage)
@@ -176,7 +185,7 @@ class FoundryTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         lines = [json.loads(x) for x in result.stdout.splitlines()]
         self.assertEqual(len(lines), 4)
-        self.assertEqual(len(lines[1]["result"]["tools"]), 2)
+        self.assertEqual(len(lines[1]["result"]["tools"]), 5)
         self.assertEqual(lines[2]["result"]["content"][0]["type"], "text")
         self.assertIn("error", lines[3])
 
