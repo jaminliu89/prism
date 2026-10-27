@@ -1,12 +1,43 @@
 ---
 name: prism
-description: Prism棱镜，独立的产品规划与证据审计编排入口。明确请求Prism、跨阶段产品体检或协作Blueprint/Checklist/Site Clone时使用；按目标恢复需求、核对实际行为、组织专项与问题复验。计划和结构校验不等于实际审计通过，不接管集团发布或逆向主责。
+description: Use Prism for evidence-based product audits, cross-stage blueprint review, product planning, and authorized engineering handoff. Invoke when asked to audit a repository, compare a product with its requirements, run Product Foundry stages 0–6, check evidence and version hashes, or coordinate specialist reviews. Planning and structure checks never constitute authenticated approval or production certification.
 metadata:
-  version: "0.1.2"
+  version: "0.4.0"
   owner: "Product / QA Evidence"
 ---
 
 # Prism 棱镜
+
+## Install and discover
+
+This repository is an Agent Skills-compatible skill package. Its root `SKILL.md` is the discovery entry point. For agents with access to the repository:
+
+```sh
+npx skills add jaminliu89/prism
+```
+
+**Private repository caveat:** The installer must be able to authenticate to GitHub. If the command cannot access a private repository, clone with an authenticated `gh` session, then install from that local directory:
+
+```sh
+gh auth status
+gh repo clone jaminliu89/prism
+npx skills add ./prism
+```
+
+Never make the private repository public or embed a personal access token in an install command. Installation only distributes this skill's instructions and files; it does not start an Agent, execute audits, approve engineering, or grant repository access. The installing agent must still honor the user's actual authorization.
+
+## Activation and routing
+
+- **Prism audit:** For product/repository evidence audit, read `docs/AUDIT_PROMPT.md`, `docs/REPORT_CONTRACT.md`, `docs/INTEGRATION.md` and run `python3 scripts/prism.py doctor`.
+- **Product Foundry:** For an idea-to-blueprint workflow, read `sources/skillhub/blueprint/MASTER_PROMPT.md`, `sources/skillhub/blueprint/DOCUMENT_CONTRACT.md`, `docs/FOUNDRY_WORKBENCH_V03.md`; inspect `python3 scripts/foundry.py --help`. Respect stages 0–6 and human confirmation gates.
+- **Web workbench:** Only if the user wants a local UI, build `web/` and run `scripts/foundry_web.py` on loopback. Never expose the session token to untrusted origins.
+- **Site clone / specialized audit:** Route to the original specialist, with separately authorized target access; do not claim Prism itself has a crawler.
+- **Release request:** Return evidence to delivery/QA owners; `BLUEPRINT_READY` means structural planning completion, not authenticated approval.
+
+## Output contract
+
+State the exact inspected target and revision; separate observed facts, inferences and unknowns. Include evidence locations, unresolved risks, stage gate failures and concrete next actions. Never claim independent QA or verified identity from a self-declared actor field.
+
 
 先读 [总控Prompt](docs/AUDIT_PROMPT.md)、[协作边界](docs/INTEGRATION.md) 和 [报告合同](docs/REPORT_CONTRACT.md)。先运行 `python3 scripts/prism.py doctor` 验证随仓快照；失败说明源资产缺失或变化，先修来源，不能忽略。
 
