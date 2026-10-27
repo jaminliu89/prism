@@ -13,15 +13,19 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+import foundry_guard as guard
+
 SCHEMA = 1
 DOCS = {
     0: ("docs/00-idea-brief.md", "docs/00-asset-recall.md"),
     1: ("docs/01-product-research.md",),
     2: ("docs/02-stories-and-journeys.md", "docs/02-state-machines.md"),
     3: ("docs/03-prd.md", "docs/03-design-system.md"),
-    4: ("docs/04-architecture.md", "docs/04-technology-decisions.md"),
+    4: ("docs/04-architecture.md", "docs/04-technology-decisions.md",
+        "docs/04-security-threat-model.md"),
     5: ("docs/05-roadmap.md", "docs/06-task-board.md", "docs/05-definition-of-done.md"),
-    6: ("docs/07-consistency-audit.md", "docs/08-engineering-handoff.md"),
+    6: ("docs/07-consistency-audit.md", "docs/08-engineering-handoff.md",
+        "docs/07-security-acceptance-plan.md"),
 }
 QUESTIONS = {
     "audience": "Who is the target user and in which concrete situation?",
@@ -34,6 +38,8 @@ IMPACT = {
     "feature": 3, "ux": 3, "architecture": 4,
     "roadmap": 5, "audit": 6,
 }
+AGENT_ROLES = ("pm", "research", "ux", "architect", "security", "qa")
+
 STAGE_NAMES = (
     "Idea clarification and asset recall", "Positioning and research",
     "Stories, journeys and states", "PRD and UX",
@@ -126,7 +132,7 @@ def init(root, idea, actor):
         "answers": {}, "accepted_changes": [],
         "stages": [{"confirmed": False, "artifacts": {}, "reviews": [],
                     "confirmation": None} for _ in range(7)],
-        "changes": [],
+        "changes": [], "security": guard.new_state(), "tasks": [],
     }
     (root / ".foundry").mkdir(exist_ok=False)
     brief = "# Original product idea\n\n" + idea.strip() + (
@@ -171,8 +177,13 @@ def pending(root, data, index):
                   r["revision"] >= max((v["revision"]
                                        for v in s["artifacts"].values()), default=0)
                   for r in s["reviews"])
+    security_review = guard.gate(data) if index == 4 else None
+    open_tasks = [t["id"] for t in data.get("tasks", [])
+                  if t["stage"] == index and t["status"] not in ("delivered", "cancelled")]
     return {"missing_artifacts": missing, "unanswered": unanswered,
-            "passing_review": review, "blocking_review": changes}
+            "passing_review": review, "blocking_review": changes,
+            "security_gate": security_review,
+            "open_agent_tasks": open_tasks}
 
 
 def status(root, data=None):
@@ -191,6 +202,7 @@ def status(root, data=None):
                        "reviews": len(s["reviews"])})
     return {
         "status": ("STALE_CONFIRMED_ARTIFACTS" if stale_confirmed else
+                   "SECURITY_DESIGN_INCOMPLETE" if active == 7 and not guard.gate(data)["design_ready"] else
                    "BLUEPRINT_READY" if active == 7 else "PLANNING"),
         "integrity_issues": stale_confirmed,
         "revision": data["revision"], "original_intent": data["idea_original"],
@@ -200,6 +212,11 @@ def status(root, data=None):
         "open_changes": [c["id"] for c in data["changes"]
                          if c["status"] == "proposed"],
         "agent_execution": "NOT_STARTED",
+        "security": {"gate": guard.gate(data),
+                     "assessment_scope": "DESIGN_ONLY; not a penetration test"},
+        "tasks": [{"id": t["id"], "role": t["role"], "stage": t["stage"],
+                   "artifact": t["artifact"], "status": t["status"]}
+                  for t in data.get("tasks", [])],
         "release_authorized": False,
     }
 
@@ -209,6 +226,9 @@ def next_step(root, data=None):
     s = status(root, data)
     i = s["current_stage"]
     if i is None:
+        if s["status"] == "SECURITY_DESIGN_INCOMPLETE":
+            return {"status": s["status"], "security": guard.summary(data),
+                    "next": "Reopen architecture/security planning with an approved change; re-confirm affected stages."}
         if s["integrity_issues"]:
             return {"status": s["status"], "integrity_issues": s["integrity_issues"],
                     "next": "Reopen impacted stages via an accepted change and re-submit artifacts."}
@@ -220,6 +240,11 @@ def next_step(root, data=None):
         "questions": {q: QUESTIONS[q] for q in gate["unanswered"]},
         "review_required": not gate["passing_review"],
         "review_blocked": gate["blocking_review"],
+        "open_agent_tasks": gate["open_agent_tasks"],
+        "security_questions": guard.prompts(data) if i in (0, 3, 4, 6) else {},
+        "security_gate": gate["security_gate"],
+        "agent_roles": ["security", "architect", "qa"] if i in (4, 6) else
+                       ["pm", "research"] if i <= 1 else ["ux", "architect", "qa"],
         "owner_confirmation_required": True,
         "instructions_source": "sources/skillhub/blueprint/MASTER_PROMPT.md",
         "document_contract": "sources/skillhub/blueprint/DOCUMENT_CONTRACT.md",
@@ -298,7 +323,10 @@ def confirm(root, actor, statement, expected=None):
     if not actor.strip() or not statement.strip():
         fail("confirmation must include actor and exact statement")
     gate = pending(root, data, i)
-    if gate["missing_artifacts"] or gate["unanswered"] or not gate["passing_review"] or gate["blocking_review"]:
+    if (gate["missing_artifacts"] or gate["unanswered"] or
+        not gate["passing_review"] or gate["blocking_review"] or
+        gate["open_agent_tasks"] or
+        (gate["security_gate"] and not gate["security_gate"]["design_ready"])):
         fail("stage gate failed: " + json.dumps(gate, ensure_ascii=False))
     data["stages"][i]["confirmed"] = True
     data["stages"][i]["confirmation"] = {
@@ -360,6 +388,8 @@ def handoff(root, actor):
     data = load(root)
     if current(data) != 7:
         fail("cannot hand off before all seven stages are confirmed")
+    if not guard.gate(data)["design_ready"]:
+        fail("security design review incomplete; handoff denied")
     for i, stage in enumerate(data["stages"]):
         for path in DOCS[i]:
             if not verified_artifact(root, stage, path):
@@ -373,12 +403,16 @@ def handoff(root, actor):
         "action": "ENGINEERING_APPROVAL_REQUIRED",
         "execution_authorized": False, "release_authorized": False,
         "review_identity_verified": False,
+        "security_assurance": {"design_review": guard.gate(data),
+                               "runtime_security_verified": False,
+                               "reverse_engineering_difficulty": "NOT_MEASURED"},
         "agent_contract": {
             "source_of_truth": ".foundry/project.json",
             "instructions": "Read docs and latest confirmed stage; work only within separately approved scope.",
             "input_version": data["revision"],
             "definition_of_done": "Use docs/05-definition-of-done.md and independent QA evidence.",
             "change_policy": "Propose CHG before changing an approved product decision.",
+            "security_policy": "Never put protected orchestration/secrets in client artifacts. Validate server-side authorization, tenant separation, sandbox and tool permissions. Verify using separately authorized staging tests.",
         },
     }
     path = file_under(root, ".foundry/HANDOFF.json")
@@ -394,6 +428,10 @@ def mcp(root):
         {"name": "foundry_status", "description": "Read project gates and confirmed stages.",
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
         {"name": "foundry_next", "description": "Read next planning step and evidence requirements.",
+         "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+        {"name": "foundry_security", "description": "Read defensive threat model and design assurance gaps.",
+         "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+        {"name": "foundry_tasks", "description": "Read scoped agent collaboration task contracts.",
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
     ]
     for line in sys.stdin:
@@ -419,6 +457,10 @@ def mcp(root):
                     content = status(root)
                 elif name == "foundry_next":
                     content = next_step(root)
+                elif name == "foundry_security":
+                    content = guard.summary(load(root))
+                elif name == "foundry_tasks":
+                    content = {"tasks": load(root).get("tasks", [])}
                 else:
                     raise ValueError("unknown tool")
                 result = {"content": [{"type": "text", "text": json.dumps(content, ensure_ascii=False)}]}
