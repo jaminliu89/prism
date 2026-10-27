@@ -4,11 +4,14 @@ on:
   pull_request:
     paths:
       - 'scripts/foundry.py'
+      - 'scripts/foundry_guard.py'
       - 'tests/test_foundry.py'
+      - 'tests/test_foundry_guards.py'
       - '.github/workflows/foundry-regression.yml'
   push:
     branches:
       - 'feat/product-foundry-v0-1-20261027'
+      - 'feat/foundry-planning-review-v02'
 
 permissions:
   contents: read
