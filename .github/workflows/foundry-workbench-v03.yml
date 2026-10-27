@@ -1,0 +1,64 @@
+name: Foundry V0.3 workbench regression
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'scripts/foundry_web.py'
+      - 'tests/test_foundry_web.py'
+      - '.github/workflows/foundry-workbench-v03.yml'
+  push:
+    branches:
+      - 'feat/foundry-workbench-v03'
+      - 'main'
+    paths:
+      - 'web/**'
+      - 'scripts/foundry_web.py'
+      - 'tests/test_foundry_web.py'
+      - '.github/workflows/foundry-workbench-v03.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-workbench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      CI: 'true'
+      DO_NOT_TRACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'web/package-lock.json'
+      - name: Ensure isolated synthetic test workspace
+        run: mkdir -p work
+      - name: Run entire Prism / Foundry Python suite
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 scripts/prism.py doctor
+      - name: Install pinned web dependencies
+        run: npm ci --prefix web --ignore-scripts --no-audit --no-fund
+      - name: Production asset build
+        run: npm run build --prefix web
+      - name: Install Playwright Chromium in CI sandbox
+        run: npm exec --prefix web -- playwright install --with-deps chromium
+      - name: Run browser flow, responsive and accessibility checks
+        run: npm run test --prefix web
+      - name: Upload synthetic browser acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: foundry-v03-synthetic-browser-evidence
+          path: |
+            work/v03-browser-results.json
+            work/v03-*.png
+            web/test-results/
+          retention-days: 7
+          if-no-files-found: ignore
