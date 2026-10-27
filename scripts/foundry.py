@@ -13,15 +13,23 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Support CLI execution and isolated importlib-based test runners.
+_SCRIPT_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPT_DIR)
+import foundry_guard as guard
+
 SCHEMA = 1
 DOCS = {
     0: ("docs/00-idea-brief.md", "docs/00-asset-recall.md"),
     1: ("docs/01-product-research.md",),
     2: ("docs/02-stories-and-journeys.md", "docs/02-state-machines.md"),
     3: ("docs/03-prd.md", "docs/03-design-system.md"),
-    4: ("docs/04-architecture.md", "docs/04-technology-decisions.md"),
+    4: ("docs/04-architecture.md", "docs/04-technology-decisions.md",
+        "docs/04-security-threat-model.md"),
     5: ("docs/05-roadmap.md", "docs/06-task-board.md", "docs/05-definition-of-done.md"),
-    6: ("docs/07-consistency-audit.md", "docs/08-engineering-handoff.md"),
+    6: ("docs/07-consistency-audit.md", "docs/08-engineering-handoff.md",
+        "docs/07-security-acceptance-plan.md"),
 }
 QUESTIONS = {
     "audience": "Who is the target user and in which concrete situation?",
@@ -34,6 +42,8 @@ IMPACT = {
     "feature": 3, "ux": 3, "architecture": 4,
     "roadmap": 5, "audit": 6,
 }
+AGENT_ROLES = ("pm", "research", "ux", "architect", "security", "qa")
+
 STAGE_NAMES = (
     "Idea clarification and asset recall", "Positioning and research",
     "Stories, journeys and states", "PRD and UX",
@@ -126,7 +136,7 @@ def init(root, idea, actor):
         "answers": {}, "accepted_changes": [],
         "stages": [{"confirmed": False, "artifacts": {}, "reviews": [],
                     "confirmation": None} for _ in range(7)],
-        "changes": [],
+        "changes": [], "security": guard.new_state(), "tasks": [],
     }
     (root / ".foundry").mkdir(exist_ok=False)
     brief = "# Original product idea\n\n" + idea.strip() + (
@@ -171,8 +181,13 @@ def pending(root, data, index):
                   r["revision"] >= max((v["revision"]
                                        for v in s["artifacts"].values()), default=0)
                   for r in s["reviews"])
+    security_review = guard.gate(data) if index == 4 else None
+    open_tasks = [t["id"] for t in data.get("tasks", [])
+                  if t["stage"] == index and t["status"] not in ("delivered", "cancelled")]
     return {"missing_artifacts": missing, "unanswered": unanswered,
-            "passing_review": review, "blocking_review": changes}
+            "passing_review": review, "blocking_review": changes,
+            "security_gate": security_review,
+            "open_agent_tasks": open_tasks}
 
 
 def status(root, data=None):
@@ -191,6 +206,7 @@ def status(root, data=None):
                        "reviews": len(s["reviews"])})
     return {
         "status": ("STALE_CONFIRMED_ARTIFACTS" if stale_confirmed else
+                   "SECURITY_DESIGN_INCOMPLETE" if active == 7 and not guard.gate(data)["design_ready"] else
                    "BLUEPRINT_READY" if active == 7 else "PLANNING"),
         "integrity_issues": stale_confirmed,
         "revision": data["revision"], "original_intent": data["idea_original"],
@@ -200,6 +216,11 @@ def status(root, data=None):
         "open_changes": [c["id"] for c in data["changes"]
                          if c["status"] == "proposed"],
         "agent_execution": "NOT_STARTED",
+        "security": {"gate": guard.gate(data),
+                     "assessment_scope": "DESIGN_ONLY; not a penetration test"},
+        "tasks": [{"id": t["id"], "role": t["role"], "stage": t["stage"],
+                   "artifact": t["artifact"], "status": t["status"]}
+                  for t in data.get("tasks", [])],
         "release_authorized": False,
     }
 
@@ -209,6 +230,9 @@ def next_step(root, data=None):
     s = status(root, data)
     i = s["current_stage"]
     if i is None:
+        if s["status"] == "SECURITY_DESIGN_INCOMPLETE":
+            return {"status": s["status"], "security": guard.summary(data),
+                    "next": "Reopen architecture/security planning with an approved change; re-confirm affected stages."}
         if s["integrity_issues"]:
             return {"status": s["status"], "integrity_issues": s["integrity_issues"],
                     "next": "Reopen impacted stages via an accepted change and re-submit artifacts."}
@@ -220,6 +244,11 @@ def next_step(root, data=None):
         "questions": {q: QUESTIONS[q] for q in gate["unanswered"]},
         "review_required": not gate["passing_review"],
         "review_blocked": gate["blocking_review"],
+        "open_agent_tasks": gate["open_agent_tasks"],
+        "security_questions": guard.prompts(data) if i in (0, 3, 4, 6) else {},
+        "security_gate": gate["security_gate"],
+        "agent_roles": ["security", "architect", "qa"] if i in (4, 6) else
+                       ["pm", "research"] if i <= 1 else ["ux", "architect", "qa"],
         "owner_confirmation_required": True,
         "instructions_source": "sources/skillhub/blueprint/MASTER_PROMPT.md",
         "document_contract": "sources/skillhub/blueprint/DOCUMENT_CONTRACT.md",
@@ -298,7 +327,10 @@ def confirm(root, actor, statement, expected=None):
     if not actor.strip() or not statement.strip():
         fail("confirmation must include actor and exact statement")
     gate = pending(root, data, i)
-    if gate["missing_artifacts"] or gate["unanswered"] or not gate["passing_review"] or gate["blocking_review"]:
+    if (gate["missing_artifacts"] or gate["unanswered"] or
+        not gate["passing_review"] or gate["blocking_review"] or
+        gate["open_agent_tasks"] or
+        (gate["security_gate"] and not gate["security_gate"]["design_ready"])):
         fail("stage gate failed: " + json.dumps(gate, ensure_ascii=False))
     data["stages"][i]["confirmed"] = True
     data["stages"][i]["confirmation"] = {
@@ -349,6 +381,9 @@ def decide(root, id_, outcome, actor, reason, expected=None):
             stage["confirmation"] = None
             stage["reviews"] = []
             stage["stale_artifacts"] = list(DOCS[i])
+            for task in data.get("tasks", []):
+                if task["stage"] == i and task["status"] not in ("cancelled",):
+                    task["status"] = "cancelled"
             # Retain files but force regeneration/re-submission before another approval.
     touch(root, data, "decide_change", actor,
           {"id": id_, "outcome": outcome, "invalidated": invalidated})
@@ -356,10 +391,123 @@ def decide(root, id_, outcome, actor, reason, expected=None):
             "current_stage": current(data) if current(data) < 7 else None}
 
 
+
+def security_profile(root, key, value, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    if current(data) > 4:
+        fail("approved security baseline: propose and accept a security-related change first")
+    report = guard.profile_set(data, key, value)
+    stage = data["stages"][4]
+    stage["reviews"] = []
+    stage.setdefault("stale_artifacts", [])
+    if "docs/04-security-threat-model.md" not in stage["stale_artifacts"]:
+        stage["stale_artifacts"].append("docs/04-security-threat-model.md")
+    touch(root, data, "security_profile", actor, {"field": key, "content_redacted": True})
+    return {"security_gate": report, "profile_field": key}
+
+
+def security_assess(root, code, disposition, reason, actor, asset="", boundary="",
+                    attack_path="", control="", verification="", expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    if current(data) > 4:
+        fail("approved security baseline: propose and accept a security-related change first")
+    report = guard.record(data, code, disposition, actor, reason, asset, boundary,
+                          attack_path, control, verification)
+    stage = data["stages"][4]
+    stage["reviews"] = []
+    stage.setdefault("stale_artifacts", [])
+    if "docs/04-security-threat-model.md" not in stage["stale_artifacts"]:
+        stage["stale_artifacts"].append("docs/04-security-threat-model.md")
+    touch(root, data, "security_assessment", actor, {"code": code,
+                                                     "disposition": disposition})
+    return {"security_gate": report, "recorded": code, "evidence_status": "DESIGN_ONLY"}
+
+
+def assign_task(root, role, artifact, objective, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    stage = current(data)
+    if stage >= 7 or role not in AGENT_ROLES or artifact not in DOCS[stage]:
+        fail("unknown role or artifact outside active stage")
+    if not objective.strip() or not actor.strip():
+        fail("task objective and requesting actor required")
+    if "security" in artifact and role not in ("security", "architect", "qa"):
+        fail("security documents require a security, architecture or QA task role")
+    if any(t["stage"] == stage and t["artifact"] == artifact
+           and t["status"] not in ("cancelled", "delivered")
+           for t in data.get("tasks", [])):
+        fail("duplicate active assignment for artifact")
+    key = "AGT-%04d" % (len(data.setdefault("tasks", [])) + 1)
+    task = {
+        "id": key, "stage": stage, "role": role,
+        "objective": objective.strip(), "artifact": artifact,
+        "status": "ready", "requested_by_claim": actor,
+        "assigned_to_claim": None, "created_revision": data["revision"] + 1,
+        "allowed_write_paths": [artifact],
+        "allowed_actions": ["read approved project docs", "submit planning document"],
+        "denied_actions": ["modify approved goals", "run target code", "exfiltrate data",
+                           "production access", "paid tools", "deploy", "approve own work"],
+        "source_docs": ["sources/skillhub/blueprint/MASTER_PROMPT.md",
+                        "sources/skillhub/blueprint/DOCUMENT_CONTRACT.md"],
+        "authorization": "PLANNING_DOCUMENT_ONLY",
+        "identity_verified": False, "delivery": None,
+    }
+    data["tasks"].append(task)
+    touch(root, data, "task_assign", actor, {"id": key, "artifact": artifact, "role": role})
+    return task
+
+
+def claim_task(root, id_, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    task = next((x for x in data.get("tasks", []) if x["id"] == id_), None)
+    if task is None or task["status"] != "ready" or task["stage"] != current(data):
+        fail("task not ready for claim or its stage changed")
+    if not actor.strip():
+        fail("task claim requires actor")
+    task["status"] = "claimed"
+    task["assigned_to_claim"] = actor.strip()
+    touch(root, data, "task_claim", actor, {"id": id_})
+    return task
+
+
+def deliver_task(root, id_, source, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    task = next((x for x in data.get("tasks", []) if x["id"] == id_), None)
+    if (task is None or task["status"] != "claimed" or
+        task["stage"] != current(data) or task["assigned_to_claim"] != actor):
+        fail("task is not claimed by this actor or current stage changed")
+    content = Path(source).read_bytes()
+    if not content.strip():
+        fail("cannot deliver empty task artifact")
+    path = task["artifact"]
+    target = file_under(root, path)
+    write_atomic(target, content)
+    stage = data["stages"][task["stage"]]
+    stage["artifacts"][path] = {"sha256": digest(content), "actor": actor,
+                                "at": now(), "revision": data["revision"] + 1}
+    stage.setdefault("stale_artifacts", [])
+    if path in stage["stale_artifacts"]:
+        stage["stale_artifacts"].remove(path)
+    stage["reviews"] = []
+    task["status"] = "delivered"
+    task["delivery"] = {"artifact": path, "sha256": digest(content),
+                        "at": now(), "revision": data["revision"] + 1}
+    touch(root, data, "task_deliver", actor, {"id": id_, "artifact": path,
+                                            "sha256": digest(content)})
+    return {"id": id_, "status": task["status"], "artifact": path,
+            "sha256": digest(content), "next": next_step(root, data)}
+
+
 def handoff(root, actor):
     data = load(root)
     if current(data) != 7:
         fail("cannot hand off before all seven stages are confirmed")
+    if not guard.gate(data)["design_ready"]:
+        fail("security design review incomplete; handoff denied")
     for i, stage in enumerate(data["stages"]):
         for path in DOCS[i]:
             if not verified_artifact(root, stage, path):
@@ -373,12 +521,16 @@ def handoff(root, actor):
         "action": "ENGINEERING_APPROVAL_REQUIRED",
         "execution_authorized": False, "release_authorized": False,
         "review_identity_verified": False,
+        "security_assurance": {"design_review": guard.gate(data),
+                               "runtime_security_verified": False,
+                               "reverse_engineering_difficulty": "NOT_MEASURED"},
         "agent_contract": {
             "source_of_truth": ".foundry/project.json",
             "instructions": "Read docs and latest confirmed stage; work only within separately approved scope.",
             "input_version": data["revision"],
             "definition_of_done": "Use docs/05-definition-of-done.md and independent QA evidence.",
             "change_policy": "Propose CHG before changing an approved product decision.",
+            "security_policy": "Never put protected orchestration/secrets in client artifacts. Validate server-side authorization, tenant separation, sandbox and tool permissions. Verify using separately authorized staging tests.",
         },
     }
     path = file_under(root, ".foundry/HANDOFF.json")
@@ -394,6 +546,10 @@ def mcp(root):
         {"name": "foundry_status", "description": "Read project gates and confirmed stages.",
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
         {"name": "foundry_next", "description": "Read next planning step and evidence requirements.",
+         "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+        {"name": "foundry_security", "description": "Read defensive threat model and design assurance gaps.",
+         "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+        {"name": "foundry_tasks", "description": "Read scoped agent collaboration task contracts.",
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
     ]
     for line in sys.stdin:
@@ -419,6 +575,13 @@ def mcp(root):
                     content = status(root)
                 elif name == "foundry_next":
                     content = next_step(root)
+                elif name == "foundry_security":
+                    content = {"gate": guard.gate(load(root)), "threat_ids": list(guard.CATALOG),
+                               "note": "Details remain in the private project and are not exposed over MCP."}
+                elif name == "foundry_tasks":
+                    content = {"tasks": [
+                        {k: task[k] for k in ("id", "stage", "role", "artifact", "status")}
+                        for task in load(root).get("tasks", [])]}
                 else:
                     raise ValueError("unknown tool")
                 result = {"content": [{"type": "text", "text": json.dumps(content, ensure_ascii=False)}]}
@@ -444,6 +607,16 @@ def cli(argv=None):
     command("init", "idea", "actor")
     sub.add_parser("status")
     sub.add_parser("next")
+    sub.add_parser("security-status")
+    sub.add_parser("security-draft")
+    sub.add_parser("tasks")
+    command("security-profile", "key", "value", "actor")
+    sc = command("security-assess", "code", "disposition", "reason", "actor")
+    for key in ("asset", "boundary", "attack_path", "control", "verification"):
+        sc.add_argument("--" + key.replace("_", "-"), default="")
+    command("task-assign", "role", "artifact", "objective", "actor")
+    command("task-claim", "id", "actor")
+    command("task-deliver", "id", "file", "actor")
     command("answer", "key", "value", "actor")
     command("submit", "artifact", "file", "actor")
     command("review", "verdict", "kind", "actor", "note")
@@ -453,7 +626,8 @@ def cli(argv=None):
     command("handoff", "actor")
     sub.add_parser("mcp")
     # Optimistic-lock token for all change-producing operations, when supplied.
-    for name in ("answer", "submit", "review", "confirm", "propose", "decide"):
+    for name in ("answer", "submit", "review", "confirm", "propose", "decide",
+                 "security-profile", "security-assess", "task-assign", "task-claim", "task-deliver"):
         sub.choices[name].add_argument("--expected-revision", type=int)
     a = parser.parse_args(argv)
     root = Path(a.project).expanduser().resolve()
@@ -464,6 +638,26 @@ def cli(argv=None):
             output = status(root)
         elif a.command == "next":
             output = next_step(root)
+        elif a.command == "security-status":
+            output = guard.summary(load(root))
+        elif a.command == "security-draft":
+            print(guard.render(load(root)))
+            return 0
+        elif a.command == "tasks":
+            output = {"tasks": load(root).get("tasks", [])}
+        elif a.command == "security-profile":
+            output = security_profile(root, a.key, a.value, a.actor, a.expected_revision)
+        elif a.command == "security-assess":
+            output = security_assess(root, a.code, a.disposition, a.reason, a.actor,
+                                     a.asset, a.boundary, a.attack_path, a.control,
+                                     a.verification, a.expected_revision)
+        elif a.command == "task-assign":
+            output = assign_task(root, a.role, a.artifact, a.objective,
+                                 a.actor, a.expected_revision)
+        elif a.command == "task-claim":
+            output = claim_task(root, a.id, a.actor, a.expected_revision)
+        elif a.command == "task-deliver":
+            output = deliver_task(root, a.id, a.file, a.actor, a.expected_revision)
         elif a.command == "answer":
             output = answer(root, a.key, a.value, a.actor, a.expected_revision)
         elif a.command == "submit":
