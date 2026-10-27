@@ -11,3 +11,5 @@
 浏览器报告和截图均使用合成项目，不含真实客户材料；独立复验截图已保存 ui-1440.png、ui-375.png、ui-integrity.png，全部为合成数据；其余截图在忽略的work/。未上传真实私有项目数据。小视口自动fullPage截图出现Chrome拼接重复，已由独立真实视口、DOM数量与无横溢出检查确认不是重复渲染；不将异常拼接图当视觉通过证据。
 
 原有 foundry.py/guard/panel、CLI和上游只读快照没有改动。真实Agent执行、身份认证、跨进程事务、生产部署、PMF和用户审美认可均未发生。本机服务不得暴露公网。阶段4安全档案、任务和变更完整操作保留CLI。
+
+隔离构建补正：Tailwind改为显式只扫描web/src。reproducible-build.json记录原目录与隔离副本JS/CSS逐字节一致；新版本见source-manifest.json，独立审查追加限定复验。

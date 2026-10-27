@@ -1,5 +1,5 @@
 {
-  "revision": "v03-95d97049abc953d1",
+  "revision": "v03-89590b827a3efb9a",
   "date": "2026-10-27",
   "python": {
     "tests": 75,
@@ -31,5 +31,10 @@
   "agent_execution": "NOT_STARTED",
   "identity_authentication": "NOT_IMPLEMENTED",
   "deployment": "NOT_PERFORMED",
-  "remote_ci": "NOT_RUN"
+  "remote_ci": "NOT_RUN",
+  "isolated_build": {
+    "result": "PASS",
+    "reason": "explicit Tailwind source registration removes git-directory-dependent scanning",
+    "artifacts_identical": true
+  }
 }

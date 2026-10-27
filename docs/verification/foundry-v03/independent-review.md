@@ -61,3 +61,11 @@
 ## 正式版本绑定
 
 最终独立审查绑定 `v03-95d97049abc953d1`（base 601600b）。已逐项核对 source-manifest.json 所列19个源码/配置/测试文件的SHA256，均与当前磁盘一致；该核对只证明版本未漂移，不扩大上面的独立交互/视觉验收范围。审查principal为 codex:/root/ui_review，后续review事件由此独立执行者提交。
+
+## Tailwind构建边界修正的有限独立复验：PASS
+
+最终版本更新为 `v03-89590b827a3efb9a`。已核对manifest所列19项源码/配置/测试SHA与磁盘全部一致。相对5ff129e，应用源码唯一变化是index.css将Tailwind自动扫描改为 `source(none)` 与显式 `@source "./"`；没有改变布局、状态机或审批语义。
+
+独立Chrome再次打开8777，在1440/768/375视口查看并保存work/reviewer-css-final-1440.png、work/reviewer-css-final-768.png、work/reviewer-css-final-375.png。1440下目录、工作、审查三栏均可见，工作区grid列宽930px/286px；门禁清单可见，进入阶段4后审查与确认仍disabled，返回当前阶段入口正常。768与375的scrollWidth分别为768/375，无横向溢出，且均只有一个顶栏。截图比对未观察到本次扫描修正使核心布局或文字/按钮状态丢失。
+
+已读取reproducible-build.json，并独立核对当前dist的JS SHA256为27fde2e58cad9e34250489ddf6381c9bc7df5682eedd7a3a6382573eb724a9f5、CSS为641fcffbe7f85e69aed3bb21983a6103b9351938870273988c3149e7c51c1dcb，与其中两目录构建记录相符。双目录构建由实现者执行，本审查者没有冒充重复执行该构建。本次仅复验扫描边界修正，不扩大此前验收范围与未验证边界。

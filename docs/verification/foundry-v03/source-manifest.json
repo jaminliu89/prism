@@ -1,6 +1,6 @@
 {
   "base": "601600b",
-  "revision": "v03-95d97049abc953d1",
+  "revision": "v03-89590b827a3efb9a",
   "sha256": {
     "scripts/foundry_web.py": "62cc9afaa9c446941b642a8f3fae351c2b38c373b1cdc35a434fe0613fd0b824",
     "tests/test_foundry_web.py": "a24b56f096cd059b924dc7e1db553cabce01cbaa335dc93345bc31f13fe88666",
@@ -15,7 +15,7 @@
     "web/src/components/ui/input.tsx": "0c9457181f6ddc80969bcf854e92c362903a55b6e889fbef3fd85343ecc4af5b",
     "web/src/components/ui/tabs.tsx": "1bb52d8082f7518a9712f1431c531217697eb2fc91cbebc534b792003b8dc767",
     "web/src/components/ui/textarea.tsx": "5cafcfeeee29534f449387a16b585f5923d2faab1a0cdc50a874416b175f59ce",
-    "web/src/index.css": "b287b1e0c1148d4258baf030549716ad775a937c7c2e5c9779c1dfe540311598",
+    "web/src/index.css": "c3ea9865235cd22446d6141df5a09f2c6761b0bc890bba850008ca6fcfd30f9b",
     "web/src/main.tsx": "cb73c931dedfdcd28280a7390f132fb07f94e47aed1a611f1bdd97bd0d9bf641",
     "web/src/types.ts": "41b9ac5521226a7378abe3b6113ff00dcd5d5c277a485768b0f163af4850527c",
     "web/tests/workbench.spec.ts": "abb9e793b0b8e19f65ac419590494cbcf0835582674a9b27541c698ff785543c",

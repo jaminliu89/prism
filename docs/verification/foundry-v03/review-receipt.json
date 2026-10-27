@@ -1,34 +1,34 @@
 {
   "change_id": "PRISM-FOUNDRY-V03",
-  "revision": "v03-95d97049abc953d1",
+  "revision": "v03-89590b827a3efb9a",
   "executor": "codex:/root",
   "reviewer": "codex:/root/ui_review",
-  "review_method": "仅接受本机V0.3候选UI进入用户评审：独立复验两阻断已解决，版本v03-95d97049abc953d1未漂移。不含用户审美认可、生产发布、安全认证、真实Agent履职或完整七阶段独立QA。",
-  "accepted_at": "2026-10-27T07:22:21.946959+00:00",
+  "review_method": "有限独立复验接受v03-89590b827a3efb9a本机候选UI：19文件摘要一致，Tailwind显式扫描修正后1440/768/375核心布局与门禁呈现无丢失。保留既有独立审查边界，不含用户审美认可/生产验收。",
+  "accepted_at": "2026-10-27T07:26:56.580849+00:00",
   "disposition": "accepted",
   "artifacts": [
     {
       "path": "docs/verification/foundry-v03/source-manifest.json",
-      "sha256": "f4585af1c386d1892e72f61ded0763b73735d5ae1e3a278855fbe1a494beb32e",
+      "sha256": "ef157e9a0e3e5dbda81dbafd88e694bdc0ce0f0f3340cc5d960fa7fe93c90b70",
       "kind": "source",
-      "revision": "v03-95d97049abc953d1"
+      "revision": "v03-89590b827a3efb9a"
     },
     {
       "path": "docs/verification/foundry-v03/checks.json",
-      "sha256": "f00b587914ebb27b2be6748c0297531f78f754a19e71e058dd0ce0dda79c2e6d",
+      "sha256": "2f32a09c98e811502801313d39fa2f6e3e882a02c0d0f15ae0347d147bbe2bff",
       "kind": "tests",
-      "revision": "v03-95d97049abc953d1"
+      "revision": "v03-89590b827a3efb9a"
     }
   ],
   "delivery_profile": "non_release",
   "delivery_reason": "仅本机候选与私有隔离分支供评审，无生产部署或主分支合并",
   "delivery_manifest": null,
-  "submission_hash": "3fc5013c20f95df31831ee11591500fc199e2c63ebed6f74517c3798590da039",
+  "submission_hash": "9d47f9089581cf7c8a8d71f2560a8bd2122008f7079d609badbf8d779cd3b618",
   "technical_owner": {
     "status": "claimed",
     "actor": "owner",
     "principal": "codex:/root",
-    "revision": "v03-95d97049abc953d1",
-    "claim_hash": "4ec78a88d0fc15a6fd35906c960ed9d39b66c0653214c06ee363c69550124beb"
+    "revision": "v03-89590b827a3efb9a",
+    "claim_hash": "86383ecada0af481ff4fc6fb37e7ab4900fea96adc89a754be206819aea5f365"
   }
 }
