@@ -1,0 +1,5 @@
+export type Project = {id:string; idea:string; stage:number; revision:number}
+export type Opinion = {role:string; actor_claim:string; verdict:string; severity:string; reasoning:string; evidence:string; counterexample:string}
+export type Topic = {id:string; stage:number; question:string; status:string; opinions:Opinion[]; resolution:null|{outcome:string; rationale:string}}
+export type Gate = {missing_artifacts:string[]; unanswered:string[]; passing_review:boolean; blocking_review:boolean; open_agent_tasks:string[]; open_panel_topics:unknown[]; security_gate:null|{design_ready:boolean}}
+export type Snapshot = {id:string; artifact_validity:Record<string,boolean>; status:{revision:number; original_intent:string; current_stage:number|null; status:string; stage_gate:Gate|null; integrity_issues:string[]}; answers:Record<string,string>; stages:{confirmed:boolean; artifacts:Record<string,{sha256:string;actor:string;revision:number}>; reviews:{verdict:string;actor:string;note:string}[]}[]; topics:Topic[]; documents:Record<string,string[]>; tasks:{id:string;role:string;status:string;artifact:string}[]; changes:{id:string;description:string;status:string}[]}

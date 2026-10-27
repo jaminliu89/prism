@@ -44,3 +44,14 @@
 已在独立功能分支增加 scripts/foundry_guard.py 与 scripts/foundry.py 入口，覆盖风险假设、保护资产/部署边界问答、阶段4安全门禁、阶段6验收文档、MCP 只读摘要、任务领取/交付/变更取消。详细使用限制在 docs/FOUNDRY_SECURITY_AND_AGENT_V02.md。
 
 初版 CI 发现旧项目同时出现文档失效与安全未登记时主状态优先级的显示差异；已调整回归判据要求两类阻塞信息均可读取，绝不把该项目标为蓝图就绪。提交/PR合并和测试以 GitHub 实际结果为准，不声称独立审计或真实 CTF 抵抗验证已经完成。
+
+
+## 2026年10月27日：V0.3 最小本机工作台（隔离分支候选）
+
+目标：按用户明确授权，以 React/Tailwind/官方 shadcn/ui 实现三栏编辑型工作台；复用 Foundry V0.2，不改上游方法论或原 CLI。分支 feat/foundry-workbench-v03，从远端 main 601600b 接手。
+
+已实现 scripts/foundry_web.py 本机适配，web/ 前端项目、点子/答案/文档/议题/裁决/自检/确认链路，DESIGN.md 与 docs/FOUNDRY_WORKBENCH_V03.md。三问、文档、专家意见均为真实文件保存；无模型调用。浏览未来阶段不允许误签当前阶段；外部改文档标记版本失效，预览列登记/当前SHA。
+
+75项Python回归、3项Chrome UI/响应式/axe自动检查和构建以 docs/verification/foundry-v03/ 最终记录为准。独立审查发现两项主任务问题并回流修正，最终结论见独立审查记录。上述自动检查使用合成项目，不证明真实专家执行、身份认证、产品质量/PMF或生产发布。
+
+未完成：正式身份与审批权限、多进程事务锁、真实外部Agent适配、完整Markdown渲染、安全档案/任务/变更完整图形表单。仍可用原CLI继续其流程。界面是 proposed，尚无用户审美认可；不部署、不合main。远端分支/PR/CI以最终读回为准。

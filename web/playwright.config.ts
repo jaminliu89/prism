@@ -1,0 +1,2 @@
+import { defineConfig } from '@playwright/test'
+export default defineConfig({testDir:'tests',fullyParallel:false,workers:1,reporter:[['list'],['json',{outputFile:'../work/v03-browser-results.json'}]],use:{baseURL:'http://127.0.0.1:8774',viewport:{width:1440,height:1000},launchOptions:{executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'}},webServer:{command:`python3 ../scripts/foundry_web.py --workspace ../work/browser-projects-${Date.now()} --port 8774`,url:'http://127.0.0.1:8774/api/projects',reuseExistingServer:false},timeout:60000})

@@ -1,0 +1,25 @@
+{
+  "base": "601600b",
+  "revision": "v03-95d97049abc953d1",
+  "sha256": {
+    "scripts/foundry_web.py": "62cc9afaa9c446941b642a8f3fae351c2b38c373b1cdc35a434fe0613fd0b824",
+    "tests/test_foundry_web.py": "a24b56f096cd059b924dc7e1db553cabce01cbaa335dc93345bc31f13fe88666",
+    "web/components.json": "c27b0de0000b43c4c7e63c374a50e573de75c1be5f3e36c0d694886fda392db0",
+    "web/index.html": "70bf8cb809b6cd8f98ced3c411451f347378e8a96bc3403a45935be0be7e27bd",
+    "web/package-lock.json": "07227f91bbdd017d601a8b730c7d0af019663d4a73c8acb95ccac4f78abe7993",
+    "web/package.json": "f58489d19100d861be313f08eed2aabebfdbac59329368178bbf4084b918bf4f",
+    "web/playwright.config.ts": "d75c86eacd24281224e377266b5279523a2a7cb302c23bab9f0be1d1ca59a139",
+    "web/src/App.tsx": "b7446ae01ffbc89a7f0710115a73b93833ea899b9e346205db8cceea4d25f82b",
+    "web/src/components/ui/button.tsx": "79dd6f75f8136394442202d6b8b922fb269eaad0a5dba579397c9d5b41f893bb",
+    "web/src/components/ui/dialog.tsx": "4a706eb934010994721a02418b9eaa91016e9dcfe2cea7ef95230d492181124f",
+    "web/src/components/ui/input.tsx": "0c9457181f6ddc80969bcf854e92c362903a55b6e889fbef3fd85343ecc4af5b",
+    "web/src/components/ui/tabs.tsx": "1bb52d8082f7518a9712f1431c531217697eb2fc91cbebc534b792003b8dc767",
+    "web/src/components/ui/textarea.tsx": "5cafcfeeee29534f449387a16b585f5923d2faab1a0cdc50a874416b175f59ce",
+    "web/src/index.css": "b287b1e0c1148d4258baf030549716ad775a937c7c2e5c9779c1dfe540311598",
+    "web/src/main.tsx": "cb73c931dedfdcd28280a7390f132fb07f94e47aed1a611f1bdd97bd0d9bf641",
+    "web/src/types.ts": "41b9ac5521226a7378abe3b6113ff00dcd5d5c277a485768b0f163af4850527c",
+    "web/tests/workbench.spec.ts": "abb9e793b0b8e19f65ac419590494cbcf0835582674a9b27541c698ff785543c",
+    "web/tsconfig.json": "fe3fe02447afc9702800f92ec0b41a7b077d089f9735411fa7eb686a10bfa867",
+    "web/vite.config.ts": "1d5c28f178b5dffa29a3219fe5d8c2ff496f6bf7f74790e05c64c17ceed7f2f9"
+  }
+}
