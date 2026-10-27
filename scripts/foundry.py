@@ -377,11 +377,125 @@ def decide(root, id_, outcome, actor, reason, expected=None):
             stage["confirmation"] = None
             stage["reviews"] = []
             stage["stale_artifacts"] = list(DOCS[i])
+            for task in data.get("tasks", []):
+                if task["stage"] == i and task["status"] not in ("cancelled",):
+                    task["status"] = "cancelled"
             # Retain files but force regeneration/re-submission before another approval.
     touch(root, data, "decide_change", actor,
           {"id": id_, "outcome": outcome, "invalidated": invalidated})
     return {"id": id_, "status": item["status"], "invalidated_stages": invalidated,
             "current_stage": current(data) if current(data) < 7 else None}
+
+
+
+def security_profile(root, key, value, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    if current(data) > 4:
+        fail("approved security baseline: propose and accept a security-related change first")
+    report = guard.profile_set(data, key, value)
+    stage = data["stages"][4]
+    stage["reviews"] = []
+    stage.setdefault("stale_artifacts", [])
+    if "docs/04-security-threat-model.md" not in stage["stale_artifacts"]:
+        stage["stale_artifacts"].append("docs/04-security-threat-model.md")
+    touch(root, data, "security_profile", actor, {"field": key, "content_redacted": True})
+    return {"security_gate": report, "profile_field": key}
+
+
+def security_assess(root, code, disposition, reason, actor, asset="", boundary="",
+                    attack_path="", control="", verification="", expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    if current(data) > 4:
+        fail("approved security baseline: propose and accept a security-related change first")
+    report = guard.record(data, code, disposition, actor, reason, asset, boundary,
+                          attack_path, control, verification)
+    stage = data["stages"][4]
+    stage["reviews"] = []
+    stage.setdefault("stale_artifacts", [])
+    if "docs/04-security-threat-model.md" not in stage["stale_artifacts"]:
+        stage["stale_artifacts"].append("docs/04-security-threat-model.md")
+    touch(root, data, "security_assessment", actor, {"code": code,
+                                                     "disposition": disposition})
+    return {"security_gate": report, "recorded": code, "evidence_status": "DESIGN_ONLY"}
+
+
+def assign_task(root, role, artifact, objective, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    stage = current(data)
+    if stage >= 7 or role not in AGENT_ROLES or artifact not in DOCS[stage]:
+        fail("unknown role or artifact outside active stage")
+    if not objective.strip() or not actor.strip():
+        fail("task objective and requesting actor required")
+    if "security" in artifact and role not in ("security", "architect", "qa"):
+        fail("security documents require a security, architecture or QA task role")
+    if any(t["stage"] == stage and t["artifact"] == artifact
+           and t["status"] not in ("cancelled", "delivered")
+           for t in data.get("tasks", [])):
+        fail("duplicate active assignment for artifact")
+    key = "AGT-%04d" % (len(data.setdefault("tasks", [])) + 1)
+    task = {
+        "id": key, "stage": stage, "role": role,
+        "objective": objective.strip(), "artifact": artifact,
+        "status": "ready", "requested_by_claim": actor,
+        "assigned_to_claim": None, "created_revision": data["revision"] + 1,
+        "allowed_write_paths": [artifact],
+        "allowed_actions": ["read approved project docs", "submit planning document"],
+        "denied_actions": ["modify approved goals", "run target code", "exfiltrate data",
+                           "production access", "paid tools", "deploy", "approve own work"],
+        "source_docs": ["sources/skillhub/blueprint/MASTER_PROMPT.md",
+                        "sources/skillhub/blueprint/DOCUMENT_CONTRACT.md"],
+        "authorization": "PLANNING_DOCUMENT_ONLY",
+        "identity_verified": False, "delivery": None,
+    }
+    data["tasks"].append(task)
+    touch(root, data, "task_assign", actor, {"id": key, "artifact": artifact, "role": role})
+    return task
+
+
+def claim_task(root, id_, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    task = next((x for x in data.get("tasks", []) if x["id"] == id_), None)
+    if task is None or task["status"] != "ready" or task["stage"] != current(data):
+        fail("task not ready for claim or its stage changed")
+    if not actor.strip():
+        fail("task claim requires actor")
+    task["status"] = "claimed"
+    task["assigned_to_claim"] = actor.strip()
+    touch(root, data, "task_claim", actor, {"id": id_})
+    return task
+
+
+def deliver_task(root, id_, source, actor, expected=None):
+    data = load(root)
+    check_rev(data, expected)
+    task = next((x for x in data.get("tasks", []) if x["id"] == id_), None)
+    if (task is None or task["status"] != "claimed" or
+        task["stage"] != current(data) or task["assigned_to_claim"] != actor):
+        fail("task is not claimed by this actor or current stage changed")
+    content = Path(source).read_bytes()
+    if not content.strip():
+        fail("cannot deliver empty task artifact")
+    path = task["artifact"]
+    target = file_under(root, path)
+    write_atomic(target, content)
+    stage = data["stages"][task["stage"]]
+    stage["artifacts"][path] = {"sha256": digest(content), "actor": actor,
+                                "at": now(), "revision": data["revision"] + 1}
+    stage.setdefault("stale_artifacts", [])
+    if path in stage["stale_artifacts"]:
+        stage["stale_artifacts"].remove(path)
+    stage["reviews"] = []
+    task["status"] = "delivered"
+    task["delivery"] = {"artifact": path, "sha256": digest(content),
+                        "at": now(), "revision": data["revision"] + 1}
+    touch(root, data, "task_deliver", actor, {"id": id_, "artifact": path,
+                                            "sha256": digest(content)})
+    return {"id": id_, "status": task["status"], "artifact": path,
+            "sha256": digest(content), "next": next_step(root, data)}
 
 
 def handoff(root, actor):
