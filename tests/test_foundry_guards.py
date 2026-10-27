@@ -135,5 +135,34 @@ class FoundryGuardTests(unittest.TestCase):
             foundry.handoff(self.root, "owner")
 
 
+    def test_cli_security_and_agent_task_roundtrip(self):
+        import json
+        import subprocess
+        import sys
+        prefix = [sys.executable, str(ROOT / "scripts/foundry.py"),
+                  "--project", str(self.root)]
+        def call(*args):
+            result = subprocess.run(prefix + list(args), text=True,
+                                    capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            return result.stdout
+        initial = json.loads(call("security-status"))
+        self.assertFalse(initial["gate"]["design_ready"])
+        self.assertIn("ORCHESTRATION_EXPOSURE", call("security-draft"))
+        changed = json.loads(call("security-profile", "--key", "protected_assets",
+                                  "--value", "Private workflow", "--actor", "owner"))
+        self.assertEqual(changed["profile_field"], "protected_assets")
+        task = json.loads(call("task-assign", "--role", "research",
+                               "--artifact", "docs/00-asset-recall.md",
+                               "--objective", "Recall project assets", "--actor", "owner"))
+        self.assertEqual(task["status"], "ready")
+        claimed = json.loads(call("task-claim", "--id", task["id"], "--actor", "researcher"))
+        self.assertEqual(claimed["status"], "claimed")
+        delivered = json.loads(call("task-deliver", "--id", task["id"],
+                                 "--file", str(self.doc), "--actor", "researcher"))
+        self.assertEqual(delivered["status"], "delivered")
+
+
+
 if __name__ == "__main__":
     unittest.main()
