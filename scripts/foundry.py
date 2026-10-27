@@ -18,6 +18,7 @@ _SCRIPT_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
 import foundry_guard as guard
+import foundry_panel as panel
 
 SCHEMA = 1
 DOCS = {
@@ -182,12 +183,14 @@ def pending(root, data, index):
                                        for v in s["artifacts"].values()), default=0)
                   for r in s["reviews"])
     security_review = guard.gate(data) if index == 4 else None
+    open_panel = panel.unresolved(data, index)
     open_tasks = [t["id"] for t in data.get("tasks", [])
                   if t["stage"] == index and t["status"] not in ("delivered", "cancelled")]
     return {"missing_artifacts": missing, "unanswered": unanswered,
             "passing_review": review, "blocking_review": changes,
             "security_gate": security_review,
-            "open_agent_tasks": open_tasks}
+            "open_agent_tasks": open_tasks,
+            "open_panel_topics": open_panel}
 
 
 def status(root, data=None):
@@ -218,6 +221,7 @@ def status(root, data=None):
         "agent_execution": "NOT_STARTED",
         "security": {"gate": guard.gate(data),
                      "assessment_scope": "DESIGN_ONLY; not a penetration test"},
+        "panel": {"unresolved": panel.unresolved(data), "topics": len(data.get("panel_topics", []))},
         "tasks": [{"id": t["id"], "role": t["role"], "stage": t["stage"],
                    "artifact": t["artifact"], "status": t["status"]}
                   for t in data.get("tasks", [])],
@@ -245,6 +249,7 @@ def next_step(root, data=None):
         "review_required": not gate["passing_review"],
         "review_blocked": gate["blocking_review"],
         "open_agent_tasks": gate["open_agent_tasks"],
+        "open_panel_topics": gate["open_panel_topics"],
         "security_questions": guard.prompts(data) if i in (0, 3, 4, 6) else {},
         "security_gate": gate["security_gate"],
         "agent_roles": ["security", "architect", "qa"] if i in (4, 6) else
@@ -329,7 +334,7 @@ def confirm(root, actor, statement, expected=None):
     gate = pending(root, data, i)
     if (gate["missing_artifacts"] or gate["unanswered"] or
         not gate["passing_review"] or gate["blocking_review"] or
-        gate["open_agent_tasks"] or
+        gate["open_agent_tasks"] or gate["open_panel_topics"] or
         (gate["security_gate"] and not gate["security_gate"]["design_ready"])):
         fail("stage gate failed: " + json.dumps(gate, ensure_ascii=False))
     data["stages"][i]["confirmed"] = True
@@ -381,6 +386,9 @@ def decide(root, id_, outcome, actor, reason, expected=None):
             stage["confirmation"] = None
             stage["reviews"] = []
             stage["stale_artifacts"] = list(DOCS[i])
+            for topic in data.get("panel_topics", []):
+                if topic["stage"] >= i:
+                    topic["status"] = "superseded"
             for task in data.get("tasks", []):
                 if task["stage"] == i and task["status"] not in ("cancelled",):
                     task["status"] = "cancelled"
@@ -518,6 +526,7 @@ def handoff(root, actor):
         [s["confirmation"] for s in data["stages"]],
         "documents": [p for group in DOCS.values() for p in group],
         "accepted_changes": data["accepted_changes"],
+        "product_panel": [{"id": x["id"], "stage": x["stage"], "resolution": x["resolution"]} for x in data.get("panel_topics", [])],
         "action": "ENGINEERING_APPROVAL_REQUIRED",
         "execution_authorized": False, "release_authorized": False,
         "review_identity_verified": False,
@@ -549,6 +558,8 @@ def mcp(root):
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
         {"name": "foundry_security", "description": "Read defensive threat model and design assurance gaps.",
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
+        {"name": "foundry_panel", "description": "Read open expert review topics and dissent status.",
+         "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
         {"name": "foundry_tasks", "description": "Read scoped agent collaboration task contracts.",
          "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}},
     ]
@@ -578,6 +589,8 @@ def mcp(root):
                 elif name == "foundry_security":
                     content = {"gate": guard.gate(load(root)), "threat_ids": list(guard.CATALOG),
                                "note": "Details remain in the private project and are not exposed over MCP."}
+                elif name == "foundry_panel":
+                    content = {"unresolved": panel.unresolved(load(root))}
                 elif name == "foundry_tasks":
                     content = {"tasks": [
                         {k: task[k] for k in ("id", "stage", "role", "artifact", "status")}
