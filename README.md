@@ -49,3 +49,9 @@ python3 scripts/foundry.py --project /tmp/my-product next
 ```
 
 可通过 JSON CLI 被不同 Agent 宿主调用；只读 MCP stdio 提供项目状态与下一步要求。V0.1 **不含**自动 AI 推演、Agent 远程调度、真实身份认证、可视化工作台或工程执行。确认声明不等于经过认证的人类审批。完整使用示例、运行限制与测试入口见上述文档。
+
+## Product Foundry V0.2（待验收）
+
+在 V0.1 阶段门禁基础上加入[主动安全推演与多 Agent 任务合同](docs/FOUNDRY_SECURITY_AND_AGENT_V02.md)：在点子录入阶段提醒受保护的产品/编排资产；阶段4需给出威胁分类、控制措施、授权验证计划，不能只交架构图；阶段6增加安全验收计划。CLI 支持 security-status/security-profile/security-assess/security-draft 和 task-assign/task-claim/task-deliver/tasks；MCP 继续只读且最小披露。
+
+**边界**：没有运行真实逆向、CTF、渗透测试，也没有自动调用任何 Agent；设计评审不能证明安全。当前位于提案分支，依照 PR 与 CI 状态决定是否合并。
