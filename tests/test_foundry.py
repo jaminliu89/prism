@@ -144,8 +144,20 @@ class FoundryTests(unittest.TestCase):
         for i in range(7):
             self.finish_stage(i)
         (self.root / "docs/03-prd.md").write_text("Changed outside Foundry")
+        self.assertEqual(foundry.status(self.root)["status"], "STALE_CONFIRMED_ARTIFACTS")
+        self.assertIn("docs/03-prd.md", foundry.next_step(self.root)["integrity_issues"])
         with self.assertRaisesRegex(ValueError, "stale"):
             foundry.handoff(self.root, "owner")
+        proposed = foundry.propose(self.root, "feature", "Review unexpected file edit",
+                                   "A confirmed PRD was changed outside the gate", "owner")
+        foundry.decide(self.root, proposed["id"], "accept", "owner", "Reopen affected scope")
+        self.assertEqual(foundry.current(foundry.load(self.root)), 3)
+        self.assertIn("docs/03-prd.md", foundry.next_step(self.root)["missing_documents"])
+        self.finish_stage(3)
+        self.finish_stage(4)
+        self.finish_stage(5)
+        self.finish_stage(6)
+        self.assertEqual(foundry.status(self.root)["status"], "BLUEPRINT_READY")
 
     def test_cli_and_mcp_readonly_contract(self):
         call = [sys.executable, str(ROOT / "scripts/foundry.py"), "--project", str(self.root)]
