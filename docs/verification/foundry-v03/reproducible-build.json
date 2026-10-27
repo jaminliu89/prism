@@ -1,0 +1,20 @@
+{
+  "revision": "v03-89590b827a3efb9a",
+  "root_build": {
+    "index-BPvc_KoE.js": "27fde2e58cad9e34250489ddf6381c9bc7df5682eedd7a3a6382573eb724a9f5",
+    "index-rqGgCBIR.css": "641fcffbe7f85e69aed3bb21983a6103b9351938870273988c3149e7c51c1dcb"
+  },
+  "isolated_build": {
+    "index-BPvc_KoE.js": "27fde2e58cad9e34250489ddf6381c9bc7df5682eedd7a3a6382573eb724a9f5",
+    "index-rqGgCBIR.css": "641fcffbe7f85e69aed3bb21983a6103b9351938870273988c3149e7c51c1dcb"
+  },
+  "comparison": "identical bytes",
+  "isolated_source": "archive 5ff129e plus the same two-line explicit Tailwind source patch; all application source matches source-manifest",
+  "isolated_checks": [
+    "75 Python tests PASS",
+    "doctor SNAPSHOTS_VERIFIED",
+    "npm ci --offline --ignore-scripts PASS",
+    "TypeScript/Vite build PASS"
+  ],
+  "browser_after_patch": "3 tests PASS"
+}

@@ -1,0 +1,28 @@
+{
+  "target_source": "f94c32d69483a82fcbd71a34cd810e2b64b434a8",
+  "project_revision": 51,
+  "sha256": {
+    "docs/00-asset-recall.md": "d2fb8c29ffa0238585689e5ecf10a85f84fc35ad12cc949edf2888ae54b72703",
+    "docs/00-idea-brief.md": "dd60abe39009761083ce194b4e956e4c5fd9e8d3d9ab24cf3d129518bfcb9326",
+    "docs/00-planning-state.md": "ec46e5509c8086057b06ba0fc423e15e12f43027aa10b4d2c8be68911ec8025a",
+    "docs/01-product-research.md": "ff59998c77f9a5c7a35078a42eddfcc89da3435c79ffa0362e10b09ce5f4357d",
+    "docs/02-state-machines.md": "253beee7cf19b88411f40b3555c7e7bd3e4898543f93f2a4dedc2b8fae5374da",
+    "docs/02-stories-and-journeys.md": "2ae6dcd0ad994e43bca9d1b3445a39f1a12b4e5e3c96107d42e14680ec59ea27",
+    "docs/03-design-system.md": "9b5865ffedc86ef5f852588cf8b650f7d65f64f7dfd87df93c419c6c36dfe760",
+    "docs/03-prd.md": "d492f406e0d9df62b09558e3e6658e604235006295f4c640e6fe5ca8ba36564a",
+    "docs/04-architecture.md": "a9b6498bc24103d4e594fefc00777235e0d7f1ed8b3b2b6b7e4ead2c251ed579",
+    "docs/04-security-threat-model.md": "ae1aabc794738611927caa4a38b2e261f965e079953331616909018879be3975",
+    "docs/04-technology-decisions.md": "948618252fa83129997bebe7d59c32eaa792fa4f5931315c8cf8174aaf8e24a9",
+    "docs/05-AGENTS-draft.md": "ed6969a9e824336f0645cbcf347d484a6a739549ee8317e61277bb5b9b3b94c1",
+    "docs/05-CLAUDE-draft.md": "75bf613f564eeaed76fed7d24fd7f3e9207751fc5fa043ad7adec3e62f77b6e6",
+    "docs/05-definition-of-done.md": "f697137503af54cfb99185129312fc46d4fecc0e6c3b397963af60d6134bbe0b",
+    "docs/05-roadmap.md": "7ba20106417d0847daf86aeee1c91629549413fbc5d13ae7abc9eafe3fd7e666",
+    "docs/06-task-board.md": "7c5260ef17c3c2db142add29691f403615389a2f35e190a71d9e9d51f2d98c9a",
+    "docs/07-consistency-audit.md": "5e5ad38bb2472c2e92426ff49de446d3261fb62e1096e7c44543878cfc9116a5",
+    "docs/07-security-acceptance-plan.md": "efd536d8bfd4e5a4185c87b27aaf4c5025ddbb0a038b6898284b4f7e12d4dc7b",
+    "docs/08-engineering-handoff.md": "b6a5690cfde249f5b3fc80355935bb5ab8444a5a5090d466c735ae73c5ff1674",
+    "docs/TODO.md": "c47a75143d24ae20f79f64edbb251f1ada412c40bbfff35fec88eb93f709c9ba",
+    "docs/requirements-traceability.md": "0b5ab2eb85b3b70bd3f7305e166ecc693672cfc4beb37a8a4099c993a6efff4d",
+    "docs/risks-and-decisions.md": "a36242ac34aea12cc5f71fc845a310d11c62b7dab0aad1a759b33707d076fc9c"
+  }
+}

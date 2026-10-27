@@ -55,3 +55,15 @@ python3 scripts/foundry.py --project /tmp/my-product next
 在 V0.1 阶段门禁基础上加入[主动安全推演与多 Agent 任务合同](docs/FOUNDRY_SECURITY_AND_AGENT_V02.md)：在点子录入阶段提醒受保护的产品/编排资产；阶段4需给出威胁分类、控制措施、授权验证计划，不能只交架构图；阶段6增加安全验收计划。CLI 支持 security-status/security-profile/security-assess/security-draft 和 task-assign/task-claim/task-deliver/tasks；MCP 继续只读且最小披露。
 
 **边界**：没有运行真实逆向、CTF、渗透测试，也没有自动调用任何 Agent；设计评审不能证明安全。当前位于提案分支，依照 PR 与 CI 状态决定是否合并。
+
+## Product Foundry V0.3 本机工作台（候选）
+
+React、Tailwind 与官方 shadcn/ui 三栏工作台，复用 Foundry V0.2 阶段/安全/争议门禁。支持点子、答案、文档编辑与基础预览、手动专家意见、审查与阶段确认；不自动调用模型，不认证审批身份。
+
+```sh
+npm ci --ignore-scripts --prefix web --registry=https://registry.npmjs.org
+npm run build --prefix web
+python3 scripts/foundry_web.py --workspace /absolute/private/foundry-projects --port 8773
+```
+
+浏览器打开 http://127.0.0.1:8773 。后端仍为 Python 标准库，CLI 用法不变；不要将本机服务暴露到公网。运行边界与接口见 [V0.3工程说明](docs/FOUNDRY_WORKBENCH_V03.md)，候选视觉见 [DESIGN.md](DESIGN.md)，检查证据见 [V0.3验证记录](docs/verification/foundry-v03/README.md)。

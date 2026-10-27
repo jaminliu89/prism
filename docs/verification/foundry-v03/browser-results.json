@@ -1,0 +1,222 @@
+{
+  "config": {
+    "argv": [
+      "/Users/kimliu/.hermes/node/bin/node",
+      "/Users/kimliu/Developer/Codex/prism/web/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/Users/kimliu/Developer/Codex/prism/web/playwright.config.ts",
+    "rootDir": "/Users/kimliu/Developer/Codex/prism/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/kimliu/Developer/Codex/prism/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/Users/kimliu/Developer/Codex/prism/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/kimliu/Developer/Codex/prism/web/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/Users/kimliu/Developer/Codex/prism/web/tests",
+        "snapshotDir": "/Users/kimliu/Developer/Codex/prism/web/tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 60000,
+        "use": {
+          "baseURL": "http://127.0.0.1:8774",
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "launchOptions": {
+            "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../work/v03-browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "python3 ../scripts/foundry_web.py --workspace ../work/browser-projects-1793085898629 --port 8774",
+      "url": "http://127.0.0.1:8774/api/projects",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "workbench.spec.ts",
+      "file": "workbench.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "点子到阶段确认：真实保存、争议拒绝、文档与三种视口",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2891,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-27T07:24:59.044Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "921e070f285a8b470d11-c4ae2a36245577a9553f",
+          "file": "workbench.spec.ts",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "未保存文档保护与键盘弹窗",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 635,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-27T07:25:03.606Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "921e070f285a8b470d11-48b76dffd15ead7a1eea",
+          "file": "workbench.spec.ts",
+          "line": 82,
+          "column": 1
+        },
+        {
+          "title": "主要页面的自动无障碍检查",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1937,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-27T07:25:04.252Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "921e070f285a8b470d11-5aec600b7bdd9cf7a5f2",
+          "file": "workbench.spec.ts",
+          "line": 102,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-27T07:24:58.631Z",
+    "duration": 7758.774,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "cycle": 1,
+    "new_process": true,
+    "revision": 51,
+    "status": "BLUEPRINT_READY",
+    "confirmed_stages": 7,
+    "all_document_hashes_valid": true,
+    "snapshot_sha256": "34e4484a64f91690a0ba70fc8ce94f6dbcabdb00c3f79746b467c71b91682913"
+  },
+  {
+    "cycle": 2,
+    "new_process": true,
+    "revision": 51,
+    "status": "BLUEPRINT_READY",
+    "confirmed_stages": 7,
+    "all_document_hashes_valid": true,
+    "snapshot_sha256": "34e4484a64f91690a0ba70fc8ce94f6dbcabdb00c3f79746b467c71b91682913"
+  }
+]

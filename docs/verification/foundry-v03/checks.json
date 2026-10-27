@@ -1,0 +1,40 @@
+{
+  "revision": "v03-89590b827a3efb9a",
+  "date": "2026-10-27",
+  "python": {
+    "tests": 75,
+    "result": "PASS",
+    "source": "python-tests.log"
+  },
+  "browser": {
+    "tests": 3,
+    "result": "PASS",
+    "viewports": [
+      1440,
+      768,
+      375
+    ],
+    "source": "browser-results.json",
+    "axe_scope": "wcag2a/wcag2aa/wcag21aa on four main tabs; not screen-reader acceptance"
+  },
+  "build": {
+    "result": "PASS",
+    "tool": "TypeScript 5.9 + Vite 7.3.7",
+    "assets": [
+      "index-BPvc_KoE.js",
+      "index-rqGgCBIR.css"
+    ]
+  },
+  "source_contract": "SNAPSHOTS_VERIFIED",
+  "independent_review": "independent-review.md",
+  "user_visual_approval": "NOT_RECEIVED",
+  "agent_execution": "NOT_STARTED",
+  "identity_authentication": "NOT_IMPLEMENTED",
+  "deployment": "NOT_PERFORMED",
+  "remote_ci": "NOT_RUN",
+  "isolated_build": {
+    "result": "PASS",
+    "reason": "explicit Tailwind source registration removes git-directory-dependent scanning",
+    "artifacts_identical": true
+  }
+}
