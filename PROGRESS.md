@@ -1,5 +1,13 @@
 # Prism 当前状态
 
+## 2026年10月28日：Mission 0.5.0能力升级（本地独立分支）
+
+- 用户明确要求Prism支持CTF/Hackathon/Dev/REA，围绕最终目标主动落地业务结构、必要后端与部署方法，兼任产品/架构负责人领导编码。
+- 新增docs/MISSION.md与标准库scripts/mission.py：目标合同、目录与覆盖清单、受信修订、宿主显式本地执行、代码/合同/证据绑定、未结算运行阻止和人工对账、非认证审查记录。普通audit和Foundry规划权限不变；未改sources快照或另一轮V04现场。
+- 最终本机完整94项测试通过，含15项Mission测试；真实本机Python/SQLite跨进程持久化。实际架构子Agent独立审查发现并复验修复1项P1和5项P2，最终15项复跑通过；冻结文件与证据见docs/verification/mission-v05/。
+- 未提供具体业务/赛事目标，真实目标为TARGET_REQUIRED；没有实际云部署、模型调用、比赛提交或经营结果。不内置自动AI编码器，不提供OS沙箱或cancel命令，当前宿主承担真实实现与边界核验。
+- 本段只记录本机源库；提交、远端PR/CI、SkillHub接入和安装副本采用以各自后续读回为准，不凭本段声明已发布或所有宿主已升级。
+
 2026年10月27日。目标：用户明确要求短名字、独立私有仓库、可单用且可由集团调用，与blueprint/checklist/site clone协作。名字采用Prism（棱镜），私有仓库已创建并读回isPrivate=true。
 
 ## 已完成与实际边界
