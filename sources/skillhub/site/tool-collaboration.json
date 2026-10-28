@@ -35,6 +35,24 @@
       ]
     },
     {
+      "id": "scrapling",
+      "role": "structured_field_extraction_and_adaptive_dom",
+      "source": "https://scrapling.readthedocs.io/en/latest/",
+      "outputs": [
+        "url_manifest",
+        "source_html_or_snapshot",
+        "structured_json_or_csv",
+        "field_provenance",
+        "crawl_failures"
+      ],
+      "cannot_prove": [
+        "underlying_business_truth",
+        "user_journey_pass",
+        "server_implementation"
+      ],
+      "note": "May also crawl and produce Markdown; select by evidence objective, not exclusive capability."
+    },
+    {
       "id": "browser-use",
       "role": "adaptive_interaction_exploration",
       "source": "https://docs.browser-use.com/open-source/quickstart",
@@ -106,12 +124,29 @@
       "when": "multi_page_or_content_evidence_gap",
       "candidates": [
         "crawl4ai",
+        "scrapling",
         "group-toolbox"
       ],
       "handoff": [
         "url_manifest",
         "raw_html",
         "markdown_or_json",
+        "crawl_failures"
+      ]
+    },
+    {
+      "id": "extract_structured",
+      "when": "field_schema_or_prices_tables_catalog_extraction",
+      "candidates": [
+        "scrapling",
+        "crawl4ai",
+        "group-toolbox"
+      ],
+      "handoff": [
+        "url_manifest",
+        "source_html_or_snapshot",
+        "structured_json_or_csv",
+        "field_provenance",
         "crawl_failures"
       ]
     },
@@ -202,5 +237,75 @@
   "release_authority": "existing_delivery_walkthrough_and_engineering_quality_gates",
   "session_policy": "one_writer_per_browser_session_no_automatic_cookie_or_token_export",
   "switch_policy": "two_failed_attempts_change_method_or_observation_surface_with_reason",
-  "completion": "findings_fixed_or_explicitly_blocked_same_revision_replay_then_archive_readback"
+  "completion": "findings_fixed_or_explicitly_blocked_same_revision_replay_then_archive_readback",
+  "selection_rules": [
+    {
+      "intent": "bulk_document_to_markdown",
+      "packet": "collect",
+      "candidates": [
+        "crawl4ai",
+        "scrapling"
+      ],
+      "success": "url_manifest_and_markdown_linked_to_source"
+    },
+    {
+      "intent": "stable_fields_prices_catalogs",
+      "packet": "extract_structured",
+      "candidates": [
+        "scrapling",
+        "crawl4ai"
+      ],
+      "success": "schema_checked_fields_and_source_links"
+    },
+    {
+      "intent": "unknown_click_paths",
+      "packet": "explore",
+      "candidates": [
+        "browser-use",
+        "playwright"
+      ],
+      "success": "discovered_paths_with_action_log"
+    },
+    {
+      "intent": "repeatable_user_journey",
+      "packet": "verify",
+      "candidates": [
+        "playwright"
+      ],
+      "success": "replay_assertions_and_trace"
+    }
+  ],
+  "fallback_policy": {
+    "mode": "only_after_actual_failure_or_missing_capability",
+    "max_same_method_failures": 2,
+    "require_same_exit_criterion": true,
+    "do_not_escalate": "access_permissions_or_antibot_evasion",
+    "on_failed_fallback": "BLOCKED_WITH_NEXT_CONDITION"
+  },
+  "evidence_policy": {
+    "required": [
+      "task_id",
+      "target",
+      "revision",
+      "case_id",
+      "tool",
+      "observed_at",
+      "evidence_path",
+      "sha256",
+      "claim_level",
+      "redactions",
+      "next_condition"
+    ],
+    "accepted_claim_levels": [
+      "SOURCE",
+      "PARTIAL",
+      "GUESS"
+    ],
+    "source_fields": [
+      "url",
+      "retrieved_at",
+      "content_type"
+    ],
+    "no_inferred_field_as_observed": true
+  }
 }

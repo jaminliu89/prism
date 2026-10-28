@@ -33,3 +33,8 @@ UPSTREAM.lock.json记录精确source repository/commit/path与本地SHA。`sourc
 更新流程：在原能力主库修改→来源测试/审查→显式选择新提交→仅更新白名单源文件与lock→doctor与本仓回归→集团更新Prism固定版本。不得把快照改成另一套方法真相源。
 
 用户项目报告、HAR、私有网页、凭证不作为集团共享规则自动回写；仅经确认的可复用知识按集团原有资产规则晋级。
+
+
+## Web Evidence Router（2026-10-28）
+
+Crawl4AI / Scrapling 双引擎按任务目标编排，候选顺序见固定 SkillHub 协作合同，脚本 `scripts/web_evidence_router.py` 只给执行宿主提供确定性选路、失败切换与证据摘要核验，不能当作真实抓取或MCP连接证据；详见 `docs/WEB_EVIDENCE_ROUTING.md`。源事实、权限和独立QA仍沿现有原owner。

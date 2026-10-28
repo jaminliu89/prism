@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "policy": "read_only_pinned_contract_snapshots_not_installed_engines",
   "assets": [
     {
@@ -33,29 +33,29 @@
     {
       "id": "site-contract",
       "repository": "jaminliu89/skill-hub",
-      "commit": "301cb2591a3a91fd2135a54239a2f236cb7d7b4e",
+      "commit": "9f32ee30a35d6f8dc0051defd3f299331e3abd2a",
       "source_path": "skills/agent-eng/site-reverse-clone/SKILL.md",
       "path": "sources/skillhub/site/SKILL.md",
-      "sha256": "a20eb0d17c43616bea562963eabb83e3dc4f7c9a1f48958b13461ad460b77eab",
-      "source_url": "https://github.com/jaminliu89/skill-hub/blob/301cb2591a3a91fd2135a54239a2f236cb7d7b4e/skills/agent-eng/site-reverse-clone/SKILL.md"
+      "sha256": "98b19f645066a577a507f4978b74864f850eb8457b1cf80dbb127a12bd20fa78",
+      "source_url": "https://github.com/jaminliu89/skill-hub/blob/9f32ee30a35d6f8dc0051defd3f299331e3abd2a/skills/agent-eng/site-reverse-clone/SKILL.md"
     },
     {
       "id": "site-tools",
       "repository": "jaminliu89/skill-hub",
-      "commit": "301cb2591a3a91fd2135a54239a2f236cb7d7b4e",
+      "commit": "9f32ee30a35d6f8dc0051defd3f299331e3abd2a",
       "source_path": "skills/agent-eng/site-reverse-clone/references/TOOL_COLLABORATION.md",
       "path": "sources/skillhub/site/TOOL_COLLABORATION.md",
-      "sha256": "a13ffe8c3934d4d4c0f99fc0a6215831631a3e2fc98cc6318f84db0affd66cdb",
-      "source_url": "https://github.com/jaminliu89/skill-hub/blob/301cb2591a3a91fd2135a54239a2f236cb7d7b4e/skills/agent-eng/site-reverse-clone/references/TOOL_COLLABORATION.md"
+      "sha256": "bdb79bc45b3a47e38706d2cd20377a15b8187f0e0ef2466b066f7872a187e3fc",
+      "source_url": "https://github.com/jaminliu89/skill-hub/blob/9f32ee30a35d6f8dc0051defd3f299331e3abd2a/skills/agent-eng/site-reverse-clone/references/TOOL_COLLABORATION.md"
     },
     {
       "id": "site-tool-map",
       "repository": "jaminliu89/skill-hub",
-      "commit": "301cb2591a3a91fd2135a54239a2f236cb7d7b4e",
+      "commit": "9f32ee30a35d6f8dc0051defd3f299331e3abd2a",
       "source_path": "skills/agent-eng/site-reverse-clone/references/tool-collaboration.json",
       "path": "sources/skillhub/site/tool-collaboration.json",
-      "sha256": "54f63ae4e47e6e713403514ddcd36425bca8773e32dad7b6459c945b1079cc67",
-      "source_url": "https://github.com/jaminliu89/skill-hub/blob/301cb2591a3a91fd2135a54239a2f236cb7d7b4e/skills/agent-eng/site-reverse-clone/references/tool-collaboration.json"
+      "sha256": "1f147b57c6b8c3c65a14c0c6893d704829c94c17376cc3b4b5a44eb6aea96866",
+      "source_url": "https://github.com/jaminliu89/skill-hub/blob/9f32ee30a35d6f8dc0051defd3f299331e3abd2a/skills/agent-eng/site-reverse-clone/references/tool-collaboration.json"
     }
   ],
   "external_methods": [

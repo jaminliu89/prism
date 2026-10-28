@@ -33,6 +33,7 @@ Never make the private repository public or embed a personal access token in an 
 - **Prism audit:** For product/repository evidence audit, read `docs/AUDIT_PROMPT.md`, `docs/REPORT_CONTRACT.md`, `docs/INTEGRATION.md` and run `python3 scripts/prism.py doctor`.
 - **Product Foundry:** For an idea-to-blueprint workflow, read `sources/skillhub/blueprint/MASTER_PROMPT.md`, `sources/skillhub/blueprint/DOCUMENT_CONTRACT.md`, `docs/FOUNDRY_WORKBENCH_V03.md`; inspect `python3 scripts/foundry.py --help`. Respect stages 0–6 and human confirmation gates.
 - **Web workbench:** Only if the user wants a local UI, build `web/` and run `scripts/foundry_web.py` on loopback. Never expose the session token to untrusted origins.
+- **Web evidence / structured collection:** For Markdown collection prefer Crawl4AI, for structured fields prefer Scrapling. Read [web router](docs/WEB_EVIDENCE_ROUTING.md) and use `scripts/web_evidence_router.py` for candidate selection, safe fallback and local evidence hash validation; live tools still require per-session discovery.
 - **Site clone / specialized audit:** Route to the original specialist, with separately authorized target access; do not claim Prism itself has a crawler.
 - **Release request:** Return evidence to delivery/QA owners; `BLUEPRINT_READY` means structural planning completion, not authenticated approval.
 
