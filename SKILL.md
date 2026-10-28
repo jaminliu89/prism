@@ -1,8 +1,8 @@
 ---
 name: prism
-description: Use Prism for evidence-based product audits, cross-stage blueprint review, product planning, and authorized engineering handoff. Invoke when asked to audit a repository, compare a product with its requirements, run Product Foundry stages 0–6, check evidence and version hashes, or coordinate specialist reviews. Planning and structure checks never constitute authenticated approval or production certification.
+description: Use Prism for product planning, evidence audits, and goal-driven CTF, hackathon, Dev or REA missions. When explicitly asked to reproduce a project's business or lead vibecoding, act as product owner and architect: inspect authorized targets, materialize project structure, implement the required backend and deployment methods through the current host, and verify actual results. Audit remains read-only; planning, scaffolds and structural checks are not implementation, authenticated approval or production certification.
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   owner: "Product / QA Evidence"
 ---
 
@@ -28,6 +28,7 @@ Never make the private repository public or embed a personal access token in an 
 
 ## Activation and routing
 
+- **Mission / 目标驱动研发：** 用户给最终目标、CTF、Hackathon、Dev、REA、复现生意、让Prism带vibecoding写代码时，读 [Mission合同](docs/MISSION.md)。Prism可兼任产品负责人、架构师与技术集成负责人，主动维护需求/任务并在已明确工程授权内实际编码，不把任务交回用户。优先复用当前宿主、现有工程控制面与可用专项，不另造模型、抓取或发布平台。
 - **Prism audit:** For product/repository evidence audit, read `docs/AUDIT_PROMPT.md`, `docs/REPORT_CONTRACT.md`, `docs/INTEGRATION.md` and run `python3 scripts/prism.py doctor`.
 - **Product Foundry:** For an idea-to-blueprint workflow, read `sources/skillhub/blueprint/MASTER_PROMPT.md`, `sources/skillhub/blueprint/DOCUMENT_CONTRACT.md`, `docs/FOUNDRY_WORKBENCH_V03.md`; inspect `python3 scripts/foundry.py --help`. Respect stages 0–6 and human confirmation gates.
 - **Web workbench:** Only if the user wants a local UI, build `web/` and run `scripts/foundry_web.py` on loopback. Never expose the session token to untrusted origins.
@@ -43,7 +44,7 @@ State the exact inspected target and revision; separate observed facts, inferenc
 
 ## 独立使用
 
-在任意有文件/浏览器等适用工具的Agent中完整读取本Skill。输入目标与目的，按Prompt取证；Prism不自动执行被审计项目命令。只克隆本仓库即可使用本地规划Prompt、清单和报告合同，不依赖SkillHub路径、API key或第三方Python包。
+在任意有文件/浏览器等适用工具的Agent中完整读取本Skill。普通审计不自动执行被审计项目命令；Mission在明确工程授权下由当前宿主实际实现，可用 `scripts/mission.py` 保存目标、创建结构和记录显式本地命令。只克隆本仓库即可使用本地规划Prompt、清单和报告合同，不依赖SkillHub路径、API key或第三方Python包。
 
 - 规划：读 `sources/skillhub/blueprint/MASTER_PROMPT.md` 和 `DOCUMENT_CONTRACT.md`，严格保留0–6阶段确认；规划期不写业务代码。
 - 产品审计：以总控Prompt恢复承诺、实际入口/版本、需求/状态/设计/架构/数据/AI/安全/成本等适用证据，调用本地checklist。
