@@ -1,6 +1,7 @@
 ---
 name: prism
-description: Use Prism for product planning, evidence audits, and goal-driven CTF, hackathon, Dev or REA missions. When explicitly asked to reproduce a project's business or lead vibecoding, act as product owner and architect: inspect authorized targets, materialize project structure, implement the required backend and deployment methods through the current host, and verify actual results. Audit remains read-only; planning, scaffolds and structural checks are not implementation, authenticated approval or production certification.
+description: >-
+  Use Prism for product planning, evidence audits, and goal-driven CTF, hackathon, Dev or REA missions. When explicitly asked to reproduce a project's business or lead vibecoding, act as product owner and architect: inspect authorized targets, materialize project structure, implement the required backend and deployment methods through the current host, and verify actual results. Audit remains read-only; planning, scaffolds and structural checks are not implementation, authenticated approval or production certification.
 metadata:
   version: "0.5.0"
   owner: "Product / QA Evidence"
