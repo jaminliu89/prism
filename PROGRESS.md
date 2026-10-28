@@ -31,3 +31,12 @@
 ## 2026年10月27日：全面项目审计（0.1.2）
 
 用户明确Site Clone承担项目完整性、安全、内部人员/Agent协作和编排检查。其本体PR #1已合main bc3f7d7，新project-audit.md为唯一详细判据；Prism更新源锁/直接入口并显式输出审计维度，保留实际执行UNKNOWN与原发布权限。33项回归及doctor通过，独立静态审查通过；已按审查建议补缺失/空项目审计路径反例；未对外部产品实际审计。集团路由同步与合并由SkillHub当前任务承接。
+
+
+## 2026年10月29日：上游指纹取证方法（feat/upstream-forensics 分支，待 PR）
+
+新增 docs/UPSTREAM_FORENSICS.md（分层取证方法论：代码层定位 worker 本体 → 响应 usage 指纹识别 → 网络层绕过 fake-ip 抓真实出站 → 落账）与 scripts/probe_upstream.py（可复用探测脚本，`--catalog/--sample/--json`，内建规避本机代理、max_tokens=1 最小消耗）。
+
+该方法源自对 Vibe助手（com.example.api-worker v1.0.18）上游取证实战：经解包定位 worker 本体（undici 通用代理、无内嵌模型 URL）→ 四池抽样响应 usage 含 OpenAI o3/gpt-5 指纹（accepted/rejected_prediction_tokens），与模型目录 owned_by=vertex-ai 标记矛盾 → 关闭本机 fake-ip 代理后 lsof 抓出 worker 出站直连 117.139.140.63:443（deepl.9182ai.com，成都四川移动/腾讯云 CDN，默认证书 *.cdn.myqcloud.com）→ 定案为 Vibe 自建国内 OpenAI 兼容聚合网关，owned_by=vertex-ai 为伪装标记。
+
+边界：真实模型供应商位于网关 CDN 回源侧，本机不可见，未唯一点名；全部只读取证、敏感凭证脱敏、取证结果在 git 忽略的 audits/。本分支为方法论文档与脚本，未改 sources/skillhub/ 或 SKILL.md 主体；是否合并由用户与远端为准。
