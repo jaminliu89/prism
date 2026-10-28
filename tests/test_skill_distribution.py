@@ -12,10 +12,21 @@ class SkillDistributionTests(unittest.TestCase):
         self.assertTrue(text.startswith('---\n'))
         header = text.split('---', 2)[1]
         self.assertRegex(header, r'(?m)^name: prism$')
-        self.assertRegex(header, r'(?m)^description: .{30,}$')
+        self.assertRegex(header, r'(?m)^description: (?:[>|][-+]?|.{30,})$')
         self.assertNotIn('TODO', header)
         self.assertIn('npx skills add jaminliu89/prism', text)
         self.assertIn('npx skills add ./prism', text)
+
+    def test_description_does_not_use_unquoted_yaml_mapping_delimiter(self):
+        header = (ROOT/'SKILL.md').read_text().split('---', 2)[1]
+        first = next(line for line in header.splitlines() if line.startswith('description:'))
+        scalar = first.split(':', 1)[1].strip()
+        if scalar in ('>', '>-', '|', '|-'):
+            body = re.search(r'(?m)^description:.*\n((?:[ \t]+[^\n]*\n)+)', header)
+            self.assertIsNotNone(body)
+            self.assertGreater(len(body.group(1).strip()), 30)
+        elif not scalar.startswith(('"', "'")):
+            self.assertNotRegex(scalar, r':\s', 'plain YAML scalar contains a nested mapping delimiter')
 
     def test_all_declared_local_routes_exist(self):
         text = (ROOT / 'SKILL.md').read_text(encoding='utf-8')
@@ -29,6 +40,8 @@ class SkillDistributionTests(unittest.TestCase):
             'scripts/prism.py',
             'scripts/foundry.py',
             'scripts/foundry_web.py',
+            'docs/MISSION.md',
+            'scripts/mission.py',
         )
         for path in expected:
             with self.subTest(path=path):

@@ -90,10 +90,11 @@ test_unknown_and_na_need_reasons (test_prism.PrismTests.test_unknown_and_na_need
 test_unknown_counts_as_incomplete (test_prism.PrismTests.test_unknown_counts_as_incomplete) ... ok
 test_wrong_revision_rejected (test_prism.PrismTests.test_wrong_revision_rejected) ... ok
 test_all_declared_local_routes_exist (test_skill_distribution.SkillDistributionTests.test_all_declared_local_routes_exist) ... ok
+test_description_does_not_use_unquoted_yaml_mapping_delimiter (test_skill_distribution.SkillDistributionTests.test_description_does_not_use_unquoted_yaml_mapping_delimiter) ... ok
 test_no_implicit_public_or_release_permission (test_skill_distribution.SkillDistributionTests.test_no_implicit_public_or_release_permission) ... ok
 test_root_skill_has_discoverable_frontmatter (test_skill_distribution.SkillDistributionTests.test_root_skill_has_discoverable_frontmatter) ... ok
 
 ----------------------------------------------------------------------
-Ran 94 tests in 11.274s
+Ran 95 tests in 10.139s
 
 OK
