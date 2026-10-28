@@ -1,8 +1,8 @@
 ---
 name: site-reverse-clone
-description: 集团目标复刻、技术走查与证据审计专项。用于网页、App、桌面端、API、CLI 的抓取取证、行为与契约核对、架构复原、复刻保真度检查和归档；由 REA、交付走查或工程质量门禁调用。
+description: 集团项目完整性、安全、内部人员/Agent协作编排与目标复刻审计专项。用于网页、App、桌面端、API、CLI 的抓取取证、行为与契约核对、架构复原、复刻保真度检查和归档；由 REA、交付走查或工程质量门禁调用。
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   owner: "CTAB / QA Evidence"
 ---
 
@@ -17,7 +17,7 @@ metadata:
 ## 来源与可用性
 
 - 仓库：https://github.com/jaminliu89/site-reverse-clone
-- 锁定 revision：`2fa6cb0cb5fadb02ef8f19d05e586f7748b58f37`
+- 锁定 revision：`bc3f7d7e2a70bcd1c4e6d04fd6a770c1ea9ad0f4`
 - 方法入口：`skills/site-reverse-clone/SKILL.md`；抓取引擎：`skills/web-clone/`；专项适配器：`adapters/`。
 - 开工先读取锁定版本方法与本次所需 references，发现实际 CLI/MCP/浏览器及目标权限。上游更新须对比差异和复验后更新锁定，不自动跟随 main。
 - 集团 active 表示本适配协议已登记；不等于已安装工具、MCP 会话可用或真实目标已通过。网页能力有上游实测记录；API 部分实测；原生 App、Electron、CLI 的上游方法齐备但缺实战样本，本次逐目标验证。
@@ -30,9 +30,17 @@ metadata:
 - 外部资源读取与归档经 `connector-os`；实现交 CTO/工程体系，产品映射交 CPO，技术取舍交 CTAB。独立 QA 与最终发布门禁沿用现有制度。
 - 不抢占通用“走查/QA/审计”别名，不新增董事会或项目状态机。
 
+## 普通项目全面审计
+
+用户已明确本能力一般用于项目完整性、安全、内部人员/Agent协作和编排审计，不限于复刻项目。必须读取独立仓库锁定版本的 `skills/site-reverse-clone/references/project-audit.md`，本体方法版本1.6.0；集团不复制第二份细则。
+
+检查需求→用例→页面/角色/状态→接口/服务/模型→存储/真实输出→任务/证据闭环；安全覆盖凭证、身份/对象/租户授权、输入/工具执行、Prompt注入、供应链和运行配置。协作覆盖实际principal与接手、任务合同、最小权限、依赖/调度、并发/重试/取消/预算/终止、交接集成、独立验收及失败回流/重开。岗位登记、流程图、派工消息和自述都不能单独证明合格。无内部记录则UNKNOWN；逐域报告，不以平均分盖掉核心/安全/协作阻断。
+
+明确项目完整性/协作编排审计可直达本专项；交付/上线仍由delivery-walkthrough主责，Prism可以串联本专项与checklist。审计不自动触发复刻、改代码或生产发布。
+
 ## 集团现有工具协作
 
-执行前加载 [工具协作合同](references/TOOL_COLLABORATION.md) 与其机器可读分工。按目标调用集团现有 Playwright、browser-use、Crawl4AI、frontend-design 和工程/设计/Connector 工具箱；复用现有脚本和接口，不重复造抓取器或浏览器Agent。工具按证据缺口选择，交接同任务同版本证据，关键路径复验后归档。精确复刻与重设计使用不同视觉判据。
+执行前加载 [工具协作合同](references/TOOL_COLLABORATION.md) 与其机器可读分工。按目标调用集团现有 Playwright、browser-use、Crawl4AI、Scrapling、frontend-design 和工程/设计/Connector 工具箱；复用现有脚本和接口，不重复造抓取器或浏览器Agent。工具按证据缺口选择，交接同任务同版本证据，关键路径复验后归档。精确复刻与重设计使用不同视觉判据。
 
 ## 审计执行合同
 

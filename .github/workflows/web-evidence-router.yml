@@ -1,0 +1,18 @@
+name: Prism Web Evidence Routing QA
+on:
+  pull_request:
+    paths: ["scripts/web_evidence_router.py", "tests/test_web_evidence_router.py", "docs/WEB_EVIDENCE_ROUTING.md", "SKILL.md", "UPSTREAM.lock.json", "sources/skillhub/site/**", ".github/workflows/web-evidence-router.yml"]
+  push:
+    branches: [main]
+    paths: ["scripts/web_evidence_router.py", "tests/test_web_evidence_router.py", "docs/WEB_EVIDENCE_ROUTING.md", "SKILL.md", "UPSTREAM.lock.json", "sources/skillhub/site/**", ".github/workflows/web-evidence-router.yml"]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: python3 scripts/prism.py doctor
+      - run: python3 -m unittest discover -s tests -p 'test_web_evidence_router.py' -v
+      - run: python3 -m unittest discover -s tests -p 'test_skill_distribution.py' -v

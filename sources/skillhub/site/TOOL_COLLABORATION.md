@@ -6,13 +6,22 @@
 
 | 目标 | 优先候选 | 交接给下步的证据 |
 |---|---|---|
-| 批量清点页面、资料、文案与结构化数据 | Crawl4AI；已有抓取工具 | URL清单、原始HTML、Markdown/JSON、失败项 |
+| 批量清点页面、资料、文案与结构化数据 | Crawl4AI 优先；Scrapling 作为可验证替代 | URL清单、原始HTML、Markdown/JSON、失败项 |
+| 价格、商品目录、表格、精确字段与页面结构变化 | Scrapling 优先；Crawl4AI 结构化提取作为替代 | URL与原始HTML/快照、字段Schema、JSON/CSV、选择器/来源与失败项 |
 | 探索未知入口、多步操作与页面状态 | browser-use；宿主允许的原生浏览器或Playwright | 实际操作日志、前后状态、发现的路径与阻断 |
 | 固化流程、抓取运行时证据与复验 | Playwright；集团既有web-clone脚本 | 明确断言、trace、截图、网络/控制台、回归结果 |
 | 实现与修复视觉 | 集团设计部门选用frontend-design、Impeccable等 | 设计理由、令牌、实际组件与同视口对照 |
 | 源码/API/架构审计与归档 | REA、工程工具箱、设计部门、Connector OS | 源码/日志定位、发现、架构图、摘要和读回 |
 
-Crawl4AI也有动态页面能力，Playwright也能探索；表中按主要目的分工，不制造绝对技术边界。按缺口选择最少工具，不要求每项任务把全部工具跑一遍。现有web-clone若已封装Playwright则直接复用脚本。单页明确用例可直接Playwright；批量资料研究无需硬接视觉设计；非网页目标按本体类型规则改用现有原生分析工具。
+Crawl4AI 也支持结构化抽取，Scrapling 也能批量爬取及输出 Markdown；分工按当前证据目标选首选与备用，而不是排他性能力。Crawl4AI也有动态页面能力，Playwright也能探索；表中按主要目的分工，不制造绝对技术边界。按缺口选择最少工具，不要求每项任务把全部工具跑一遍。现有web-clone若已封装Playwright则直接复用脚本。单页明确用例可直接Playwright；批量资料研究无需硬接视觉设计；非网页目标按本体类型规则改用现有原生分析工具。
+
+## 双采集引擎选择与失败切换
+
+- 文档、FAQ、文章、多页面 Markdown 归档：优先 Crawl4AI；精准字段、商品目录、价格或易变选择器：优先 Scrapling。先验可用性与版本，二者均可作为对方经过实测的替代。
+- 输出共同包含 task_id/target/revision/case_id、原始 URL、采集时间、原始HTML或快照引用、sha256、字段Schema及状态；无法取得原件时写 PARTIAL，不凭一段 Markdown 或 JSON 声称目标全站完整。
+- 同法失败最多两次就切换观测面或备用引擎。备用仍须满足原出口判据；不把 HTTP 200 当字段正确、不把 MCP 工具已登记当成功运行。
+- 遵守站点授权、robots/条款与合理速率。不借切换引擎绕过访问权限、验证码或反爬限制；出现门控先报告 BLOCKED 及合法后续条件。
+- `tool-collaboration.json` 的 selection_rules 供 Prism 的任务路由器使用；它只决定候选顺序，不授权安装、联网或数据外传。
 
 ## 开工与交接
 
