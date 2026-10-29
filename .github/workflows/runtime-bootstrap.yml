@@ -1,0 +1,30 @@
+name: Prism Runtime Bootstrap QA
+on:
+  pull_request:
+    paths:
+      - 'scripts/runtime_bootstrap.py'
+      - 'tests/test_runtime_bootstrap.py'
+      - 'docs/RUNTIME_BOOTSTRAP.md'
+      - 'SKILL.md'
+      - 'docs/MISSION.md'
+      - '.github/workflows/runtime-bootstrap.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/runtime_bootstrap.py'
+      - 'tests/test_runtime_bootstrap.py'
+      - 'docs/RUNTIME_BOOTSTRAP.md'
+      - 'SKILL.md'
+      - '.github/workflows/runtime-bootstrap.yml'
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run isolated runtime bootstrap positive and negative cases
+        run: python3 -m unittest discover -s tests -p 'test_runtime_bootstrap.py' -v
+      - name: Verify Prism frozen source assets
+        run: python3 scripts/prism.py doctor
