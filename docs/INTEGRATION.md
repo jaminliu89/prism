@@ -38,3 +38,9 @@ UPSTREAM.lock.json记录精确source repository/commit/path与本地SHA。`sourc
 ## Web Evidence Router（2026-10-28）
 
 Crawl4AI / Scrapling 双引擎按任务目标编排，候选顺序见固定 SkillHub 协作合同，脚本 `scripts/web_evidence_router.py` 只给执行宿主提供确定性选路、失败切换与证据摘要核验，不能当作真实抓取或MCP连接证据；详见 `docs/WEB_EVIDENCE_ROUTING.md`。源事实、权限和独立QA仍沿现有原owner。
+
+## 网络包证据编排（Wireshark/TShark，2026-10-29）
+
+明确网络协议、PCAP/PCAPNG、DNS/TLS/HTTP时序问题时，集团仍由 `agent-reverse-engineering` 受理逆向任务、委托 `network-packet-intelligence` 这一 TOOLBOX；Prism 仅按 [网络证据路由](NETWORK_PACKET_EVIDENCE_ROUTING.md) 选择 TShark/capinfos/editcap 或要求人工 GUI 复核，并与当前审计/ Mission 共享同版本 Evidence ID。不新建独立安全主责、不重写SkillHub原方法、不自动上传包或进行实际网卡捕获。
+
+`python3 scripts/packet_evidence_router.py route --intent capture_metadata --access owned_capture` 只生成计划；`verify-evidence` 只核证据文件 SHA256/路径和最低结构约束，不代表网络结论认证。实时捕获须独立明确授权，即便声明已批准也仍为 PLAN_ONLY，交当前有权限宿主另行执行。无样本、无 CLI、无归属授权时保留 UNKNOWN/BLOCKED；独立QA与发布主责不变。
