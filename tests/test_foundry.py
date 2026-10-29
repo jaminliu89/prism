@@ -24,7 +24,9 @@ class FoundryTests(unittest.TestCase):
 
     def send_all(self, stage):
         for artifact in foundry.DOCS[stage]:
-            foundry.submit(self.root, artifact, self.source, "writer")
+            source = (ROOT / "tests/fixtures/architecture-sketch.md"
+                      if artifact == foundry.architecture_gate.ARCHITECTURE_PATH else self.source)
+            foundry.submit(self.root, artifact, source, "writer")
 
     def finish_stage(self, stage, kind="self_check", actor="reviewer"):
         self.assertEqual(foundry.current(foundry.load(self.root)), stage)

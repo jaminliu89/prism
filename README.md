@@ -2,6 +2,19 @@
 
 独立的产品规划与证据审计入口。可单独使用，也可由SkillHub路由，与Blueprint、Checklist、Site Clone协作。
 
+## Mermaid 架构先行（0.7.0）
+
+新产品与系统级研发在详细 PRD/API/数据/Agent 契约前，先产出 `docs/02-architecture-sketch.md` 并经实际架构审查。Prism Foundry 阶段 2 现在通过 `scripts/architecture_gate.py` 做 Mermaid 和架构推演段落静态检查，并要求正常阶段审查与确认，阶段 3 再写详细契约。正式架构/技术选型仍在原阶段 4，不重复建立方法论。旧项目不被静默迁移，普通修复复用既有架构。
+
+[查看架构先行流程与 Mermaid 范例](docs/ARCHITECTURE_FIRST.md)
+
+```sh
+python3 scripts/architecture_gate.py tests/fixtures/architecture-sketch.md
+python3 -m unittest discover -s tests -p 'test_architecture_gate.py' -v
+```
+
+以上仅是结构验证，并非 Mermaid 浏览器渲染、架构设计正确性或独立审批。
+
 ## 运行时环境自动补齐与预览部署（0.6.0）
 
 Prism Mission 新增 [Runtime Bootstrap](docs/RUNTIME_BOOTSTRAP.md)：自动检查必要 CLI、项目依赖与部署状态；支持受控项目内 Python venv / npm ci、安全范围内的 macOS Homebrew 工具安装、本地静态预览，以及**已有 Vercel 项目**的非生产预览。当前会话内按权限与固定配方实际执行并验证，失败明确报告缺口，不把文档/安装候选冒充已部署。

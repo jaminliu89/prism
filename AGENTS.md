@@ -2,6 +2,7 @@
 
 先读 README.md、PROGRESS.md、docs/SCOPE.md、docs/INTEGRATION.md 和 UPSTREAM.lock.json。
 
+- **Architecture First**：先恢复目标/资产/范围并设计 Mermaid 系统图、交互/数据流、边界、取舍和失败条件，执行真实 SA/CTAB/QA 视角审查，再从已确认架构向下推导详细 PRD/API/数据/Agent 契约与任务。新 Foundry 项目阶段 2 的 `docs/02-architecture-sketch.md` 为机器必需文件，`scripts/architecture_gate.py` 仅验结构，不认证语义/渲染；旧项目不改变既有批准顺序。参见 `docs/ARCHITECTURE_FIRST.md`。
 - Prism 是规划/审计及目标驱动工程编排入口，不另建浏览器、抓取、代码生成、模型或发布平台。Mission明确授权时由当前宿主/选定编码器实际实现；普通审计仍只读。Mission合同见docs/MISSION.md，不能把Foundry规划权限当工程权限。
 - `sources/` 是固定版本只读快照；修改原能力须回来源主库，经差异审查后更新锁与副本。不在两个仓库维护同一套方法。
 - 产品审计默认只读。修复、原型、付费、外发、生产改动分别依用户明确授权；产物不自动入库到被审计项目。

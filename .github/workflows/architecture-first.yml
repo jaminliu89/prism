@@ -1,0 +1,40 @@
+name: Prism Architecture First Gate
+on:
+  pull_request:
+    paths:
+      - 'scripts/architecture_gate.py'
+      - 'scripts/foundry.py'
+      - 'tests/test_architecture_gate.py'
+      - 'tests/fixtures/architecture-sketch.md'
+      - 'tests/test_foundry.py'
+      - 'tests/test_foundry_guards.py'
+      - 'tests/test_foundry_acceptance.py'
+      - 'docs/ARCHITECTURE_FIRST.md'
+      - 'docs/MISSION.md'
+      - 'SKILL.md'
+      - '.github/workflows/architecture-first.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/architecture_gate.py'
+      - 'scripts/foundry.py'
+      - 'tests/test_architecture_gate.py'
+      - 'docs/ARCHITECTURE_FIRST.md'
+      - '.github/workflows/architecture-first.yml'
+permissions:
+  contents: read
+jobs:
+  architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Mermaid sketch pre-contract gate
+        run: python3 scripts/architecture_gate.py tests/fixtures/architecture-sketch.md
+      - name: Regression and legacy project compatibility
+        run: python3 -m unittest discover -s tests -v
+      - name: Source-lock integrity
+        run: python3 scripts/prism.py doctor

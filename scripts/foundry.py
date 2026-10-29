@@ -19,12 +19,14 @@ if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
 import foundry_guard as guard
 import foundry_panel as panel
+import architecture_gate
 
 SCHEMA = 1
 DOCS = {
     0: ("docs/00-idea-brief.md", "docs/00-asset-recall.md"),
     1: ("docs/01-product-research.md",),
-    2: ("docs/02-stories-and-journeys.md", "docs/02-state-machines.md"),
+    2: ("docs/02-stories-and-journeys.md", "docs/02-state-machines.md",
+        architecture_gate.ARCHITECTURE_PATH),
     3: ("docs/03-prd.md", "docs/03-design-system.md"),
     4: ("docs/04-architecture.md", "docs/04-technology-decisions.md",
         "docs/04-security-threat-model.md"),
@@ -32,6 +34,14 @@ DOCS = {
     6: ("docs/07-consistency-audit.md", "docs/08-engineering-handoff.md",
         "docs/07-security-acceptance-plan.md"),
 }
+def docs_for(data, stage):
+    """New projects include a pre-contract architecture sketch, legacy plans stay intact."""
+    paths = DOCS[stage]
+    if data.get("architecture_first_schema") != 1 and stage == 2:
+        return tuple(p for p in paths if p != architecture_gate.ARCHITECTURE_PATH)
+    return paths
+
+
 QUESTIONS = {
     "audience": "Who is the target user and in which concrete situation?",
     "problem": "Which actual problem or unmet need will this solve?",
@@ -134,6 +144,7 @@ def init(root, idea, actor):
     data = {
         "schema_version": SCHEMA, "revision": 1, "idea_original": idea.strip(),
         "created_at": now(), "updated_at": now(), "owner_claim": actor,
+        "architecture_first_schema": 1,
         "answers": {}, "accepted_changes": [],
         "stages": [{"confirmed": False, "artifacts": {}, "reviews": [],
                     "confirmation": None} for _ in range(7)],
@@ -171,7 +182,7 @@ def verified_artifact(root, stage, path):
 
 def pending(root, data, index):
     s = data["stages"][index]
-    missing = [p for p in DOCS[index] if not verified_artifact(root, s, p)]
+    missing = [p for p in docs_for(data, index) if not verified_artifact(root, s, p)]
     unanswered = ([q for q in QUESTIONS if not data["answers"].get(q)]
                   if index == 0 else [])
     review = any(r["verdict"] == "pass" and
@@ -197,7 +208,7 @@ def status(root, data=None):
     data = data or load(root)
     active = current(data)
     stale_confirmed = [p for i, stage in enumerate(data["stages"])
-                       if stage["confirmed"] for p in DOCS[i]
+                       if stage["confirmed"] for p in docs_for(data, i)
                        if not verified_artifact(root, stage, p)]
     stages = []
     for i, s in enumerate(data["stages"]):
@@ -243,7 +254,7 @@ def next_step(root, data=None):
         return {"status": "BLUEPRINT_READY", "next": "export handoff; engineering needs separate approval"}
     gate = s["stage_gate"]
     return {
-        "stage": i, "name": STAGE_NAMES[i], "expected_documents": list(DOCS[i]),
+        "stage": i, "name": STAGE_NAMES[i], "expected_documents": list(docs_for(data, i)),
         "missing_documents": gate["missing_artifacts"],
         "questions": {q: QUESTIONS[q] for q in gate["unanswered"]},
         "review_required": not gate["passing_review"],
@@ -277,11 +288,16 @@ def submit(root, artifact, source, actor, expected=None):
     data = load(root)
     check_rev(data, expected)
     index = current(data)
-    if index >= 7 or artifact not in DOCS[index]:
+    if index >= 7 or artifact not in docs_for(data, index):
         fail("artifact not part of the currently open stage")
     content = Path(source).read_bytes()
     if not content.strip():
         fail("empty artifact")
+    if artifact == architecture_gate.ARCHITECTURE_PATH:
+        try:
+            architecture_gate.validate(content)
+        except ValueError as exc:
+            fail("architecture sketch blocked before contract: " + str(exc))
     target = file_under(root, artifact)
     write_atomic(target, content)
     data["stages"][index]["artifacts"][artifact] = {
@@ -376,7 +392,9 @@ def decide(root, id_, outcome, actor, reason, expected=None):
                         "at": now(), "identity_verified": False}
     invalidated = []
     if outcome == "accept":
-        start = item["impact_from_stage"]
+        start = (2 if item["category"] == "architecture" and
+                 data.get("architecture_first_schema") == 1
+                 else item["impact_from_stage"])
         data["accepted_changes"].append(id_)
         for i in range(start, 7):
             stage = data["stages"][i]
@@ -385,7 +403,7 @@ def decide(root, id_, outcome, actor, reason, expected=None):
             stage["confirmed"] = False
             stage["confirmation"] = None
             stage["reviews"] = []
-            stage["stale_artifacts"] = list(DOCS[i])
+            stage["stale_artifacts"] = list(docs_for(data, i))
             for topic in data.get("panel_topics", []):
                 if topic["stage"] >= i:
                     topic["status"] = "superseded"
@@ -437,7 +455,7 @@ def assign_task(root, role, artifact, objective, actor, expected=None):
     data = load(root)
     check_rev(data, expected)
     stage = current(data)
-    if stage >= 7 or role not in AGENT_ROLES or artifact not in DOCS[stage]:
+    if stage >= 7 or role not in AGENT_ROLES or artifact not in docs_for(data, stage):
         fail("unknown role or artifact outside active stage")
     if not objective.strip() or not actor.strip():
         fail("task objective and requesting actor required")
@@ -491,6 +509,11 @@ def deliver_task(root, id_, source, actor, expected=None):
     content = Path(source).read_bytes()
     if not content.strip():
         fail("cannot deliver empty task artifact")
+    if task["artifact"] == architecture_gate.ARCHITECTURE_PATH:
+        try:
+            architecture_gate.validate(content)
+        except ValueError as exc:
+            fail("architecture sketch blocked before contract: " + str(exc))
     path = task["artifact"]
     target = file_under(root, path)
     write_atomic(target, content)
@@ -554,7 +577,7 @@ def handoff(root, actor):
     if not guard.gate(data)["design_ready"]:
         fail("security design review incomplete; handoff denied")
     for i, stage in enumerate(data["stages"]):
-        for path in DOCS[i]:
+        for path in docs_for(data, i):
             if not verified_artifact(root, stage, path):
                 fail("stale or missing artifact: " + path)
     packet = {

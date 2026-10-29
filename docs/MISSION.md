@@ -10,6 +10,14 @@ Prism由当前实际执行Agent承担产品负责人、架构师和技术集成�
 
 有实际可用团队时按最小必要角色分工，工程执行者、架构/产品责任及验收实际principal分别登记。无人接手时当前Agent继续执行，保留独立QA缺口；不能把角色扮演当真实部门。集团任务沿用已有engineering-agent-os/board-workflow，不创建第二个集团生命周期。独立使用时按当前项目现有规范执行。
 
+## Architecture First：目标简报与详细契约分离（0.7.0）
+
+用户原始目标、资产回收、许可范围、最低验收意图属于架构**输入**，可以先记录在 Mission GOAL / 原始 spec 中；它们不是详细系统/API/数据模型契约。新软件/架构级变更应先使用现有 Foundry 阶段 0–2 明确需求和 Mermaid 架构草图，再审查/确认，之后进入阶段 3 详细 PRD、阶段 4 正式架构/技术选择、任务拆解和实现。已有获批准架构的明确 bugfix 可复用既有基线并说明影响范围，不从零重复画图。
+
+当前 Agent 在接入新目标时应先读 `docs/ARCHITECTURE_FIRST.md`，检查 `docs/02-architecture-sketch.md` 或项目既有正式 `docs/architecture/SYSTEM.md` 是否确实涵盖系统边界、关键组件、状态与数据流、失败恢复及选型取舍；如果架构仍是 UNKNOWN，不得据此编造 API、数据结构或自动上线。Mermaid 用 `python3 scripts/architecture_gate.py <path>` 静态预检；新 Foundry 项目有机器闸门，其他项目由项目控制面/真实审查和授权记录保障，不得把文字规则冒充所有 Agent 已安装的硬钩子。
+
+安装/部署发生在**架构与具体实施范围明确之后**；Runtime Bootstrap 的 `plan` 可只读探测，`apply` 仍受各类权限门禁约束。复杂度适配：纯取证/CTF/REA、常规只读审计或无架构变动的小修复不强制新增图；重大设计变更通过原 CHG 机制重新审查受影响基线。
+
 ## 四种目标合同
 
 | profile | 最终目标及证据 |
