@@ -54,7 +54,7 @@ class MermaidArchitectureGate(unittest.TestCase):
             architecture_gate.validate(VALID.replace("    U[User]", "    click U href \"https://example.org\"\n    U[User]"))
         with self.assertRaisesRegex(ValueError, "visible dependency"):
             architecture_gate.validate(VALID.replace("    UI --> API", "    UI  API").replace("    U[User] --> UI[Browser client]", "    U[User]  UI[Browser client]").replace("    API --> DB", "    API  DB"))
-        with self.assertRaisesRegex(ValueError, "too small"):
+        with self.assertRaisesRegex(ValueError, "exceeds size limit"):
             architecture_gate.validate("x" * (architecture_gate.MAX_BYTES + 1))
 
     def test_stage_two_blocks_contract_until_valid_diagram_and_review(self):
