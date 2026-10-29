@@ -6,20 +6,20 @@
     {
       "id": "blueprint-prompt",
       "repository": "jaminliu89/skill-hub",
-      "commit": "301cb2591a3a91fd2135a54239a2f236cb7d7b4e",
+      "commit": "50dd72be1eb3e5ba7927a8d6d4097d4c4899e8b1",
       "source_path": "skills/vibecoding/idea-to-blueprint/references/MASTER_PROMPT.md",
       "path": "sources/skillhub/blueprint/MASTER_PROMPT.md",
-      "sha256": "2549ff45a8f0570d1c3622c38f5308ae620957cba0be524a0fa3e2e9f662a727",
-      "source_url": "https://github.com/jaminliu89/skill-hub/blob/301cb2591a3a91fd2135a54239a2f236cb7d7b4e/skills/vibecoding/idea-to-blueprint/references/MASTER_PROMPT.md"
+      "sha256": "57fee20d60ce84b987f6541b880fa0e9e01a0d36a096d646e4e7d354c7523a47",
+      "source_url": "https://github.com/jaminliu89/skill-hub/blob/50dd72be1eb3e5ba7927a8d6d4097d4c4899e8b1/skills/vibecoding/idea-to-blueprint/references/MASTER_PROMPT.md"
     },
     {
       "id": "blueprint-contract",
       "repository": "jaminliu89/skill-hub",
-      "commit": "301cb2591a3a91fd2135a54239a2f236cb7d7b4e",
+      "commit": "50dd72be1eb3e5ba7927a8d6d4097d4c4899e8b1",
       "source_path": "skills/vibecoding/idea-to-blueprint/references/DOCUMENT_CONTRACT.md",
       "path": "sources/skillhub/blueprint/DOCUMENT_CONTRACT.md",
-      "sha256": "7eda496acd09eb51fea288630fb1753c818ea3d227d61353c81342f33404fbe3",
-      "source_url": "https://github.com/jaminliu89/skill-hub/blob/301cb2591a3a91fd2135a54239a2f236cb7d7b4e/skills/vibecoding/idea-to-blueprint/references/DOCUMENT_CONTRACT.md"
+      "sha256": "87ee7eb7d018b2fcee0eed95fc31c1918654907b1108a81add7fac0e019e5c74",
+      "source_url": "https://github.com/jaminliu89/skill-hub/blob/50dd72be1eb3e5ba7927a8d6d4097d4c4899e8b1/skills/vibecoding/idea-to-blueprint/references/DOCUMENT_CONTRACT.md"
     },
     {
       "id": "checklist",
