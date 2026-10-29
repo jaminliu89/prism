@@ -24,7 +24,9 @@ class FoundryGuardTests(unittest.TestCase):
             foundry.answer(self.root, key, "Fixture " + key, "owner")
         for stage in range(4):
             for path in foundry.DOCS[stage]:
-                foundry.submit(self.root, path, self.doc, "writer")
+                source = (ROOT / "tests/fixtures/architecture-sketch.md"
+                          if path == foundry.architecture_gate.ARCHITECTURE_PATH else self.doc)
+                foundry.submit(self.root, path, source, "writer")
             foundry.review(self.root, "pass", "self_check", "reviewer", "Synthetic")
             foundry.confirm(self.root, "owner", "Confirm fixture")
 
