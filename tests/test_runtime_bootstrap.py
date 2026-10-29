@@ -91,6 +91,30 @@ class RuntimeBootstrapTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Symlink"):
             runtime.inspect(self.project, preview="local-static", artifact="outside")
 
+    def test_preview_rejects_symlink_inside_artifact(self):
+        dist = self.project / "web" / "dist"
+        dist.mkdir(parents=True)
+        (dist / "index.html").write_text("fixture")
+        (dist / "leak").symlink_to(self.project / "secret.txt")
+        with self.assertRaisesRegex(ValueError, "symlink"):
+            runtime.apply(self.project, preview="local-static", allow_local=True)
+
+    def test_macos_preview_stop_fails_closed_on_unrelated_pid(self):
+        state = self.project / ".prism-tools"
+        state.mkdir()
+        (state / "preview.json").write_text(json.dumps({"pid": 999999999, "url": "http://127.0.0.1:8775/"}))
+        with mock.patch.object(runtime.platform, "system", return_value="Darwin"), mock.patch.object(
+                runtime.Path, "is_file", autospec=True) as check:
+            def file_exists(path):
+                return path == state / "preview.json"
+            check.side_effect = file_exists
+            with mock.patch.object(runtime.subprocess, "run") as run, mock.patch.object(
+                    runtime.os, "kill") as kill:
+                run.return_value = mock.Mock(returncode=0, stdout="unrelated-process")
+                result = runtime.stop_preview(self.project)
+                self.assertEqual(result["status"], "MANUAL_STOP_REQUIRED")
+                kill.assert_not_called()
+
     def test_local_static_requires_permission_then_serves_loopback(self):
         dist = self.project / "web" / "dist"
         dist.mkdir(parents=True)
