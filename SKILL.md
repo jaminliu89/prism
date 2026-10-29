@@ -3,7 +3,7 @@ name: prism
 description: >-
   Use Prism for product planning, evidence audits, and goal-driven CTF, hackathon, Dev or REA missions. When explicitly asked to reproduce a project's business or lead vibecoding, act as product owner and architect: inspect authorized targets, materialize project structure, implement the required backend and deployment methods through the current host, and verify actual results. Audit remains read-only; planning, scaffolds and structural checks are not implementation, authenticated approval or production certification.
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
   owner: "Product / QA Evidence"
 ---
 
@@ -29,6 +29,7 @@ Never make the private repository public or embed a personal access token in an 
 
 ## Activation and routing
 
+- **Runtime Bootstrap / 自动环境自举：** 当当前任务已获得开发/部署范围授权，优先读取 [运行时环境自举合同](docs/RUNTIME_BOOTSTRAP.md)。先用 `scripts/runtime_bootstrap.py plan` 识别缺失 CLI、项目锁依赖和部署条件；必要且已授权的项目内安装可由当前宿主通过受控 `apply` 执行，完成探活后自动接续 Mission。系统级 Homebrew、联网下载、外部预览、可能费用、凭证与生产发布均有独立门禁；普通只读审计不得触发安装。脚本不是无人值守后台服务，也不保证跨 Agent 已安装。
 - **Mission / 目标驱动研发：** 用户给最终目标、CTF、Hackathon、Dev、REA、复现生意、让Prism带vibecoding写代码时，读 [Mission合同](docs/MISSION.md)。Prism可兼任产品负责人、架构师与技术集成负责人，主动维护需求/任务并在已明确工程授权内实际编码，不把任务交回用户。优先复用当前宿主、现有工程控制面与可用专项，不另造模型、抓取或发布平台。
 - **Prism audit:** For product/repository evidence audit, read `docs/AUDIT_PROMPT.md`, `docs/REPORT_CONTRACT.md`, `docs/INTEGRATION.md` and run `python3 scripts/prism.py doctor`.
 - **Product Foundry:** For an idea-to-blueprint workflow, read `sources/skillhub/blueprint/MASTER_PROMPT.md`, `sources/skillhub/blueprint/DOCUMENT_CONTRACT.md`, `docs/FOUNDRY_WORKBENCH_V03.md`; inspect `python3 scripts/foundry.py --help`. Respect stages 0–6 and human confirmation gates.
