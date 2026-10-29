@@ -40,9 +40,10 @@ def require(condition, reason):
 
 
 def root_path(value):
-    root = Path(value).expanduser().resolve()
+    requested = Path(value).expanduser()
+    require(not requested.is_symlink(), "Symlink project root rejected")
+    root = requested.resolve()
     require(root.is_dir(), "Existing project directory required")
-    require(not root.is_symlink(), "Symlink project root rejected")
     return root
 
 
@@ -101,8 +102,10 @@ def inspect(project, tools=(), setups=(), npm_path="web", preview="none",
                             "scope": "project_only", "network_required": False})
         elif setup == "npm-ci":
             folder = safe_relative(root, npm_path, directory=True)
-            require((folder / "package.json").is_file() and (folder / "package-lock.json").is_file(),
-                    "npm-ci requires existing package.json and package-lock.json")
+            require((folder / "package.json").is_file() and (folder / "package-lock.json").is_file()
+                    and not (folder / "package.json").is_symlink()
+                    and not (folder / "package-lock.json").is_symlink(),
+                    "npm-ci requires existing local package.json and package-lock.json")
             actions.append({"action": setup, "status": "READY" if (folder / "node_modules").is_dir() else "NEEDS_SETUP",
                             "scope": "project_only", "network_required": True, "path": npm_path,
                             "lock_sha256": filehash(folder / "package-lock.json")})
@@ -180,8 +183,10 @@ def _project_setup(root, action, npm_path, *, allow_project, allow_network):
                 (venv / "pyvenv.cfg").is_file() else "NOT_VERIFIED", "result": result,
                 "scope": "project_only"}
     folder = safe_relative(root, npm_path, directory=True)
-    require((folder / "package.json").is_file() and (folder / "package-lock.json").is_file(),
-            "npm-ci requires package and exact lock")
+    require((folder / "package.json").is_file() and (folder / "package-lock.json").is_file()
+            and not (folder / "package.json").is_symlink()
+            and not (folder / "package-lock.json").is_symlink(),
+            "npm-ci requires local package and exact lock")
     if (folder / "node_modules").is_dir():
         return {"action": action, "status": "ALREADY_INSTALLED"}
     if not allow_network:
@@ -220,6 +225,8 @@ def _local_preview(root, artifact, port, authorized):
                 "reason": "--allow-local-preview required"}
     folder = safe_relative(root, artifact, directory=True)
     require(any(folder.iterdir()), "Missing built static files")
+    for child in folder.rglob("*"):
+        require(not child.is_symlink(), "Static preview artifact contains symlink")
     path = _preview_state(root)
     if path.exists():
         require(not path.is_symlink(), "Unsafe preview state")
@@ -273,9 +280,16 @@ def stop_preview(project):
     # PID reuse is possible. Check command line where OS supports proc before termination;
     # never signal an unknown process just because state has its PID.
     proc = Path("/proc") / str(pid) / "cmdline"
-    if not proc.is_file():
+    if proc.is_file():
+        args = proc.read_bytes().replace(b"\x00", b" ").decode(errors="replace")
+    elif platform.system() == "Darwin":
+        ps = subprocess.run(["/bin/ps", "-p", str(pid), "-o", "command="],
+                            shell=False, text=True, capture_output=True, timeout=5)
+        if ps.returncode != 0:
+            return {"status": "MANUAL_STOP_REQUIRED", "reason": "Cannot inspect preview PID"}
+        args = ps.stdout
+    else:
         return {"status": "MANUAL_STOP_REQUIRED", "reason": "Cannot safely prove ownership of PID"}
-    args = proc.read_bytes().replace(b"\x00", b" ").decode(errors="replace")
     if "http.server" not in args or "127.0.0.1" not in args or str(root) not in args:
         return {"status": "MANUAL_STOP_REQUIRED", "reason": "PID not identified as owned preview"}
     try:
