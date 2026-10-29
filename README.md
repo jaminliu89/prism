@@ -2,6 +2,17 @@
 
 独立的产品规划与证据审计入口。可单独使用，也可由SkillHub路由，与Blueprint、Checklist、Site Clone协作。
 
+## 运行时环境自动补齐与预览部署（0.6.0）
+
+Prism Mission 新增 [Runtime Bootstrap](docs/RUNTIME_BOOTSTRAP.md)：自动检查必要 CLI、项目依赖与部署状态；支持受控项目内 Python venv / npm ci、安全范围内的 macOS Homebrew 工具安装、本地静态预览，以及**已有 Vercel 项目**的非生产预览。当前会话内按权限与固定配方实际执行并验证，失败明确报告缺口，不把文档/安装候选冒充已部署。
+
+```sh
+python3 scripts/runtime_bootstrap.py plan --project /absolute/project --tool tshark --setup python-venv
+python3 scripts/runtime_bootstrap.py apply --project /absolute/project --setup python-venv --allow-project-install
+```
+
+默认 `plan` 无副作用。机器全局安装、联网、外部预览、生产发布、费用和密钥权限不能静默扩大；自动化只在实际有能力的宿主获得相应授权后执行。CLI 不内置云账户，不会自行长期后台运行。
+
 ## 目标驱动研发（Mission 0.5.0）
 
 明确让Prism承担CTF、Hackathon、Dev、REA或“复现这门生意并写代码”时，按[Mission合同](docs/MISSION.md)由当前Agent兼任产品负责人、架构师与集成负责人：主动取证、落地结构、实现必要后端与适用部署方法、实际验证并持续回流。普通审计仍只读；新模式不把Foundry规划权限扩大成工程或生产授权。
