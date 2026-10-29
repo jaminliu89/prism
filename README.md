@@ -40,6 +40,10 @@ python3 -m unittest discover -s tests -v
 
 `verify-report`检查 [报告合同](docs/REPORT_CONTRACT.md) 所述字段、证据摘要/版本/路径与已声明身份关系，返回STRUCTURALLY_VALID也可能有失败或受阻项；不认证证据内容、人员身份或产品通过，不替代独立QA。
 
+## Wireshark 网络证据专项（离线优先）
+
+按[网络证据编排合同](docs/NETWORK_PACKET_EVIDENCE_ROUTING.md)从已授权的PCAP/PCAPNG规划TShark、capinfos、editcap或Wireshark GUI分析。`python3 scripts/packet_evidence_router.py route --intent offline_protocol_timeline --access owned_capture` 只输出受控计划；未安装工具、未执行抓包、不代替REA/QA。实时接口抓包需要另外授权，Prism 不自动执行。
+
 ## 能力与边界
 
 - [通用审计Prompt](docs/AUDIT_PROMPT.md)：恢复目标、阶段和历史资产，审需求、流程、设计、架构、数据、AI、安全与交付证据，按适用性裁剪。
