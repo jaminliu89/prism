@@ -13,11 +13,11 @@ ARCHITECTURE_PATH = "docs/02-architecture-sketch.md"
 MAX_BYTES = 128 * 1024
 BLOCK = re.compile(r"(?im)^\`\`\`mermaid[ \t]*\n(.*?)^\`\`\`[ \t]*$", re.S | re.M)
 REQUIRED_HEADINGS = {
-    "goal": r"(?im)^#{2,4}\s*(?:目标|目的|Goal|Intent|Problem)\b?",
-    "boundary": r"(?im)^#{2,4}\s*(?:系统边界|边界|Boundary|System boundary|Scope)\b?",
-    "flow": r"(?im)^#{2,4}\s*(?:数据流|信息流|Data flow|Information flow|信息如何流转)\b?",
-    "tradeoff": r"(?im)^#{2,4}\s*(?:权衡|取舍|Trade.?offs?|Options|架构决策)\b?",
-    "risks": r"(?im)^#{2,4}\s*(?:风险|假设|失败恢复|Risks?|Assumptions?|Failure|Recovery)\b?",
+    "goal": r"(?im)^#{2,4}\s*(?:目标|目的|Goal|Intent|Problem)",
+    "boundary": r"(?im)^#{2,4}\s*(?:系统边界|边界|Boundary|System boundary|Scope)",
+    "flow": r"(?im)^#{2,4}\s*(?:数据流|信息流|Data flow|Information flow|信息如何流转)",
+    "tradeoff": r"(?im)^#{2,4}\s*(?:权衡|取舍|Trade.?offs?|Options|架构决策)",
+    "risks": r"(?im)^#{2,4}\s*(?:风险|假设|失败恢复|Risks?|Assumptions?|Failure|Recovery)",
 }
 # Diagram node labels are deliberately not interpreted as executable instructions.
 FORBIDDEN = re.compile(r"(?im)^\s*(?:click\s|%%\{init:|%%\{config:|accTitle:.*<script)")
