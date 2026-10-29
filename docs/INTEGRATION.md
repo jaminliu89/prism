@@ -44,3 +44,7 @@ Crawl4AI / Scrapling 双引擎按任务目标编排，候选顺序见固定 Skil
 明确网络协议、PCAP/PCAPNG、DNS/TLS/HTTP时序问题时，集团仍由 `agent-reverse-engineering` 受理逆向任务、委托 `network-packet-intelligence` 这一 TOOLBOX；Prism 仅按 [网络证据路由](NETWORK_PACKET_EVIDENCE_ROUTING.md) 选择 TShark/capinfos/editcap 或要求人工 GUI 复核，并与当前审计/ Mission 共享同版本 Evidence ID。不新建独立安全主责、不重写SkillHub原方法、不自动上传包或进行实际网卡捕获。
 
 `python3 scripts/packet_evidence_router.py route --intent capture_metadata --access owned_capture` 只生成计划；`verify-evidence` 只核证据文件 SHA256/路径和最低结构约束，不代表网络结论认证。实时捕获须独立明确授权，即便声明已批准也仍为 PLAN_ONLY，交当前有权限宿主另行执行。无样本、无 CLI、无归属授权时保留 UNKNOWN/BLOCKED；独立QA与发布主责不变。
+
+## Mermaid 架构先行（2026-10-29 · 0.7.0）
+
+Prism 只在现有 `idea-to-blueprint` 阶段 2 插入初步系统架构及数据流 Mermaid 结构闸门，先获确认，后在阶段 3 编写详细 PRD 并在阶段 4 完成正式架构与 CTAB 技术选型，不取代 CPO/PM、SA/CTAB 和原项目控制面。新 Foundry 项目包含 `architecture_first_schema=1`，旧版项目按原文档清单恢复。重大架构变更触发阶段 2 与下游重新审查；无变更的既有项目任务不反复生成合同。详见 `docs/ARCHITECTURE_FIRST.md`，门禁的机器检查只验证 Markdown/Mermaid 结构，不认证设计或实际多 Agent 执行。
