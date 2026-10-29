@@ -34,7 +34,8 @@ class ProductFoundryAcceptance(unittest.TestCase):
         return (
             ["docs/00-idea-brief.md", "docs/00-asset-recall.md"] if stage == 0 else
             ["docs/01-product-research.md"] if stage == 1 else
-            ["docs/02-stories-and-journeys.md", "docs/02-state-machines.md"] if stage == 2 else
+            ["docs/02-stories-and-journeys.md", "docs/02-state-machines.md",
+             "docs/02-architecture-sketch.md"] if stage == 2 else
             ["docs/03-prd.md", "docs/03-design-system.md"] if stage == 3 else
             ["docs/04-architecture.md", "docs/04-technology-decisions.md",
              "docs/04-security-threat-model.md"] if stage == 4 else
@@ -46,8 +47,10 @@ class ProductFoundryAcceptance(unittest.TestCase):
 
     def approve(self, stage):
         for p in self.docs(stage):
+            source = (ROOT / "tests/fixtures/architecture-sketch.md"
+                      if p == "docs/02-architecture-sketch.md" else self.document)
             self.cli_call("submit", "--artifact", p, "--file",
-                          str(self.document), "--actor", "writer")
+                          str(source), "--actor", "writer")
         self.cli_call("review", "--verdict", "pass", "--kind", "self_check",
                       "--actor", "reviewer", "--note", "Synthetic review only")
         return self.cli_call("confirm", "--actor", "owner",
