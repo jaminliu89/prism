@@ -1,0 +1,66 @@
+name: Release gate
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/release_gate.py'
+      - 'tests/test_release_gate.py'
+      - 'docs/RELEASE_ENGINEERING.md'
+      - 'docs/RELEASE_GATE.md'
+      - 'docs/verification/release-engineering/**'
+      - '.github/workflows/release-gate.yml'
+  push:
+    branches:
+      - 'main'
+      - 'feat/release-engineering-*'
+
+permissions:
+  contents: read
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Release gate and full Prism regression
+        run: python3 -m unittest discover -s tests -v
+      - name: Verify original method snapshots
+        run: python3 scripts/prism.py doctor
+
+      # 证据记录里的清单必须始终可核：哈希一旦和证据文件对不上，这条就红。
+      # 注意这只证明"证据结构与引用自洽"，不证明产物可用。
+      - name: Check the recorded release checklist
+        run: |
+          set -euo pipefail
+          python3 scripts/release_gate.py check \
+            docs/verification/release-engineering/release-checklist.json | tee /tmp/gate.json
+          grep -q '"status": "READY_FOR_HANDOFF"' /tmp/gate.json
+          grep -q '"release_authorized": false' /tmp/gate.json
+
+      # 反例：清单缺一道门必须被拒绝，否则这道门形同虚设
+      - name: A checklist missing a gate must be rejected
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, shutil, subprocess, sys, tempfile
+          from pathlib import Path
+
+          src = Path('docs/verification/release-engineering')
+          with tempfile.TemporaryDirectory() as tmp:
+              # 证据是相对清单的路径，必须整目录一起搬，否则先报"缺文件"而不是"缺门"
+              work = Path(tmp)/'release-engineering'
+              shutil.copytree(src, work)
+              data = json.loads((work/'release-checklist.json').read_text(encoding='utf-8'))
+              data['gates'] = [g for g in data['gates'] if g['id'] != 'process_hygiene']
+              target = work/'broken.json'
+              target.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+              proc = subprocess.run([sys.executable, 'scripts/release_gate.py', 'check', str(target)],
+                                    capture_output=True, text=True)
+          assert proc.returncode == 1, proc.stdout
+          assert 'missing gates: process_hygiene' in proc.stderr, proc.stderr
+          print('✓ 缺门被拒绝：', proc.stderr.strip())
+          PY

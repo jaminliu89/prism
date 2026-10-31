@@ -1,0 +1,11 @@
+$ PlistBuddy -c 'Print :CFBundleShortVersionString' Contents/Info.plist
+0.5.2
+$ cat Contents/Resources/VERSION
+0.5.2
+$ codesign -dv
+Executable=/private/var/folders/mc/6j4c9yjn0333p4_0zrmhd1sc0000gn/T/tmp.s8idcEz93j/VideoToText.app/Contents/MacOS/VideoToText
+Identifier=com.video2text.app
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=136683 flags=0x2(adhoc) hashes=4265+3 location=embedded
+Signature=adhoc
+Info.plist entries=14

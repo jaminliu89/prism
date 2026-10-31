@@ -111,3 +111,17 @@ python3 scripts/foundry_web.py --workspace /absolute/private/foundry-projects --
 ```
 
 浏览器打开 http://127.0.0.1:8773 。后端仍为 Python 标准库，CLI 用法不变；不要将本机服务暴露到公网。运行边界与接口见 [V0.3工程说明](docs/FOUNDRY_WORKBENCH_V03.md)，候选视觉见 [DESIGN.md](DESIGN.md)，检查证据见 [V0.3验证记录](docs/verification/foundry-v03/README.md)。
+
+## 交付与分发工程（macOS 桌面端）
+
+把「我这台机器上能跑」变成「用户双击能装」的判据集：[交付与分发工程](docs/RELEASE_ENGINEERING.md) 给出五条原则、十条真实陷阱（现象/根因/判据/修法）、十道验收门，以及给接手人的三次共学安排与评审者要问的三句话。
+
+配套的 [交付清单合同](docs/RELEASE_GATE.md) 让「这次验过了」可被机器检查：
+
+```sh
+python3 scripts/release_gate.py template --product my-app --version 1.0.0 --platform macos-arm64 > release.json
+# 填完证据后
+python3 scripts/release_gate.py check release.json
+```
+
+`READY_FOR_HANDOFF` 表示十道门都有 `observed` 证据且哈希/版本自洽，**不**表示产物可用或可以发布（输出固定带 `release_authorized: false`）。实现脚本留在各产品主库，Prism 只维护判据与合同，不复制打包实现。真实案例与证据见 [v0.5.2 记录](docs/verification/release-engineering/README.md)。

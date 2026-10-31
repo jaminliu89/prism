@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "product": "video-to-text",
+  "version": "0.5.2",
+  "platform": "macos-arm64",
+  "channel": "release",
+  "executor": "kimliu",
+  "signing": "ad_hoc",
+  "artifacts": [
+    {
+      "id": "dmg",
+      "name": "VideoToText-0.5.2-arm64.dmg",
+      "kind": "dmg",
+      "sha256": "322915fdc8513306d56c9860fef52eb3f881ceab89e2a102a68b78beb20798c2",
+      "size": 149354817,
+      "checksum_source": "GitHub Release v0.5.2 资产 DMG-SHA256.txt（见 evidence/01-shasum.txt）"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-shasum",
+      "kind": "command_output",
+      "source": "observed",
+      "path": "evidence/01-shasum.txt",
+      "sha256": "0324e98fe6d81c8da030a4815bd12a7706657101a5d85c4576fcda914edc2c5b",
+      "note": "在下载目录执行 shasum -a 256 -c DMG-SHA256.txt，校验和与 Release 资产一致"
+    },
+    {
+      "id": "ev-verify",
+      "kind": "command_output",
+      "source": "observed",
+      "path": "evidence/02-verify-dmg.txt",
+      "sha256": "521ac0deb0903443378dbfb41f9ff172caa074a74a6ba562a3dbc08ab9601138",
+      "note": "scripts/verify_dmg.sh 对 Release 下载回来的 DMG 做完整验收：挂载/结构/静态链接/启动/首页/进程数"
+    },
+    {
+      "id": "ev-applog",
+      "kind": "log",
+      "source": "observed",
+      "path": "evidence/03-app-log.txt",
+      "sha256": "3fc94730d461d1dc96d18094ec4053b980967a1ce96f0bb4ef7646dd3e6abada",
+      "note": "启动后 App 自己写的日志（窗口模式无终端，这是唯一可查来源）"
+    },
+    {
+      "id": "ev-otool",
+      "kind": "command_output",
+      "source": "observed",
+      "path": "evidence/04-otool.txt",
+      "sha256": "610e31a0d1f3eed2c4b0baa67d14f85d9a6a1a9e61836ec4c8427270565692ed",
+      "note": "otool -L 随包 ffmpeg，只依赖 /usr/lib 与 /System/Library"
+    },
+    {
+      "id": "ev-version",
+      "kind": "command_output",
+      "source": "observed",
+      "path": "evidence/05-version-signing.txt",
+      "sha256": "9882458826484b631eea592aada2421fb709ce8be2696fbd4559fba242b7607e",
+      "note": "包内 CFBundleShortVersionString、Resources/VERSION 与 codesign 签名状态"
+    },
+    {
+      "id": "ev-ci",
+      "kind": "command_output",
+      "source": "observed",
+      "path": "evidence/06-ci-shipping-path.txt",
+      "sha256": "481e69ed348ea89822a656f6c963271ce4367f63a0dc92c67b1c42f90aeba82b",
+      "note": "PR 阶段 dmg job 通过；同一套验收脚本在 ci.yml 与 release.yml 都被调用；Release 资产清单"
+    },
+    {
+      "id": "ev-instruction",
+      "kind": "note",
+      "source": "observed",
+      "path": "evidence/07-first-run-instruction.txt",
+      "sha256": "8958a9e263be10c2c3a463ef46dc6e9679bc93bf11971ce4df3120d86261ee68",
+      "note": "DMG 内 使用说明.txt 全文，覆盖右键打开与 quarantine 处理"
+    }
+  ],
+  "gates": [
+    {
+      "id": "artifact_integrity",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-shasum"
+      ]
+    },
+    {
+      "id": "install_path",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-verify"
+      ],
+      "note": "验收对象是从 Release 下载回来的 DMG，不是构建树里的 dist/VideoToText.app"
+    },
+    {
+      "id": "cold_start",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-verify"
+      ]
+    },
+    {
+      "id": "self_contained_runtime",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-otool"
+      ]
+    },
+    {
+      "id": "code_signing",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-version"
+      ]
+    },
+    {
+      "id": "log_capture",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-applog"
+      ]
+    },
+    {
+      "id": "process_hygiene",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-verify"
+      ],
+      "note": "进程数 2 = 主进程 + multiprocessing resource_tracker"
+    },
+    {
+      "id": "ci_exercises_shipping_path",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-ci"
+      ],
+      "note": "PR 阶段就构建并运行同一个 verify_dmg.sh，不是只在打 tag 时跑"
+    },
+    {
+      "id": "version_consistency",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-version"
+      ],
+      "note": "包内 0.5.2 == Release tag v0.5.2 == 文件名 VideoToText-0.5.2-arm64.dmg"
+    },
+    {
+      "id": "first_run_instruction",
+      "status": "pass",
+      "artifact": "dmg",
+      "evidence": [
+        "ev-instruction"
+      ]
+    }
+  ],
+  "limitations": [
+    "没有苹果开发者证书，ad-hoc 签名；用户首次打开需右键→打开，提示已损坏时执行 xattr -dr com.apple.quarantine",
+    "只在 arm64 macOS 上构建与验证，Intel 与更旧系统未验",
+    "只验证了启动与首页可访问，未在该包内跑完整转写（模型下载路径未验证）",
+    "证据为执行者自检，没有独立 reviewer；本清单不构成发布许可"
+  ]
+}

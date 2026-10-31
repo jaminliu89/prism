@@ -63,3 +63,16 @@
 75项Python回归、3项Chrome UI/响应式/axe自动检查和构建以 docs/verification/foundry-v03/ 最终记录为准。独立审查发现两项主任务问题并回流修正，最终结论见独立审查记录。上述自动检查使用合成项目，不证明真实专家执行、身份认证、产品质量/PMF或生产发布。
 
 未完成：正式身份与审批权限、多进程事务锁、真实外部Agent适配、完整Markdown渲染、安全档案/任务/变更完整图形表单。仍可用原CLI继续其流程。界面是 proposed，尚无用户审美认可；不部署、不合main。远端分支/PR/CI以最终读回为准。
+
+
+## 2026年10月31日：交付与分发工程（知识能力 + 证据门）
+
+用户要求把一次真实发版的经验固化成 Skill 交给 Prism 管理，并安排集团内相关人员学习吸收。本轮新增一个**判据与证据**能力，不是新的构建或发布平台：打包脚本仍留在产品主库，Prism 只维护判断、合同与验收。
+
+- `docs/RELEASE_ENGINEERING.md`：五条原则、十条真实陷阱（现象/根因/可写进 CI 的判据/修法）、十道验收门、三次共学安排与评审者三问。
+- `docs/RELEASE_GATE.md` + `scripts/release_gate.py`：清单合同与标准库 CLI（`template`/`check`）。只核证据结构、哈希、版本一致性与引用关系；`pass` 必须有 `observed` 证据；ad-hoc/未签名必须配首次打开说明，否则计入阻塞项。输出固定 `release_authorized: false`、`runtime_verified: NOT_BY_THIS_TOOL`。
+- `docs/verification/release-engineering/`：`video-to-text` v0.5.2（固定提交 b8261f4）的真实证据 7 份 + 清单，`check` 返回 `READY_FOR_HANDOFF`、10 门、0 阻塞。
+- `tests/test_release_gate.py`：30 项回归，覆盖缺门/未知门/伪证据/哈希不符/路径越界/产物名不含版本/ad-hoc 缺说明等反向路径。
+- 路由：SKILL.md、README、INTEGRATION（发布主责仍归 delivery-walkthrough）、AGENTS 约束。
+
+未验证：Intel 与旧 macOS、Apple 公证、包内完整转写流程、独立 review；证据为执行者自检。本能力不放行发布，也不替代 delivery-walkthrough。

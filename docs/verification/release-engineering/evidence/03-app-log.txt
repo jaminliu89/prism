@@ -1,0 +1,5 @@
+
+=== VideoToText 启动 2026-10-31 13:11:31 pid=26552 ===
+[launcher] 调用 gui.run_app()，ffmpeg=/private/var/folders/mc/6j4c9yjn0333p4_0zrmhd1sc0000gn/T/tmp.crwJQuW8t8/VideoToText.app/Contents/Frameworks/bin/ffmpeg
+[gui] run_app 第 1 次调用
+NiceGUI ready to go on http://127.0.0.1:8766
