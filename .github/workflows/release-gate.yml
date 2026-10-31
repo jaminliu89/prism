@@ -26,8 +26,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Release gate and full Prism regression
-        run: python3 -m unittest discover -s tests -v
+      # 只跑本能力相关用例：全量回归由 foundry-regression.yml 在 main 上覆盖。
+      # 私有仓库的 Actions 分钟数要计费，重复跑整套没有必要。
+      - name: Release gate and skill distribution tests
+        run: python3 -m unittest tests.test_release_gate tests.test_skill_distribution -v
       - name: Verify original method snapshots
         run: python3 scripts/prism.py doctor
 
