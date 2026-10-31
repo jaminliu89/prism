@@ -12,7 +12,7 @@ on:
   push:
     branches:
       - 'main'
-      - 'feat/release-engineering-*'
+      # 不列功能分支：PR 已经覆盖它们，重复触发只是多烧一遍 Actions 分钟数
 
 permissions:
   contents: read
