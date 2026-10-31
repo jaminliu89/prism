@@ -9,6 +9,7 @@ Prism自己的唯一源：`jaminliu89/prism`。集团路由唯一源：SkillHub�
 | 明确“Prism/棱镜/用棱镜审计产品” | Prism规划/审计编排SPECIALIST | CPO/PM保留价值与范围决定；按需加载checklist/site取证 |
 | 普通“我有个点子/写PRD” | idea-to-blueprint | Prism可被调用组织资料；不接管阶段确认 |
 | “走查/交付/checklist/上线” | delivery-walkthrough | Prism组织跨维度发现；site专项取证；现有发布合同不变 |
+| “打包/分发/DMG/发版/签名” | delivery-walkthrough（发布主责） | Prism提供[交付与分发工程](RELEASE_ENGINEERING.md)判据与[清单合同](RELEASE_GATE.md)，只核证据结构，不构建、不签名、不发布 |
 | “逆向/复刻这个目标” | agent-reverse-engineering或显式site-reverse-clone | Prism汇总需求/问题，不能用普通审计授权启动复刻 |
 | 独立技术选型/设计 | CTAB / group-design-department | Prism向原owner提交发现，不决定更换基线/视觉 |
 

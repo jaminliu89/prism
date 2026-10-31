@@ -35,6 +35,8 @@ class SkillDistributionTests(unittest.TestCase):
             'docs/REPORT_CONTRACT.md',
             'docs/INTEGRATION.md',
             'docs/FOUNDRY_WORKBENCH_V03.md',
+            'docs/RELEASE_ENGINEERING.md',
+            'docs/RELEASE_GATE.md',
             'sources/skillhub/blueprint/MASTER_PROMPT.md',
             'sources/skillhub/blueprint/DOCUMENT_CONTRACT.md',
             'scripts/prism.py',
@@ -42,6 +44,7 @@ class SkillDistributionTests(unittest.TestCase):
             'scripts/foundry_web.py',
             'docs/MISSION.md',
             'scripts/mission.py',
+            'scripts/release_gate.py',
         )
         for path in expected:
             with self.subTest(path=path):

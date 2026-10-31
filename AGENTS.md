@@ -12,6 +12,14 @@
 - 只改当前需求相关文件。使用Python标准库，不为新框架或新服务扩大范围。
 - 改CLI后运行 `python3 -m unittest discover -s tests -v`、`python3 scripts/prism.py doctor`，对被影响合同运行正反例。文档只检查结构和diff。
 - 不提交真实产品审计资料、凭证、HAR、私有目标数据；默认报告在忽略的 `audits/` 或指定私有目录。不要自动复制任何用户内部配置。
+- 交付/分发判据是知识资产，不是实现：`docs/RELEASE_ENGINEERING.md` 与 `scripts/release_gate.py` 只核证据结构与引用，不构建、不签名、不发布。不要把产品主库的打包脚本复制进本仓，也不要因 `READY_FOR_HANDOFF` 声称产物可用或可上线。
+
+
+## 交付与分发（release gate）
+
+- 改动 `scripts/release_gate.py` 或清单合同后运行 `python3 -m unittest tests.test_release_gate -v`，正反例都要在（缺门、伪证据、哈希不符、无 `local_path` 时缺 `checksum_source`、ad-hoc 缺首次打开说明）。
+- 证据样例在 `docs/verification/release-engineering/`，引用的是外部仓库的固定提交与 Release 资产；不要把它改成"Prism 自己发过版"。
+- 该能力复用 delivery-walkthrough 的发布主责，不新增发布权限、不放行凭证。
 
 
 ## Foundry V0.1 补充约束

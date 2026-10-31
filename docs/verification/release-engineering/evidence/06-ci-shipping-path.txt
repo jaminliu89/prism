@@ -1,0 +1,19 @@
+$ gh pr checks 5   # 合并前的 PR，dmg job 在 PR 阶段就构建并验收
+check	pass	39s	https://github.com/jaminliu89/video-to-text/actions/runs/41169271285/job/124443483988	
+dist	pass	6s	https://github.com/jaminliu89/video-to-text/actions/runs/41169271285/job/124443621672	
+dmg	pass	1m50s	https://github.com/jaminliu89/video-to-text/actions/runs/41169271285/job/124443621681	
+macos-mlx	pass	1m13s	https://github.com/jaminliu89/video-to-text/actions/runs/41169271285/job/124443484134	
+
+$ gh run view 41168780308 --json jobs -q '.jobs[] | "\(.name) \(.conclusion)"'
+macos-mlx success
+check success
+dist success
+dmg success
+
+$ gh release view v0.5.2 --json assets -q '.assets[].name'
+DMG-SHA256.txt
+SHA256SUMS.txt
+video2text-0.5.2-b8261f4.tar.gz
+video2text-0.5.2.tar.gz
+video2text-0.5.2.zip
+VideoToText-0.5.2-arm64.dmg

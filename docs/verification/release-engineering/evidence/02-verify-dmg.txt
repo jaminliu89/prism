@@ -1,0 +1,9 @@
+▸ 校验 /tmp/v2t-dl/VideoToText-0.5.2-arm64.dmg（142M）
+  ✓ 结构：App + Applications 软链
+  ✓ 版本：0.5.2
+ffmpeg version 8.0 Copyright (c) 2000-2025 the FFmpeg developers
+  ✓ ffmpeg 静态链接，可分发
+▸ 从挂载点启动 App（端口 8766）…
+  ✓ 首页 HTTP 200，含「蒸馏」
+  ✓ 进程数 2
+✓ DMG 验收通过

@@ -1,0 +1,13 @@
+$ cat '使用说明.txt'
+VideoToText — 安装说明
+
+1. 把 VideoToText.app 拖到左边的 Applications 文件夹
+2. 第一次打开：右键点 App → 打开（因为没买苹果开发者证书，是 ad-hoc 签名）
+   如果提示"已损坏"：终端执行
+     xattr -dr com.apple.quarantine /Applications/VideoToText.app
+3. 打开后会起一个本地服务并自动打开浏览器（默认 http://localhost:8766）
+4. 配置写在 ~/Library/Application Support/VideoToText/.env
+   产出（缓存/输出）在同目录的 cache/ 和 output/
+
+已内置 ffmpeg / ffprobe，无需额外安装。
+转写默认用 faster-whisper（首次使用会下载模型，约 140MB）。
