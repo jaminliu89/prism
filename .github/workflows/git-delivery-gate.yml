@@ -1,0 +1,25 @@
+name: Git delivery gate
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  policy-check:
+    name: policy-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify governance contract
+        run: |
+          test -s docs/GIT_SAFETY_DELIVERY_CONTRACT.md
+          grep -q 'Independent tracks' docs/GIT_SAFETY_DELIVERY_CONTRACT.md
+      - name: Python syntax validation
+        run: |
+          python3 - <<'PY'
+          import pathlib, py_compile
+          for file in pathlib.Path("scripts").rglob("*.py"):
+              py_compile.compile(str(file), doraise=True)
+          PY
+      - name: Python unit tests
+        run: python3 -m unittest discover -s tests -v
