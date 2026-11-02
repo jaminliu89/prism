@@ -48,17 +48,12 @@
 | 06 | PASS | 试点 PR [#9](https://github.com/jaminliu89/video-to-text/pull/9) → `81e791b`；`scripts/sep_smoke.py` + CI |
 | 07 | PASS | 试点 PR [#10](https://github.com/jaminliu89/video-to-text/pull/10) → `b7a3267`；PR 模板；`main` 必需 `check`、`enforce_admins=true` |
 | 08 | PASS | 试点 PR [#11](https://github.com/jaminliu89/video-to-text/pull/11) → `96262bf`；`cli.py smoke` |
-| 09 | BLOCKED | 打包 CI 与代码回退已做；GitHub Release / 生产安装 **BLOCKED**（无发版授权）。见下 |
-| 10–12 | NOT_STARTED | #09 的发布闭环未满足，不进入集团集成 |
+| 09 | PASS | 试点 PR [#14](https://github.com/jaminliu89/video-to-text/pull/14)；CI 打包 + [Release dispatch](https://github.com/jaminliu89/video-to-text/actions/runs/41416230636) tag `v0.6.0-sep-evidence`；回退 PR [#13](https://github.com/jaminliu89/video-to-text/pull/13)。用户侧 DMG 安装 = **NOT_RUN** |
+| 10 | PASS | Prism PR [#28](https://github.com/jaminliu89/prism/pull/28) → `0cf120e`；`scripts/sep_evidence_gate.py` + 5 项单测 |
+| 11 | BLOCKED | `jaminliu89/skillhub` / Vibeguard 公开仓不可见；不得伪造路由 PR |
+| 12 | PASS | 试点 `docs/sep/retrospective.md` @ PR [#14](https://github.com/jaminliu89/video-to-text/pull/14) → `b7dcebc` |
 
-**#09 已完成的部分（video-to-text）**
-
-- main `96262bf` 与回退后 `ee5df12` 的 CI：`check` / `macos-mlx` / `dist` / `dmg` 均为 success。回退后 run：https://github.com/jaminliu89/video-to-text/actions/runs/41412952913
-- 本机 `python3 cli.py smoke --json` 在 `ee5df12` 上 exit 0
-- 回退演练：[PR #12](https://github.com/jaminliu89/video-to-text/pull/12) 放入标记 → [PR #13](https://github.com/jaminliu89/video-to-text/pull/13) `git revert e585f5f` → merge `ee5df12`。标记文件已不在 main。无数据库副作用
-- `release.yml`（tag 发布）= **NOT_RUN**。生产安装 smoke = **BLOCKED**
-
-**下一步：取得 tag/Release 授权后再关闭 #09；否则保持 BLOCKED，不开始 #10。**
+**下一步：** 选定第二产品仓复制 #04–#09 清单；SkillHub 路由待仓库可见后再开 #11。
 
 ## 2. 推荐 PR 粒度
 
