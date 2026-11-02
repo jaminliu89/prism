@@ -43,9 +43,11 @@
 | 01 | PASS | [PR23 验证快照](verification/sep/PR23_STATUS_2026-11-02.md)：mergeability、`policy-check`、branch protection |
 | 02 | PASS | 同上：与 AGENTS / Mission / Foundry / INTEGRATION 一致性审查 |
 | 03 | PASS | PR #23 已合并，merge commit `7123024e4bd68af052d977ef06a78febf936dcf7` |
-| 04–12 | NOT_STARTED | 依赖试点仓库选定与运行授权 |
+| 04 | PASS | 试点 [jaminliu89/video-to-text](https://github.com/jaminliu89/video-to-text) PR [#7](https://github.com/jaminliu89/video-to-text/pull/7) → `c4beed6`；`docs/sep/baseline.md` |
+| 05 | PASS | 试点 PR [#8](https://github.com/jaminliu89/video-to-text/pull/8) → `bad56cff`；`docs/feature-registry.yaml` |
+| 06–12 | NOT_STARTED | 试点仓继续 |
 
-**下一步：启动 #04（选定产品试点仓库并建立 baseline）。**
+**下一步：#06 固化 ≥2 条关键旧功能回归 / smoke（video-to-text）。**
 
 ## 2. 推荐 PR 粒度
 
