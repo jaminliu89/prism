@@ -48,9 +48,17 @@
 | 06 | PASS | 试点 PR [#9](https://github.com/jaminliu89/video-to-text/pull/9) → `81e791b`；`scripts/sep_smoke.py` + CI |
 | 07 | PASS | 试点 PR [#10](https://github.com/jaminliu89/video-to-text/pull/10) → `b7a3267`；PR 模板；`main` 必需 `check`、`enforce_admins=true` |
 | 08 | PASS | 试点 PR [#11](https://github.com/jaminliu89/video-to-text/pull/11) → `96262bf`；`cli.py smoke` |
-| 09–12 | NOT_STARTED | #09 需部署/预览 smoke 授权或明确 BLOCKED |
+| 09 | BLOCKED | 打包 CI 与代码回退已做；GitHub Release / 生产安装 **BLOCKED**（无发版授权）。见下 |
+| 10–12 | NOT_STARTED | #09 的发布闭环未满足，不进入集团集成 |
 
-**下一步：#09 合并后部署/打包 smoke 与非生产恢复演练（无授权则 BLOCKED）。**
+**#09 已完成的部分（video-to-text）**
+
+- main `96262bf` 与回退后 `ee5df12` 的 CI：`check` / `macos-mlx` / `dist` / `dmg` 均为 success。回退后 run：https://github.com/jaminliu89/video-to-text/actions/runs/41412952913
+- 本机 `python3 cli.py smoke --json` 在 `ee5df12` 上 exit 0
+- 回退演练：[PR #12](https://github.com/jaminliu89/video-to-text/pull/12) 放入标记 → [PR #13](https://github.com/jaminliu89/video-to-text/pull/13) `git revert e585f5f` → merge `ee5df12`。标记文件已不在 main。无数据库副作用
+- `release.yml`（tag 发布）= **NOT_RUN**。生产安装 smoke = **BLOCKED**
+
+**下一步：取得 tag/Release 授权后再关闭 #09；否则保持 BLOCKED，不开始 #10。**
 
 ## 2. 推荐 PR 粒度
 
