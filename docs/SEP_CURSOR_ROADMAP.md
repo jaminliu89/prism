@@ -36,7 +36,16 @@
 | 11 | C | SkillHub 路由 SEP；Vibeguard 独立接口适配（按需） | 真实仓库核验后单独 PR；接口版本明确，未安装时可 BLOCKED，不硬依赖 | 10 |
 | 12 | D | 复盘试点并决定推广 | 统计用时、误报、漏检、阻断问题、维护成本；确定第二产品的最小复制清单 | 11 |
 
-**下一步应先做 #01。** 本文撰写时，先前已创建 PR #23，但没有确认实际 CI 运行和合并许可；路线图提交后需重新查询最新 SHA 状态。
+### 执行状态（2026-11-02 · 经 `gh` + 本机测试）
+
+| # | status | 证据 |
+|---|---|---|
+| 01 | PASS | [PR23 验证快照](verification/sep/PR23_STATUS_2026-11-02.md)：mergeability、`policy-check`、branch protection |
+| 02 | PASS | 同上：与 AGENTS / Mission / Foundry / INTEGRATION 一致性审查 |
+| 03 | IN_PROGRESS | PR #23 必需 CI 已绿；待最新 head 重跑后 merge |
+| 04–12 | NOT_STARTED | 依赖 #03 合并及试点仓库授权 |
+
+**下一步：完成 #03（合并 PR #23），再启动 #04 试点 baseline。**
 
 ## 2. 推荐 PR 粒度
 
