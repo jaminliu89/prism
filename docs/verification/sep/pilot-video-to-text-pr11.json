@@ -1,0 +1,31 @@
+{
+  "sep_version": "1.0",
+  "change_id": "PR-11",
+  "feature_ids": ["cli-agent", "asr-transcribe", "distill-pipeline"],
+  "base_sha": "96262bfb7914f336cda986febece1ae76e93e3bb",
+  "head_sha": "ab082465d570e698fe7bde9eea558bfe8886d6b",
+  "affected_modules": ["cli.py", "docs/feature-registry.yaml"],
+  "affected_contracts": ["docs/sep/smoke.md"],
+  "tests": [
+    {
+      "command": "python3 scripts/sep_smoke.py",
+      "result": "PASS",
+      "evidence": "video-to-text CI check job on PR #11"
+    },
+    {
+      "command": "python3 cli.py smoke --json",
+      "result": "PASS",
+      "evidence": "local exit 0 on feat/sep-cli-smoke-08 branch"
+    },
+    {
+      "command": "python3 tests/test_asr_units.py",
+      "result": "PASS",
+      "evidence": "52 pass 0 fail"
+    }
+  ],
+  "risk": "low",
+  "migration_plan": "",
+  "rollback_plan": "revert PR on protected main",
+  "open_gaps": ["GUI E2E not in smoke"],
+  "release_authorized": false
+}
