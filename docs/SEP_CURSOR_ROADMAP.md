@@ -45,9 +45,12 @@
 | 03 | PASS | PR #23 已合并，merge commit `7123024e4bd68af052d977ef06a78febf936dcf7` |
 | 04 | PASS | 试点 [jaminliu89/video-to-text](https://github.com/jaminliu89/video-to-text) PR [#7](https://github.com/jaminliu89/video-to-text/pull/7) → `c4beed6`；`docs/sep/baseline.md` |
 | 05 | PASS | 试点 PR [#8](https://github.com/jaminliu89/video-to-text/pull/8) → `bad56cff`；`docs/feature-registry.yaml` |
-| 06–12 | NOT_STARTED | 试点仓继续 |
+| 06 | PASS | 试点 PR [#9](https://github.com/jaminliu89/video-to-text/pull/9) → `81e791b`；`scripts/sep_smoke.py` + CI |
+| 07 | PASS | 试点 PR [#10](https://github.com/jaminliu89/video-to-text/pull/10) → `b7a3267`；PR 模板；`main` 必需 `check`、`enforce_admins=true` |
+| 08 | PASS | 试点 PR [#11](https://github.com/jaminliu89/video-to-text/pull/11) → `96262bf`；`cli.py smoke` |
+| 09–12 | NOT_STARTED | #09 需部署/预览 smoke 授权或明确 BLOCKED |
 
-**下一步：#06 固化 ≥2 条关键旧功能回归 / smoke（video-to-text）。**
+**下一步：#09 合并后部署/打包 smoke 与非生产恢复演练（无授权则 BLOCKED）。**
 
 ## 2. 推荐 PR 粒度
 
