@@ -1,0 +1,9 @@
+# BASELINE_TAGS.tsv — 功能基线表模板（tab 分隔，复制到产品的 scripts/baselines.tsv）
+# 规矩：功能落地就锚一个 tag，坏了自己回，不整树回滚。
+# 列：名字  tag  commit  功能描述  证据级别(A/B/C)  可复跑的验证命令  涉及文件
+# 证据级别：A=有可复跑测试或产物经独立工具校验 B=错误路径可复现但成功路径未跑通 C=仅 commit message
+#
+bili-dash	baseline/bili-dash	e830329	B站 分块下载 + 断点续传	A	node test/resume-e2e.mjs	offscreen.js background.js
+hls-aes	baseline/hls-aes	7beb1f7	HLS 分片 + AES-128 解密	A	node test/hls-unit.mjs	hls.js offscreen.js
+cdp-net	baseline/cdp-net	7beb1f7	网络层嗅探（chrome.debugger）	A	ego-browser nodejs < test/new-channels-e2e.mjs	popup.js manifest.json
+tabcapture-rec	baseline/tabcapture-rec	7beb1f7	tabCapture 兜底录制	B	ego-browser nodejs < test/new-channels-e2e.mjs	offscreen.js background.js
