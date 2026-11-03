@@ -1,0 +1,32 @@
+host	html_bytes	css_links	script_tags	third_party_hosts	stack_signals	note
+abduzeedo.com	53397	3	10	11	Astro	ok
+app.emergent.sh	386726	1	19	11	Gatsby Tailwind GoogleFonts SelfHostFont	ok
+arena.ai	144592	0	1	0	-	curl=403 turnstile; values from ego-browser session
+base44.com	279047	9	10	6	Vite-built Wix SelfHostFont	ok
+bolt.new	150841	10	16	6	GoogleFonts SelfHostFont	unconfirmed (no hard framework path — do not read as no-framework)
+camelai.com	243697	2	10	8	Vite-built GoogleFonts SelfHostFont	ok
+capacity.so	410777	3	73	12	Next.js SelfHostFont	ok
+collectivebrain.de	43667	6	8	8	Astro WordPress	ok
+dribbble.com	0					blocked-or-empty (no framework judgement)
+durable.com	936092	2	47	8	Next.js Turbopack SelfHostFont	ok
+elevenlabs.io	1006792	10	104	13	Next.js Tailwind SelfHostFont	ok
+floot.com	115968	15	39	9	Next.js	ok
+hermes-agent.nousresearch.com	614239	6	24	6	Next.js Turbopack SelfHostFont	ok
+leonardo.ai	5562	0	1	0	-	unconfirmed (no hard framework path — do not read as no-framework)
+linear.app	1260925	46	16	4	Next.js SelfHostFont	ok
+manus.im	175605	11	74	11	Next.js Turbopack SelfHostFont	ok
+meku.dev	314015	4	33	12	Next.js Turbopack SelfHostFont	ok
+muuuuu.org	451642	1	11	103	WordPress Lottie	ok
+packagingoftheworld.com	1383	0	1	0	-	unconfirmed (no hard framework path — do not read as no-framework)
+payloadcms.com	265493	17	38	10	Next.js SelfHostFont	ok
+reflex.dev	186111	4	21	8	SelfHostFont	unconfirmed (no hard framework path — do not read as no-framework)
+replit.com	669347	6	132	6	Next.js Turbopack SelfHostFont	ok
+studio.nxcode.io	5046	1	4	1	Vite-built	ok
+www.apple.com	253524	10	19	3	-	unconfirmed (no hard framework path — do not read as no-framework)
+www.awwwards.com	338314	0	12	20	GSAP Lottie Three.js	unconfirmed (no hard framework path — do not read as no-framework)
+www.behance.net	453	0	1	0	-	unconfirmed (no hard framework path — do not read as no-framework)
+www.d-id.com	536260	0	37	19	WordPress Lottie SelfHostFont	ok
+www.designspiration.com	97090	2	5	4	SelfHostFont	unconfirmed (no hard framework path — do not read as no-framework)
+www.lovart.ai	462586	5	85	4	Next.js Turbopack Lottie SelfHostFont	ok
+www.softr.io	405341	3	52	20	Webflow GSAP Lottie	ok
+www.tempo.new	8467	1	12	0	GoogleFonts SelfHostFont	unconfirmed (no hard framework path — do not read as no-framework)
