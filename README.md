@@ -68,6 +68,10 @@ python3 -m unittest discover -s tests -v
 
 按[网络证据编排合同](docs/NETWORK_PACKET_EVIDENCE_ROUTING.md)从已授权的PCAP/PCAPNG规划TShark、capinfos、editcap或Wireshark GUI分析。`python3 scripts/packet_evidence_router.py route --intent offline_protocol_timeline --access owned_capture` 只输出受控计划；未安装工具、未执行抓包、不代替REA/QA。实时接口抓包需要另外授权，Prism 不自动执行。
 
+## 取流通道分层专项（媒体 / 下载类产品）
+
+按[取流通道分层判据](docs/MEDIA_CAPTURE_LAYER_LADDER.md)判断一个「下载 / 嗅探 / 取流」类产品到底覆盖了哪几层：同名不同层（页面 CORS ≠ 扩展 CORS ≠ `chrome.downloads` 不走 DNR）是最贵的误判源；层梯从元数据到录屏共七层，各层代价与证据判据不同。功能基线表模板见 [templates/BASELINE_TAGS.tsv](templates/BASELINE_TAGS.tsv)（A/B/C 证据级别，不许把「代码写完」记成「验证通过」）。本仓只收判据，不含任何站点的签名/密钥参数，也不提供 DRM 解密路径。
+
 ## 能力与边界
 
 - [通用审计Prompt](docs/AUDIT_PROMPT.md)：恢复目标、阶段和历史资产，审需求、流程、设计、架构、数据、AI、安全与交付证据，按适用性裁剪。
