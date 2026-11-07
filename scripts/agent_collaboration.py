@@ -98,10 +98,16 @@ def validate(state):
                 "task attempts to enlarge authorization or certify identity")
         require(task.get("allowed_write_paths") == [artifact],
                 "task write permissions do not match artifact")
+        allowed = task.get("allowed_actions")
+        require(isinstance(allowed, list) and set(allowed) ==
+                {"read approved project docs", "submit planning document"},
+                "task allowed actions exceed original Foundry scope")
         denied = task.get("denied_actions")
+        required_denials = {"approve own work", "run target code", "exfiltrate data",
+                            "production access", "paid tools", "deploy", "modify approved goals"}
         require(isinstance(denied, list) and all(isinstance(x, str) for x in denied)
-                and "approve own work" in denied,
-                "task must explicitly deny self approval")
+                and required_denials.issubset(denied),
+                "task is missing mandatory Foundry denied actions")
         require(isinstance(task.get("objective"), str) and task["objective"].strip(),
                 "missing task objective")
         if task["status"] in ("ready", "claimed"):
