@@ -35,6 +35,6 @@ python3 scripts/agent_collaboration.py --project /absolute/product verify-artifa
 
 ## 证据边界
 
-- 本地独立合成契约测试 31 项通过，不是 ChatDev/MetaGPT 上游完整测试。
+- 本地独立合成契约测试 33 项通过，不是 ChatDev/MetaGPT 上游完整测试。
 - 额外的真实 Foundry 生命周期测试与全量 Prism 回归须以 PR 远端 CI 为准。
 - 未直接运行两个上游框架，未创建自动调度真实 Agent、跨宿主身份认证或产品端到端 E2E，不冒充已验证。
