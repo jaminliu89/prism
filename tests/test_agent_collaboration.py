@@ -19,7 +19,7 @@ def task(tid="AGT-0001", artifact="docs/00-asset-recall.md", role="research", st
             "artifact": artifact, "status": "ready", "requested_by_claim": "owner",
             "assigned_to_claim": None, "allowed_write_paths": [artifact],
             "allowed_actions": ["read approved project docs", "submit planning document"],
-            "denied_actions": ["approve own work", "run target code", "deploy"],
+            "denied_actions": ["modify approved goals", "run target code", "exfiltrate data", "production access", "paid tools", "deploy", "approve own work"],
             "authorization": "PLANNING_DOCUMENT_ONLY", "identity_verified": False,
             "source_docs": ["sources/skillhub/blueprint/MASTER_PROMPT.md"],
             "delivery": None}
@@ -83,6 +83,14 @@ class CollaborationTests(unittest.TestCase):
         self.save()
         with self.assertRaises(collab.ContractError):
             collab.load(self.root)
+
+    def test_allowed_actions_cannot_execute_target_code(self):
+        self.state["tasks"][0]["allowed_actions"].append("run target code")
+        self.reject()
+
+    def test_required_denials_must_be_complete(self):
+        self.state["tasks"][0]["denied_actions"].remove("exfiltrate data")
+        self.reject()
 
     def test_no_self_approval(self):
         self.state["tasks"][0]["denied_actions"] = ["run target code"]
