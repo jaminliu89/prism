@@ -49,3 +49,8 @@ Crawl4AI / Scrapling 双引擎按任务目标编排，候选顺序见固定 Skil
 ## Mermaid 架构先行（2026-10-29 · 0.7.0）
 
 Prism 只在现有 `idea-to-blueprint` 阶段 2 插入初步系统架构及数据流 Mermaid 结构闸门，先获确认，后在阶段 3 编写详细 PRD 并在阶段 4 完成正式架构与 CTAB 技术选型，不取代 CPO/PM、SA/CTAB 和原项目控制面。新 Foundry 项目包含 `architecture_first_schema=1`，旧版项目按原文档清单恢复。重大架构变更触发阶段 2 与下游重新审查；无变更的既有项目任务不反复生成合同。详见 `docs/ARCHITECTURE_FIRST.md`，门禁的机器检查只验证 Markdown/Mermaid 结构，不认证设计或实际多 Agent 执行。
+
+
+## ChatDev / MetaGPT 核心思想的最小吸收（AGC-01 候选）
+
+仅借鉴 ChatDev 的依赖/并行任务编排和 MetaGPT 的角色 SOP 交接，不复制两个框架本体、不建立第二层总控。新增的只读适配器 [AGENT_COLLABORATION_ADAPTER.md](AGENT_COLLABORATION_ADAPTER.md) 以 .foundry/project.json 为唯一任务状态源，生成可交给现有 Agent 宿主使用的 scoped packet，校验依赖、版本、交付文件 SHA 与越权反例。它不自动执行 Agent 或代码；Prism 仍负责规划/编排，SkillHub 仍负责路由和方法，VibeGuard、工程 QA 和合并审批保持独立。候选能力需要在 PR CI 完成回归，待批准后再由集团薄适配固定新版本。
