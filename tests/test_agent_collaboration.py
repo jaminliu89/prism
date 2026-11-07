@@ -92,6 +92,15 @@ class CollaborationTests(unittest.TestCase):
         self.state["tasks"][0]["denied_actions"].remove("exfiltrate data")
         self.reject()
 
+    def test_malformed_allowed_action_is_rejected(self):
+        self.state["tasks"][0]["allowed_actions"].append({"unexpected": True})
+        self.reject()
+
+    def test_task_list_is_bounded(self):
+        self.state["tasks"] = [task("AGT-%04d" % i, "docs/%04d.md" % i)
+                               for i in range(1, 502)]
+        self.reject()
+
     def test_no_self_approval(self):
         self.state["tasks"][0]["denied_actions"] = ["run target code"]
         self.reject()
