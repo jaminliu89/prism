@@ -80,6 +80,7 @@ def current_stage(state):
 
 def validate(state):
     tasks = state.get("tasks", [])
+    require(len(tasks) <= 500, "too many Foundry tasks for bounded dependency validation")
     by_id = {}
     active_paths = set()
     for task in tasks:
@@ -99,7 +100,8 @@ def validate(state):
         require(task.get("allowed_write_paths") == [artifact],
                 "task write permissions do not match artifact")
         allowed = task.get("allowed_actions")
-        require(isinstance(allowed, list) and set(allowed) ==
+        require(isinstance(allowed, list) and all(isinstance(x, str) for x in allowed)
+                and set(allowed) ==
                 {"read approved project docs", "submit planning document"},
                 "task allowed actions exceed original Foundry scope")
         denied = task.get("denied_actions")
