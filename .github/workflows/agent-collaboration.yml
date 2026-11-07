@@ -1,0 +1,37 @@
+name: Prism Agent Collaboration Contract
+on:
+  pull_request:
+    paths:
+      - 'scripts/agent_collaboration.py'
+      - 'tests/test_agent_collaboration.py'
+      - 'tests/test_agent_collaboration_foundry.py'
+      - 'docs/AGENT_COLLABORATION_ADAPTER.md'
+      - 'docs/INTEGRATION.md'
+      - 'SKILL.md'
+      - '.github/workflows/agent-collaboration.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/agent_collaboration.py'
+      - 'tests/test_agent_collaboration.py'
+      - 'tests/test_agent_collaboration_foundry.py'
+      - '.github/workflows/agent-collaboration.yml'
+permissions:
+  contents: read
+jobs:
+  contract-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile read-only adapter
+        run: python3 -m py_compile scripts/agent_collaboration.py
+      - name: Run collaboration contract and real Foundry integration
+        run: python3 -m unittest discover -s tests -p 'test_agent_collaboration*.py' -v
+      - name: Run all existing Prism regressions
+        run: python3 -m unittest discover -s tests -v
+      - name: Verify upstream snapshot integrity
+        run: python3 scripts/prism.py doctor
