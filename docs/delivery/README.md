@@ -56,3 +56,24 @@ python3 scripts/delivery_queue.py --observations /absolute/issues-snapshot.json 
 5. 实际更新本仓/目标仓 Issue 的引用与下一项。只有所有任务的真实证据满足 Issue #38 的验收，才能关闭 Epic。记录最后 SHA 和失败陷阱，供后续 Agent 恢复。
 
 本工具只给当前宿主确定的下一步，不会在对话结束后自主唤醒。真正的跨会话持续调度需要未来经过许可的宿主/自动化系统，不能拿本文件自称已上线自治团队。
+
+## 执行宿主调用 DCT
+
+在已审阅的独立 DCT 工作副本中使用包含 Mission 绑定的版本。首个集成测试固定为 DCT PR #2 的 `51b0bbcefebc2f71f906325f1e6ac8a8b3a5caa2`。宿主运行以下命令，目标项目的 `.dct/config.json` 须已有本轮任务的 Mission 引用、分支、验收索引、基线和改动范围。
+
+```sh
+python3 scripts/delivery_guard.py preflight --project /absolute/project --dct-entry /absolute/dct/bin/dct.mjs
+python3 scripts/delivery_guard.py check --project /absolute/project --dct-entry /absolute/dct/bin/dct.mjs --reviewed-config-sha "$REVIEWED_CONFIG_SHA"
+```
+
+`preflight` 调用真实 `dct doctor`。只有 `check` 加上宿主已审阅配置的 SHA-256 才会运行配置的命令。宿主要独立核对 DCT 来源、目标代码和检查命令，使用隔离工作树，独占执行期间的写入。配置哈希是误改检测，命令仍运行宿主权限下的项目代码。
+
+| 输出 | 宿主动作 |
+|---|---|
+| `REPLAN` | 回到 Mission 修订检查，发布当前任务后重检 |
+| `PRESERVE_AND_DIAGNOSE` | 保留原工作树和 diff，用 DCT sentinel/handoff 记录，再定位范围或证据漂移 |
+| `REPRODUCE_FAILURE` | 用已记录的测试命令做一次针对性复现 |
+| `DEBUG` | 同任务、同分支及 HEAD 的两条连续 DCT 失败回执触发。暂停常规检查，按 AGENTS.md 的调试和恢复要求继续 |
+| `LOCAL_CHECK_PASS` | 申请独立审查。合并仍取决于当前 GitHub 提交的可信证据 |
+
+跨提交的重复修复失败由项目执行提示词追踪。DCT 本地回执用于执行分流。VibeGuard 签名、可信远端 CI 和产品验收各自需要真实验证。
