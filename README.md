@@ -2,6 +2,10 @@
 
 独立的产品规划与证据审计入口。可单独使用，也可由SkillHub路由，与Blueprint、Checklist、Site Clone协作。
 
+## 跨仓库工程交付 Mission（2026-11-08 起试点）
+
+用户明确委托 Prism 负责 Vibecoding 交付时，首先沿 [交付总控](docs/delivery/README.md) 恢复原目标、工作包、实际仓库 Issue/PR、阻塞和下一动作；执行 `python3 scripts/delivery_queue.py validate` 与 `next`。这是只读依赖/证据缺口适配器，**不调度 Agent、不认证 GitHub、不放行 merge/上线**。真实项目交付仍以每个独立产品仓库和可信审查/CI 为准；不要创建另一套集团任务看板。
+
 ## Mermaid 架构先行（0.7.0）
 
 新产品与系统级研发在详细 PRD/API/数据/Agent 契约前，先产出 `docs/02-architecture-sketch.md` 并经实际架构审查。Prism Foundry 阶段 2 现在通过 `scripts/architecture_gate.py` 做 Mermaid 和架构推演段落静态检查，并要求正常阶段审查与确认，阶段 3 再写详细契约。正式架构/技术选型仍在原阶段 4，不重复建立方法论。旧项目不被静默迁移，普通修复复用既有架构。

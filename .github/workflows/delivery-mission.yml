@@ -1,0 +1,57 @@
+name: Prism Mission Delivery Queue
+on:
+  pull_request:
+    paths:
+      - 'scripts/delivery_queue.py'
+      - 'scripts/delivery_guard.py'
+      - 'tests/test_delivery_guard.py'
+      - 'AGENTS.md'
+      - 'tests/test_delivery_queue.py'
+      - 'docs/delivery/**'
+      - 'docs/MISSION.md'
+      - 'SKILL.md'
+      - '.github/workflows/delivery-mission.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/delivery_queue.py'
+      - 'scripts/delivery_guard.py'
+      - 'tests/test_delivery_guard.py'
+      - 'AGENTS.md'
+      - 'tests/test_delivery_queue.py'
+      - 'docs/delivery/**'
+      - '.github/workflows/delivery-mission.yml'
+permissions:
+  contents: read
+jobs:
+  mission-queue:
+    runs-on: ubuntu-latest
+    env:
+      PRISM_TEST_DCT_ROOT: ${{ github.workspace }}/.prism-ci-dct
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: jaminliu89/deterministic-codex-tools
+          ref: 51b0bbcefebc2f71f906325f1e6ac8a8b3a5caa2
+          path: .prism-ci-dct
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate cross-repo issue index and next-action contract
+        run: |
+          python3 scripts/delivery_queue.py validate
+          python3 scripts/delivery_queue.py next
+      - name: Refuse forged completion and invalid dependencies
+        run: python3 -m unittest discover -s tests -p 'test_delivery_queue.py' -v
+      - name: Run real DCT stop and recovery integration
+        run: python3 -m unittest discover -s tests -p 'test_delivery_guard.py' -v
+      - name: Prism regression and pinned source integrity
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 scripts/prism.py doctor
