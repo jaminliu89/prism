@@ -33,10 +33,12 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: jaminliu89/deterministic-codex-tools
-          ref: 51b0bbcefebc2f71f906325f1e6ac8a8b3a5caa2
+          ref: f77fe46dce9ee174cbd1602f2507eaa57436c9c8
           path: .prism-ci-dct
           persist-credentials: false
       - uses: actions/setup-node@v4
