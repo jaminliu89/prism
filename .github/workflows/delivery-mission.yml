@@ -20,6 +20,8 @@ on:
       - 'AGENTS.md'
       - 'tests/test_delivery_queue.py'
       - 'docs/delivery/**'
+      - 'docs/MISSION.md'
+      - 'SKILL.md'
       - '.github/workflows/delivery-mission.yml'
 permissions:
   contents: read
