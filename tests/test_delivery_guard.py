@@ -38,7 +38,13 @@ fs.unlinkSync(specPath);
 fs.rmSync(root + '/.prism/mission.lock');
 
 const {missionView} = await import('./lib/axis.mjs');
-c.task.missionRef=missionView(root).missionRef;
+const missionDeclaration = missionView(root);
+if (missionDeclaration.status !== 'SELF_ATTESTED'
+  || missionDeclaration.trust !== 'LOCAL_UNVERIFIED_DECLARATION'
+  || missionDeclaration.independence !== 'READ_ONLY_NO_PRISM_EXECUTION') {
+  throw new Error('DCT Mission adapter must keep local authorization explicitly self-attested');
+}
+c.task.missionRef=missionDeclaration.missionRef;
 c.task.missionAcceptance=[0];
 c.task.branch='feature/test';
 c.task.allowedPaths.push('.prism');
