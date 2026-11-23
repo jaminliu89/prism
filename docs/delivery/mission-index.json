@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "mission_id": "ENG-DELIVERY-2026-11",
+  "mission_issue": "https://github.com/jaminliu89/prism/issues/38",
+  "work_packages": [
+    {
+      "id": "WP-01",
+      "repo": "jaminliu89/prism",
+      "issue": "https://github.com/jaminliu89/prism/issues/39",
+      "depends_on": [],
+      "acceptance_ids": [
+        "G0",
+        "G2"
+      ]
+    },
+    {
+      "id": "WP-02",
+      "repo": "jaminliu89/prism",
+      "issue": "https://github.com/jaminliu89/prism/issues/40",
+      "depends_on": [
+        "WP-01"
+      ],
+      "acceptance_ids": [
+        "G0",
+        "G1",
+        "G2"
+      ]
+    },
+    {
+      "id": "WP-03",
+      "repo": "jaminliu89/deterministic-codex-tools",
+      "issue": "https://github.com/jaminliu89/deterministic-codex-tools/issues/3",
+      "depends_on": [],
+      "acceptance_ids": [
+        "G3",
+        "G4"
+      ]
+    },
+    {
+      "id": "WP-04",
+      "repo": "jaminliu89/deterministic-codex-tools",
+      "issue": "https://github.com/jaminliu89/deterministic-codex-tools/issues/4",
+      "depends_on": [
+        "WP-03"
+      ],
+      "acceptance_ids": [
+        "G2",
+        "G3"
+      ]
+    },
+    {
+      "id": "WP-05",
+      "repo": "jaminliu89/vibeguard",
+      "issue": "https://github.com/jaminliu89/vibeguard/issues/11",
+      "depends_on": [],
+      "external_blockers": [
+        "https://github.com/jaminliu89/vibeguard/issues/7",
+        "https://github.com/jaminliu89/vibeguard/issues/8"
+      ],
+      "acceptance_ids": [
+        "G4"
+      ]
+    },
+    {
+      "id": "WP-06",
+      "repo": "jaminliu89/bili-dash-downloader",
+      "issue": "https://github.com/jaminliu89/bili-dash-downloader/issues/74",
+      "depends_on": [
+        "WP-03",
+        "WP-05"
+      ],
+      "acceptance_ids": [
+        "G3",
+        "G4",
+        "G5"
+      ]
+    },
+    {
+      "id": "WP-07",
+      "repo": "jaminliu89/prism",
+      "issue": "https://github.com/jaminliu89/prism/issues/41",
+      "depends_on": [
+        "WP-02",
+        "WP-04",
+        "WP-06"
+      ],
+      "acceptance_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5"
+      ]
+    },
+    {
+      "id": "WP-08",
+      "repo": "jaminliu89/prism",
+      "issue": "https://github.com/jaminliu89/prism/issues/42",
+      "depends_on": [
+        "WP-07"
+      ],
+      "acceptance_ids": [
+        "G5"
+      ]
+    }
+  ]
+}
