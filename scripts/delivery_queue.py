@@ -138,14 +138,18 @@ def triage(plan, observations=None):
             candidates.append({"id": task["id"], "issue": task["issue"], "repo": task["repo"],
                 "next_action": "INSPECT_REAL_ISSUE_PR_AND_EVIDENCE_THEN_EXECUTE_AUTHORIZED_SLICE",
                 "dependencies": [{"id": dep, "claimed_state": state} for dep,state in dependencies]})
+    # One active implementation lane by default. The queue deliberately exposes
+    # only the first eligible slice; Prism re-reads remote evidence before moving on.
     return {
         "schema_version": 1, "mission_id": plan["mission_id"], "status": "TRIAGE_ONLY",
+        "execution_policy": "SERIAL_SINGLE_WRITER",
         "source": "USER_SUPPLIED_ISSUE_OBSERVATIONS_UNAUTHENTICATED",
         "release_authorized": False, "independent_review_authenticated": False,
         "next": candidates[0] if candidates else None,
-        "parallel_candidates": candidates, "blocked": blocked,
+        "eligible_count": len(candidates),
+        "blocked": blocked,
         "claimed_closed_requires_verification": claimed_closed,
-        "warning": "Issue closed or user-supplied JSON cannot prove check-runs, review identity, branch protection, product acceptance or permission to merge."
+        "warning": "Only one slice is exposed at a time. Issue closure or user-supplied JSON cannot prove check-runs, review identity, branch protection, product acceptance or permission to merge."
     }
 
 
