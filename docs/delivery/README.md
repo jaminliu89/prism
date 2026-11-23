@@ -1,5 +1,7 @@
 # Prism · ENG-DELIVERY-2026-11 / read-only Issue Queue
 
+**执行简化规则：** 先读 [OPERATING_MODEL.md](OPERATING_MODEL.md)。用户只面对 Prism #38；Prism 是唯一总负责人；默认单车道推进。各仓库 Issue/PR 是内部实现与证据引用，不要求用户逐个协调。
+
 ## 唯一目标与任务所在
 
 - Mission 目标、非目标、整体门禁、关闭条件：GitHub [Prism Issue #38](https://github.com/jaminliu89/prism/issues/38)。
@@ -15,7 +17,7 @@ python3 scripts/delivery_queue.py next
 python3 -m unittest discover -s tests -p 'test_delivery_queue.py' -v
 ```
 
-其中 `next` 不联网、不调用模型、**不自动继续执行**。它只输出带 issue URL 的下一步调查候选（例如 WP-01 与 WP-03 可并行做只读规划/独立施工），不会授权本地写入、Git 合并或生产发布。任务实际进展必须以 GitHub API 与指定版本仓库证据重新读取。
+其中 `next` 不联网、不调用模型、**不自动继续执行**。它只输出一个下一步调查候选；即使多个工作包当前没有依赖，也默认串行，避免多仓库并行给用户和集成方增加协调成本。完成一个切片后，必须重新读取真实远端状态再选择下一项。它不会授权本地写入、Git 合并或生产发布。任务实际进展必须以 GitHub API 与指定版本仓库证据重新读取。
 
 可选择提供外部只读抓取的 issue 状态快照：
 
