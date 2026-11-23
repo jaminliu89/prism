@@ -27,7 +27,9 @@ class DeliveryQueueTests(unittest.TestCase):
     def test_first_work_packages_are_ready_for_inspection_not_release(self):
         r = queue.triage(PLAN)
         self.assertEqual(r["next"]["id"], "WP-01")
-        self.assertEqual([x["id"] for x in r["parallel_candidates"]], ["WP-01", "WP-03"])
+        self.assertEqual(r["execution_policy"], "SERIAL_SINGLE_WRITER")
+        self.assertEqual(r["eligible_count"], 2)
+        self.assertNotIn("parallel_candidates", r)
         self.assertIn("WP-05", [x["id"] for x in r["blocked"]])
         self.assertFalse(r["independent_review_authenticated"])
 
